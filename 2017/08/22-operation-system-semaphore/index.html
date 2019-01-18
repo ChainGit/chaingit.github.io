@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="转载,学习,多线程,操作系统,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="操作系统原理之信号量同步和互斥是比较重要的概念，这里转载一篇文章并做整理。 操作系统原理之进程和线程管理 实现临界区互斥的基本方法软件实现方法在进入区设置和检查一些标志来标明是否有进程在临界区中，如果已有进程在临界区，则在进入区通过循环检查进行等待，进程离开临界区后则在退出区修改标志。 算法一：单标志法该算法设置一个公用整型变量turn，用于指示被允许进入临界区的进程编号。即若turn=0，则允许">
+<meta name="keywords" content="转载,学习,多线程,操作系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="操作系统原理之信号量">
+<meta property="og:url" content="https://www.leechain.top/2017/08/22-operation-system-semaphore/index.html">
+<meta property="og:site_name" content="天印湖畔映白鹭">
+<meta property="og:description" content="操作系统原理之信号量同步和互斥是比较重要的概念，这里转载一篇文章并做整理。 操作系统原理之进程和线程管理 实现临界区互斥的基本方法软件实现方法在进入区设置和检查一些标志来标明是否有进程在临界区中，如果已有进程在临界区，则在进入区通过循环检查进行等待，进程离开临界区后则在退出区修改标志。 算法一：单标志法该算法设置一个公用整型变量turn，用于指示被允许进入临界区的进程编号。即若turn=0，则允许">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/4.png">
+<meta property="og:updated_time" content="2018-11-12T10:04:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="操作系统原理之信号量">
+<meta name="twitter:description" content="操作系统原理之信号量同步和互斥是比较重要的概念，这里转载一篇文章并做整理。 操作系统原理之进程和线程管理 实现临界区互斥的基本方法软件实现方法在进入区设置和检查一些标志来标明是否有进程在临界区中，如果已有进程在临界区，则在进入区通过循环检查进行等待，进程离开临界区后则在退出区修改标志。 算法一：单标志法该算法设置一个公用整型变量turn，用于指示被允许进入临界区的进程编号。即若turn=0，则允许">
+<meta name="twitter:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/4.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.leechain.top/2017/08/22-operation-system-semaphore/">
+
+
+
+
+
+  <title>操作系统原理之信号量 | 天印湖畔映白鹭</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天印湖畔映白鹭</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">LEECHAIN | 博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.leechain.top/2017/08/22-operation-system-semaphore/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chain Qian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天印湖畔映白鹭">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">操作系统原理之信号量</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-22T00:00:00+08:00">
+                2017-08-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/08/22-operation-system-semaphore/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/08/22-operation-system-semaphore/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </span></div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="操作系统原理之信号量"><a href="#操作系统原理之信号量" class="headerlink" title="操作系统原理之信号量"></a>操作系统原理之信号量</h1><p>同步和互斥是比较重要的概念，这里转载一篇<a href="http://c.biancheng.net/cpp/html/2598.html" target="_blank" rel="noopener">文章</a>并做整理。</p>
+<p><a href="https://www.leechain.top/blog/2017/08/25-operation-system-multithreads.html">操作系统原理之进程和线程管理</a></p>
+<h2 id="实现临界区互斥的基本方法"><a href="#实现临界区互斥的基本方法" class="headerlink" title="实现临界区互斥的基本方法"></a>实现临界区互斥的基本方法</h2><h3 id="软件实现方法"><a href="#软件实现方法" class="headerlink" title="软件实现方法"></a>软件实现方法</h3><p>在进入区设置和检查一些标志来标明是否有进程在临界区中，如果已有进程在临界区，则在进入区通过循环检查进行等待，进程离开临界区后则在退出区修改标志。</p>
+<h4 id="算法一：单标志法"><a href="#算法一：单标志法" class="headerlink" title="算法一：单标志法"></a>算法一：单标志法</h4><p>该算法设置一个公用整型变量turn，用于指示被允许进入临界区的进程编号。<br>即若turn=0，则允许P0进程进入临界区；相应的，若turn=1，则允许P1进程进入临界区.</p>
+<p>注意：该算法可确保每次只允许一个进程进入临界区，但两个进程必须交替进入临界区。<br>如果某个进程进入了一次后退出，那么另一个进程将无法进入临界区<strong>（违背“空闲让进”）</strong>，这样很容易造成资源利用的不充分。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// P0进程</span></span><br><span class="line"><span class="keyword">while</span>(turn!=<span class="number">0</span>);</span><br><span class="line">critical section;</span><br><span class="line">turn=<span class="number">1</span>;</span><br><span class="line">remainder section;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// P1进程</span></span><br><span class="line"><span class="keyword">while</span>(turn!=<span class="number">1</span>);  <span class="comment">// 进入区</span></span><br><span class="line">critical section;  <span class="comment">// 临界区</span></span><br><span class="line">turn = <span class="number">0</span>;  <span class="comment">// 退出区</span></span><br><span class="line">remainder section;  <span class="comment">// 剩余区</span></span><br></pre></td></tr></table></figure>
+<h4 id="算法二：双标志法先检查"><a href="#算法二：双标志法先检查" class="headerlink" title="算法二：双标志法先检查"></a>算法二：双标志法先检查</h4><p>该算法的基本思想是在每一个进程访问临界区资源之前，先查看一下临界资源是否正被访问，若正被访问，该进程需等待；否则，进程才进入自己的临界区。<br>为此，设置了一个数据flag[i]，如第i个元素值为FALSE，表示Pi进程未进入临界区，值为TRUE，表示Pi进程进入临界区。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Pi 进程</span></span><br><span class="line"><span class="keyword">while</span>(flag[j]);  <span class="comment">// ①    </span></span><br><span class="line">flag[i]=TRUE;  <span class="comment">// ③  </span></span><br><span class="line">critical section;   </span><br><span class="line">flag[i] = FALSE; </span><br><span class="line">remainder section;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Pj 进程</span></span><br><span class="line"><span class="keyword">while</span>(flag[i]);  <span class="comment">// ② 进入区</span></span><br><span class="line">flag[j] =TRUE;  <span class="comment">// ④ 进入区</span></span><br><span class="line">critical section;  <span class="comment">// 临界区</span></span><br><span class="line">flag[j] = FALSE;  <span class="comment">// 退出区</span></span><br><span class="line">remainder section;  <span class="comment">// 剩余区</span></span><br></pre></td></tr></table></figure>
+<p>优点：不用交替进入，可连续使用；<br>缺点：Pi和Pj可能同时进入临界区。按序列①②③④ 执行时，会同时进入临界区<strong>（违背“忙则等待”)</strong>。即在检查对方flag之后和切换自己flag之前有一段时间（可能进程被剥夺了执行权），结果都检查通过。</p>
+<p>这里的问题出在检查（while(flag[i])）和修改(flag[j])操作不能一次进行。</p>
+<h4 id="算法三：双标志法后检查"><a href="#算法三：双标志法后检查" class="headerlink" title="算法三：双标志法后检查"></a>算法三：双标志法后检查</h4><p>算法二是先检测对方进程状态标志后，再置自己标志，由于在检测和放置中可插入另一个进程到达时的检测操作，会造成两个进程在分别检测后，同时进入临界区。</p>
+<p>为此，算法三釆用先设置自己标志为TRUE后,再检测对方状态标志，若对方标志为TURE，则进程等待；否则进入临界区。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Pi进程</span></span><br><span class="line">flag[i] =TRUE;</span><br><span class="line"><span class="keyword">while</span>(flag[j]);</span><br><span class="line">critical section;</span><br><span class="line">flag[i] =FLASE;</span><br><span class="line">remainder section;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Pj进程</span></span><br><span class="line">flag[j] =TRUE;  <span class="comment">// 进入区</span></span><br><span class="line"><span class="keyword">while</span>(flag[i]);  <span class="comment">// 进入区</span></span><br><span class="line">critical section;  <span class="comment">// 临界区</span></span><br><span class="line">flag [j] =FLASE;   <span class="comment">// 退出区</span></span><br><span class="line">remainder section;  <span class="comment">// 剩余区</span></span><br></pre></td></tr></table></figure>
+<p>缺点：当两个进程几乎同时都想进入临界区时，它们分别将自己的标志值flag设置为TRUE，并且同时检测对方的状态（执行while语句），发现对方也要进入临界区，于是双方互相谦让，结果谁也进不了临界区，从而<strong>导致“饥饿”现象</strong>。</p>
+<h4 id="算法四：Peterson’s-Algorithm"><a href="#算法四：Peterson’s-Algorithm" class="headerlink" title="算法四：Peterson’s Algorithm"></a>算法四：Peterson’s Algorithm</h4><p>为了防止两个进程为进入临界区而无限期等待，又设置变量turn，指示不允许进入临界区的进程编号，每个进程在先设置自己标志后再设置turn标志，不允许另一个进程进入。</p>
+<p>这时，再同时检测另一个进程状态标志和不允许进入标志，这样可以保证当两个进程同时要求进入临界区，只允许一个进程进入临界区。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Pi进程</span></span><br><span class="line">flag[i]=TURE; turn=j;</span><br><span class="line"><span class="keyword">while</span>(flag[j]&amp;&amp;turn==j); </span><br><span class="line">critical section;</span><br><span class="line">flag[i]=FLASE;</span><br><span class="line">remainder section;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Pj进程</span></span><br><span class="line">flag[j] =TRUE;turn=i;  <span class="comment">// 进入区</span></span><br><span class="line"><span class="keyword">while</span>(flag[i]&amp;&amp;turn==i);   <span class="comment">// 进入区</span></span><br><span class="line">critical section;  <span class="comment">// 临界区</span></span><br><span class="line">flag[j]=FLASE;  <span class="comment">// 退出区</span></span><br><span class="line">remainder section;  <span class="comment">// 剩余区</span></span><br></pre></td></tr></table></figure>
+<p>本算法的基本思想是算法一和算法三的结合。<strong>利用flag解决临界资源的互斥访问，而利用turn解决“饥饿”现象。</strong></p>
+<h3 id="硬件实现方法"><a href="#硬件实现方法" class="headerlink" title="硬件实现方法"></a>硬件实现方法</h3><p>硬件实现和信号量相关。</p>
+<p>计算机提供了特殊的硬件指令，允许对一个字中的内容进行检测和修正，或者是对两个字的内容进行交换等。<br>通过硬件支持实现临界段问题的低级方法或称为元方法。</p>
+<h4 id="中断屏蔽方法"><a href="#中断屏蔽方法" class="headerlink" title="中断屏蔽方法"></a>中断屏蔽方法</h4><p>当一个进程正在使用处理机执行它的临界区代码时，要防止其他进程再进入其临界区访问的最简单方法是禁止一切中断发生，或称之为<strong>屏蔽中断</strong>、关中断。<br>因为CPU只在发生中断时引起进程切换，这样屏蔽中断就能保证当前运行进程将临界区代码顺利地执行完，从而保证了互斥的正确实现，然后再执行开中断。</p>
+<p>其典型模式为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">关中断;</span><br><span class="line">临界区;</span><br><span class="line">开中断;</span><br></pre></td></tr></table></figure>
+<p>缺点：这种方法限制了处理机交替执行程序的能力，因此<strong>执行的效率将会明显降低</strong>。对内核来说，当它执行更新变量或列表的几条指令期间关中断是很方便的，但将关中断的权力交给用户则很不明智，若一个进程关中断之后执行出现错误，而不再开中断，则系统可能会因此终止。</p>
+<h4 id="硬件指令方法"><a href="#硬件指令方法" class="headerlink" title="硬件指令方法"></a>硬件指令方法</h4><p>1、TestAndSet指令：这条指令是<strong>原子操作</strong>，即执行该代码时不允许被中断。其功能是读出指定标志后把该标志设置为真。</p>
+<p>指令的功能描述如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">TestAndSet</span><span class="params">(<span class="keyword">boolean</span> *lock)</span></span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> old;</span><br><span class="line">    old = *lock;</span><br><span class="line">    *lock=<span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">return</span> old;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以为每个临界资源设置一个共享布尔变量lock，表示资源的两种状态：true表示正被占用，初值为false。<br>在进程访问临界资源之前，利用TestAndSet检查和修改标志lock；若有进程在临界区，则重复检查，直到进程退出。</p>
+<p>利用该指令实现进程互斥的算法描述如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">while</span> <span class="title">TestAndSet</span><span class="params">(&amp;lock)</span></span>;</span><br><span class="line"><span class="comment">// 进程的临界区代码段;</span></span><br><span class="line">lock=<span class="keyword">false</span>;</span><br><span class="line"><span class="comment">// 进程的其他代码</span></span><br></pre></td></tr></table></figure>
+<p>2、Swap指令：该指令的功能是交换两个字节的内容。其功能描述如下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Swap(<span class="keyword">boolean</span> *a, <span class="keyword">boolean</span> *b)&#123;  </span><br><span class="line">    <span class="keyword">boolean</span> temp;</span><br><span class="line">    Temp=*a;</span><br><span class="line">    *a = *b;</span><br><span class="line">    *b = temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意：以上对TestAndSet和Swap指令的描述仅仅是功能实现，并非软件实现定义（软件实现也有类似，比如CAS），事实上它们是由硬件逻辑直接实现的，不会被中断。</p>
+<p>应为每个临界资源设置了一个共享布尔变量lock，初值为false；在每个进程中再设置一个局部布尔变量key，用于与lock交换信息。<br>在进入临界区之前先利用Swap指令交换lock与key的内容，然后检查key的状态；<br>有进程在临界区时，重复交换和检查过程，直到进程退出。</p>
+<p>利用Swap指令实现进程互斥的算法描述如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">key=<span class="keyword">true</span>;</span><br><span class="line"><span class="keyword">while</span>(key!=<span class="keyword">false</span>)</span><br><span class="line">Swap(&amp;lock, &amp;key); </span><br><span class="line"><span class="comment">// 进程的临界区代码段；</span></span><br><span class="line">lock=<span class="keyword">false</span>;</span><br><span class="line"><span class="comment">// 进程的其他代码；</span></span><br></pre></td></tr></table></figure>
+<p>硬件方法的优点：适用于任意数目的进程，不管是单处理机还是多处理机；简单、容易验证其正确性。可以支持进程内有多个临界区，只需为每个临界区设立一个布尔变量。<br>硬件方法的缺点：进程等待进入临界区时要耗费处理机时间，不能实现让权等待。从等待进程中随机选择一个进入临界区，有的进程可能一直选不上，从而导致“饥饿”现象。</p>
+<h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><p>信号量机构是一种功能较强的机制，可用来解决互斥与同步的问题，它只能被两个标准的原语wait(S)和signal(S)来访问，也可以记为“P操作”和“V操作”。</p>
+<p>原语是指完成某种功能且不被分割不被中断执行的操作序列，通常可由硬件来实现完成不被分割执行特性的功能。<br>如前述的“Test-and-Set”和“Swap”指令，就是由硬件实现的原子操作。原语功能的不被中断执行特性在单处理机时可由软件通过屏蔽中断方法实现。</p>
+<p>原语之所以不能被中断执行，是因为原语对变量的操作过程如果被打断，可能会去运行另一个对同一变量的操作过程，从而出现临界段问题。如果能够找到一种解决临界段问题的元方法，就可以实现对共享变量操作的原子性。</p>
+<h3 id="整型信号量"><a href="#整型信号量" class="headerlink" title="整型信号量"></a>整型信号量</h3><p>整型信号量被定义为一个用于表示资源数目的整型量S，wait和signal操作可描述为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">wait(S)&#123;</span><br><span class="line">    <span class="keyword">while</span> (S&lt;=<span class="number">0</span>);</span><br><span class="line">    S=S-<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">signal(S)&#123;</span><br><span class="line">    S=S+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>wait操作中，只要信号量S&lt;=0，就会不断地测试。<br>因此，该机制并未遵循“让权等待” 的准则，而是使进程处于“忙等”的状态。</p>
+<h3 id="记录型信号量"><a href="#记录型信号量" class="headerlink" title="记录型信号量"></a>记录型信号量</h3><p>记录型信号量是不存在“忙等”现象的进程同步机制。除了需要一个用于代表资源数目的整型变量value外，再增加一个进程链表L，用于链接所有等待该资源的进程，记录型信号量是由于釆用了记录型的数据结构得名。</p>
+<p>记录型信号量可描述为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">typedef struct&#123;</span><br><span class="line">    <span class="keyword">int</span> value;</span><br><span class="line">    struct process *L;</span><br><span class="line">&#125; semaphore;</span><br></pre></td></tr></table></figure>
+<p>相应的wait(S)和signal(S)的操作如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">wait</span> <span class="params">(semaphore S)</span> </span>&#123; <span class="comment">//相当于申请资源</span></span><br><span class="line">    S.value--;</span><br><span class="line">    <span class="keyword">if</span>(S.value&lt;<span class="number">0</span>) &#123;</span><br><span class="line">        add <span class="keyword">this</span> process to S.L;</span><br><span class="line">        block(S.L);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>wait操作，S.value–，表示进程请求一个该类资源，当S.value&lt;0 时，表示该类资源已分配完毕，因此进程应调用block原语，进行自我阻塞，放弃处理机，并插入到该类资源的等待队列S.L中，可见该机制遵循了“让权等待”的准则。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">signal</span> <span class="params">(semaphore S)</span> </span>&#123;  <span class="comment">//相当于释放资源</span></span><br><span class="line">    S.value++;</span><br><span class="line">    <span class="keyword">if</span>(S.value&lt;=<span class="number">0</span>)&#123;</span><br><span class="line">        remove a process P from S.L;</span><br><span class="line">        wakeup(P);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>signal操作，表示进程释放一个资源，使系统中可供分配的该类资源数增1，故S.value++。若加1后仍是S.value&lt;=0，则表示在S.L中仍有等待该资源的进程被阻塞，故还应调用wakeup 原语，将S.L中的第一个等待进程唤醒。</p>
+<h3 id="利用信号量实现进程同步"><a href="#利用信号量实现进程同步" class="headerlink" title="利用信号量实现进程同步"></a>利用信号量实现进程同步</h3><p>信号量机构能用于解决进程间各种同步问题。</p>
+<p>设S为实现进程P1、P2同步的公共信号量，初值为0。<br>进程P2中的语句y要使用进程P1中语句x的运行结果，所以只有当语句x执行完成之后语句y才可以执行。</p>
+<p>其实现进程同步的算法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">semaphore S = <span class="number">0</span>;  <span class="comment">//初始化信号量</span></span><br><span class="line">P1() &#123;</span><br><span class="line">    <span class="comment">// …</span></span><br><span class="line">    x;  <span class="comment">//语句x</span></span><br><span class="line">    V(S);  <span class="comment">//告诉进程P2,语句乂已经完成</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">P2() &#123;</span><br><span class="line">    <span class="comment">// …</span></span><br><span class="line">    P(S) ;  <span class="comment">//检查语句x是否运行完成</span></span><br><span class="line">    y;  <span class="comment">// 检查无误，运行y语句</span></span><br><span class="line">    <span class="comment">// …</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="利用信号量实现进程互斥"><a href="#利用信号量实现进程互斥" class="headerlink" title="利用信号量实现进程互斥"></a>利用信号量实现进程互斥</h3><p>信号量机构也能很方便地解决进程互斥问题。</p>
+<p>设S为实现进程Pl、P2互斥的信号量，由于每次只允许一个进程进入临界区，所以S的初值应为1（即可用资源数为1)。<br>只需把临界区置于P(S)和V(S)之间，即可实现两进程对临界资源的互斥访问。</p>
+<p>其算法如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">semaphore S = <span class="number">1</span>;  <span class="comment">//初化信号量</span></span><br><span class="line">P1 ( ) &#123;</span><br><span class="line">    <span class="comment">// …</span></span><br><span class="line">    P(S);  <span class="comment">// 准备开始访问临界资源，加锁</span></span><br><span class="line">    <span class="comment">// 进程P1的临界区</span></span><br><span class="line">    V(S);  <span class="comment">// 访问结束，解锁</span></span><br><span class="line">    <span class="comment">// …</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">P2() &#123;</span><br><span class="line">    <span class="comment">// …</span></span><br><span class="line">    P(S); <span class="comment">//准备开始访问临界资源，加锁</span></span><br><span class="line">    <span class="comment">// 进程P2的临界区；</span></span><br><span class="line">    V(S);  <span class="comment">// 访问结束，解锁</span></span><br><span class="line">    <span class="comment">// …</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>互斥的实现是不同进程对同一信号量进行P、V操作，一个进程在成功地对信号量执行了P操作后进入临界区，并在退出临界区后，由该进程本身对该信号量执行V操作，表示当前没有进程进入临界区，可以让其他进程进入。</p>
+<h3 id="利用信号量实现前驱关系"><a href="#利用信号量实现前驱关系" class="headerlink" title="利用信号量实现前驱关系"></a>利用信号量实现前驱关系</h3><p>信号量也可以用来描述程序之间或者语句之间的前驱关系。</p>
+<p>下图给出了一个前驱图，其中S1, S2, S3, …, S6是最简单的程序段（只有一条语句）。为使各程序段能正确执行，应设置若干个初始值为“0”的信号量。例如，为保证S1-&gt;S2、 S1-&gt;S3的前驱关系，应分别设置信号量a1、a2。同样，为了保证 S2-&gt;S4、S2-&gt;S5、S3-&gt;S6、S4-&gt;S6、S5-&gt;S6，应设置信号量bl、b2、c、d、e。 </p>
+<p><img src="/uploads/multithreads-basic-knowledge/4.png" alt="image"></p>
+<p>实现算法如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">semaphore  al=a2=bl=b2=c=d=e=<span class="number">0</span>;  <span class="comment">//初始化信号量</span></span><br><span class="line">S1() &#123;</span><br><span class="line">    <span class="comment">// …</span></span><br><span class="line">    V(al);  V(a2) ;  <span class="comment">//S1已经运行完成</span></span><br><span class="line">&#125;</span><br><span class="line">S2() &#123;</span><br><span class="line">    P(a1);  <span class="comment">//检查S1是否运行完成</span></span><br><span class="line">    <span class="comment">// …</span></span><br><span class="line">    V(bl); V(b2); <span class="comment">// S2已经运行完成</span></span><br><span class="line">&#125;</span><br><span class="line">S3() &#123;</span><br><span class="line">    P(a2);  <span class="comment">//检查S1是否已经运行完成</span></span><br><span class="line">    <span class="comment">// …</span></span><br><span class="line">    V(c);  <span class="comment">//S3已经运行完成</span></span><br><span class="line">&#125;</span><br><span class="line">S4() &#123;</span><br><span class="line">    P(b1);  <span class="comment">//检查S2是否已经运行完成</span></span><br><span class="line">    <span class="comment">// …</span></span><br><span class="line">    V(d);  <span class="comment">//S4已经运行完成</span></span><br><span class="line">&#125;</span><br><span class="line">S5() &#123;</span><br><span class="line">    P(b2);  <span class="comment">//检查S2是否已经运行完成</span></span><br><span class="line">    <span class="comment">// …</span></span><br><span class="line">    V(e);  <span class="comment">// S5已经运行完成</span></span><br><span class="line">&#125;</span><br><span class="line">S6() &#123;</span><br><span class="line">    P(c);  <span class="comment">//检查S3是否已经运行完成</span></span><br><span class="line">    P(d);  <span class="comment">//检查S4是否已经运行完成</span></span><br><span class="line">    P(e);  <span class="comment">//检查S5是否已经运行完成</span></span><br><span class="line">    <span class="comment">// …;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>分析进程同步和互斥问题的方法步骤：<br>1) 关系分析。找出问题中的进程数，并且分析它们之间的同步和互斥关系。同步、互斥、前驱关系直接按照上面例子中的经典范式改写。<br>2) 整理思路。找出解决问题的关键点，并且根据做过的题目找出解决的思路。根据进程的操作流程确定P操作、V操作的大致顺序。<br>3) 设置信号量。根据上面两步，设置需要的信号量，确定初值，完善整理。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Chain Qian
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.leechain.top/2017/08/22-operation-system-semaphore/" title="操作系统原理之信号量">https://www.leechain.top/2017/08/22-operation-system-semaphore/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/转载/" rel="tag"># 转载</a>
+          
+            <a href="/tags/学习/" rel="tag"># 学习</a>
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+            <a href="/tags/操作系统/" rel="tag"># 操作系统</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/21-java-concurrency-brief/" rel="next" title="Java的多线程和并发知识纲要">
+                <i class="fa fa-chevron-left"></i> Java的多线程和并发知识纲要
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/23-operation-system-job-schedule/" rel="prev" title="操作系统原理之处理机调度">
+                操作系统原理之处理机调度 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Chain Qian">
+            
+              <p class="site-author-name" itemprop="name">Chain Qian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ChainGit" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:chainz@foxmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#操作系统原理之信号量"><span class="nav-number">1.</span> <span class="nav-text">操作系统原理之信号量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现临界区互斥的基本方法"><span class="nav-number">1.1.</span> <span class="nav-text">实现临界区互斥的基本方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#软件实现方法"><span class="nav-number">1.1.1.</span> <span class="nav-text">软件实现方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法一：单标志法"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">算法一：单标志法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法二：双标志法先检查"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">算法二：双标志法先检查</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法三：双标志法后检查"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">算法三：双标志法后检查</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法四：Peterson’s-Algorithm"><span class="nav-number">1.1.1.4.</span> <span class="nav-text">算法四：Peterson’s Algorithm</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#硬件实现方法"><span class="nav-number">1.1.2.</span> <span class="nav-text">硬件实现方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#中断屏蔽方法"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">中断屏蔽方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#硬件指令方法"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">硬件指令方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#信号量"><span class="nav-number">1.2.</span> <span class="nav-text">信号量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#整型信号量"><span class="nav-number">1.2.1.</span> <span class="nav-text">整型信号量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#记录型信号量"><span class="nav-number">1.2.2.</span> <span class="nav-text">记录型信号量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用信号量实现进程同步"><span class="nav-number">1.2.3.</span> <span class="nav-text">利用信号量实现进程同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用信号量实现进程互斥"><span class="nav-number">1.2.4.</span> <span class="nav-text">利用信号量实现进程互斥</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用信号量实现前驱关系"><span class="nav-number">1.2.5.</span> <span class="nav-text">利用信号量实现前驱关系</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chain Qian</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">苏ICP备16052713号-1</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt7Bknuv';
+      var conf = 'prod_ef64fab63ed9004614a7a77b40203358';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

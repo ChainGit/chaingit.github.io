@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,学习,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="利用Hash进行大文本文件的行搜索思考一个问题，如何在大文件中搜索一个指定的数据？这也是一道经常被问的面试题，不过搜索了一下，网上一般只提供了思路但是并没有什么实际的代码和案例。现在想着自己能够实现一下，并写下了这篇博客，水平有限，如有不正确的地方欢迎指正。 问题描述现在有两个按行存储的文本文件a.txt和b.txt，已知a.txt内有url共50亿条，b.txt内有url共500条。请问，b中的">
+<meta name="keywords" content="Java,学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用Hash进行大文本文件的行搜索">
+<meta property="og:url" content="https://www.leechain.top/2017/12/14-large-file-hash-search/index.html">
+<meta property="og:site_name" content="天印湖畔映白鹭">
+<meta property="og:description" content="利用Hash进行大文本文件的行搜索思考一个问题，如何在大文件中搜索一个指定的数据？这也是一道经常被问的面试题，不过搜索了一下，网上一般只提供了思路但是并没有什么实际的代码和案例。现在想着自己能够实现一下，并写下了这篇博客，水平有限，如有不正确的地方欢迎指正。 问题描述现在有两个按行存储的文本文件a.txt和b.txt，已知a.txt内有url共50亿条，b.txt内有url共500条。请问，b中的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/0.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/16.jpg">
+<meta property="og:updated_time" content="2018-11-12T10:04:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="利用Hash进行大文本文件的行搜索">
+<meta name="twitter:description" content="利用Hash进行大文本文件的行搜索思考一个问题，如何在大文件中搜索一个指定的数据？这也是一道经常被问的面试题，不过搜索了一下，网上一般只提供了思路但是并没有什么实际的代码和案例。现在想着自己能够实现一下，并写下了这篇博客，水平有限，如有不正确的地方欢迎指正。 问题描述现在有两个按行存储的文本文件a.txt和b.txt，已知a.txt内有url共50亿条，b.txt内有url共500条。请问，b中的">
+<meta name="twitter:image" content="https://www.leechain.top/uploads/0-common-images/0.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.leechain.top/2017/12/14-large-file-hash-search/">
+
+
+
+
+
+  <title>利用Hash进行大文本文件的行搜索 | 天印湖畔映白鹭</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天印湖畔映白鹭</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">LEECHAIN | 博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.leechain.top/2017/12/14-large-file-hash-search/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chain Qian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天印湖畔映白鹭">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">利用Hash进行大文本文件的行搜索</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-14T00:00:00+08:00">
+                2017-12-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/12/14-large-file-hash-search/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/12/14-large-file-hash-search/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </span></div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="利用Hash进行大文本文件的行搜索"><a href="#利用Hash进行大文本文件的行搜索" class="headerlink" title="利用Hash进行大文本文件的行搜索"></a>利用Hash进行大文本文件的行搜索</h1><p>思考一个问题，如何在大文件中搜索一个指定的数据？这也是一道经常被问的面试题，不过搜索了一下，网上一般只提供了思路但是并没有什么实际的代码和案例。现在想着自己能够实现一下，并写下了这篇博客，水平有限，如有不正确的地方欢迎指正。</p>
+<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>现在有两个按行存储的文本文件a.txt和b.txt，已知a.txt内有url共50亿条，b.txt内有url共500条。请问，b中的url在a中是否出现，如果出现，依次输出该url在b中的行号。</p>
+<h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h2><p>如果采用顺序搜索，对于小数据是可以的，但是对于大文本文件，那个需要的时间可想而知。虽然将数据读入内存后，会加快搜索的速度，但是计算机的内存容量一般远小于磁盘容量，如果将一个2G大小的文件读入内存，那个代价也是承受不起的。其他常见的搜索方法，如二分搜索法，二分搜索法的前提是数据是有序的，而对一个大文本文件排序也是不现实的，所以在这里也不适用。</p>
+<p>因此必须采用其他的方法来搜索数据。我这里采用Hash查找做了一个自己觉得还可以的实现。</p>
+<h2 id="Hash查找"><a href="#Hash查找" class="headerlink" title="Hash查找"></a>Hash查找</h2><p>常见的Hash算法有很多，这里我采用的是JavaAPI中String.hashCode()方法和取模Hash法结合使用。</p>
+<h3 id="取模Hash法"><a href="#取模Hash法" class="headerlink" title="取模Hash法"></a>取模Hash法</h3><p>任意一个整数a，如果对它进行取模运算，比如a % N，那么取模的结果必然在 0 ~ N-1 之间。<br>这样对于一个大的随机整数集Q，如果把它们依次进行取模运算，那么这个整数集Q就可以近似被分成 N 组。（如果随机整数集Q足够随机，每个组的元素数量也是近似相等的）<br>这样的话如果要查找某个数b，那么先将它进行取模运算 b % N，得到的余数p就自然可以被映射到那个已经分好N组的某个组G中，换句话说，b如果在Q中存在，那么必然也只能是在G中。此时再利用线性搜索对这个分组G进行查找的话，由于此时只有Q/N个元素，速度自然会快了不少。</p>
+<p>由上可见，N的取值也是比较关键的。</p>
+<h3 id="String-hashCode"><a href="#String-hashCode" class="headerlink" title="String.hashCode()"></a>String.hashCode()</h3><p>String类重写了hashCode()方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> h = hash;</span><br><span class="line">    <span class="keyword">if</span> (h == <span class="number">0</span> &amp;&amp; value.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        hash = h = isLatin1() ? StringLatin1.hashCode(value)</span><br><span class="line">                                : StringUTF16.hashCode(value);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>JavaAPI文档的描述是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Returns a hash code for this string. The hash code for a String object is computed as </span><br><span class="line"></span><br><span class="line">s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1]</span><br><span class="line"> </span><br><span class="line">using int arithmetic, where s[i] is the ith character of the string, n is the length of the string, and ^ indicates exponentiation. (The hash value of the empty string is zero.)</span><br></pre></td></tr></table></figure>
+<p>这是Java中默认的计算String的hash值的方法，将字符串转为一个整数。</p>
+<p>结合这两个计算Hash值的方法，就可以解决上面的问题。</p>
+<h2 id="我的解决"><a href="#我的解决" class="headerlink" title="我的解决"></a>我的解决</h2><p>目标文件均为<strong>按行存储的文本文件</strong>。</p>
+<p>第一次采用的尝试实现的方法是：<br>1、遍历文件a，对每一行数据求hashCode，然后再对hashCode求<strong>N=100</strong>的模，根据求模的结果写入到对应的小文件中，比如h34.txt，并将这一行所在的行号写入到另一个小文件中，比如n34.txt。<br>2、这样一次遍历后，原来超大的文本文件a可以被分割成100个小文件，原来文本文件中某数据的所在行也可以对应映射记录在100个小文件中。比如原来a中的第1234行的数据，求模的值是78，那么这行数据被添加在h78.txt的末尾，对应的行号也添加在n78.txt末尾。<br>3、因为只有一个线程在操作，所以不存在多线程安全的问题。数据的映射关系保持正确。<br>4、输入要查找的字符串数据s，先对s进行取<strong>N=100</strong>模运算，比如得到结果78，然后再读取h78.txt文件，按顺序读取h78.txt文件，并同时记录读取h78.txt的行数L，若在h78.txt找到和s一致的数据时，此时再去n78.txt读取到L行，读出n78.txt的L行数据就是s在原来文件a中的行号。循环下去，直到读完h78.txt为止，此时也相应的得到s在文件a中出现的次数，以及对应的所有行号。</p>
+<p>具体实现可以选择InputStream、Reader，对应的实现类BufferInputStream，FileInputStream、BufferedReader，FileReader，LineNumberReader。</p>
+<p>第一种方法很好理解，也容易实现。不过需要在磁盘中多出很多额外的小文件，占有更多的磁盘空间。另外频繁的读取磁盘，不仅速度慢，而且也影响了磁盘的寿命。</p>
+<p>对应第一种方法中的不足加以改进，第二次采用的尝试实现的方法是：<br>1、在内存中建立一个Map，Map的键是Integer类型，Map的值是一个List。具体如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Map&lt;Hash值，数据所在行的信息&gt;</span></span><br><span class="line"><span class="keyword">private</span> Map&lt;Integer, List&lt;LineInfo&gt;&gt; store;</span><br></pre></td></tr></table></figure></p>
+<p>其中LineInfo存储了数据的所在行号、该行的开头在文件中的位置、该行数据的完整hash值。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 数据所在行的信息</span></span><br><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">LineInfo</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 数据所在行号</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> lineNumber;</span><br><span class="line">    <span class="comment">// 该行的开头在文件中的位置</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> position;</span><br><span class="line">    <span class="comment">// 该行数据的完整hash值</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> hashValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>2、遍历文件a，对每一行数据求hashCode，然后再对hashCode求<strong>N=100</strong>的模，得到求模的结果M，将M加入到Map中key=M的List中。<br>3、查找数据s时和第一种方法类似，不同的是操作的是Map，获得Map中模存储的List，接着再遍历List即可。<br>4、遍历List时，先判断s的hashCode和List中存储的LineInfo.hashValue是否一致，如果不一致则数据内容肯定不一致，能减少读取磁盘的次数，加快执行速度。然后再根据LineInfo.position定位到数据在文件a中的位置，读取出具体的数据，再使用equals方法进一步判断内容是否一致；由LineInfo.lineNumber可以得到数据在文件a的行号。这样重复操作，就可以解决上述问题。</p>
+<p>具体的实现使用RandomAccessFile即可。</p>
+<p>不过第二种方法在测试过程中，建立hash表的时间太长，同等文件大小下比第一种方法慢的多。既然都是文件读取操作，时间差别应该不是很大，所以还是需要改进的。</p>
+<p>考虑到RandomAccessFile并没有BufferedInputStream和BufferedReader那样的缓存区，而是几乎每次都需要读取磁盘，才读若干行就需要去操作磁盘一次（从任务管理器也可以看的出来），虽然操作系统具有一部分缓存区，但是如果能一次读出一块放在内存中再进行计算，速度岂不是能大大提高。</p>
+<p>为此在第二种方法的基础上，又加以改进，得到了第三种方法，即使用RandomAccessFile+byte[]的方式。</p>
+<p>速度较慢的构建hash表的方式：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 慢速</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">build0</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    store = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        file = <span class="keyword">new</span> RandomAccessFile(path, <span class="string">"r"</span>);</span><br><span class="line">        <span class="comment">// 行号从1开始</span></span><br><span class="line">        <span class="keyword">int</span> lineNumber = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">long</span> cursor = <span class="number">0</span>;</span><br><span class="line">        String lineStr = <span class="keyword">null</span>;</span><br><span class="line">        List&lt;LineInfo&gt; lineInfos = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">while</span> ((lineStr = file.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 方便find查找</span></span><br><span class="line">            <span class="keyword">int</span> realHashValue = lineStr.hashCode();</span><br><span class="line">            <span class="keyword">int</span> hashCode = Math.abs(realHashValue) &amp; BASE;</span><br><span class="line">            lineInfos = store.get(hashCode);</span><br><span class="line">            <span class="keyword">if</span> (lineInfos == <span class="keyword">null</span>) &#123;</span><br><span class="line">                lineInfos = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">                store.put(hashCode, lineInfos);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 顺序添加，更进一步的意思是按照出现的顺序添加，能简化查找操作</span></span><br><span class="line">            lineInfos.add(<span class="keyword">new</span> LineInfo(lineNumber++, cursor, realHashValue));</span><br><span class="line">            cursor = file.getFilePointer();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"build slow-mode has read lines "</span> + (lineNumber - <span class="number">1</span>));</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>速度较快的构建hash表的方式：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 快速</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">build1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    store = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        file = <span class="keyword">new</span> RandomAccessFile(path, <span class="string">"r"</span>);</span><br><span class="line">        <span class="comment">// 一次读取64M</span></span><br><span class="line">        <span class="keyword">int</span> bufLen = <span class="number">1024</span> * <span class="number">1024</span> * <span class="number">64</span>;</span><br><span class="line">        <span class="keyword">byte</span>[] buf = <span class="keyword">new</span> <span class="keyword">byte</span>[bufLen];</span><br><span class="line">        <span class="comment">// 注意使用long</span></span><br><span class="line">        <span class="keyword">long</span> times = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> readLen = -<span class="number">1</span>;</span><br><span class="line">        <span class="comment">// 行号从1开始</span></span><br><span class="line">        <span class="keyword">int</span> lineNumber = <span class="number">1</span>;</span><br><span class="line">        <span class="comment">// 回退的位数</span></span><br><span class="line">        <span class="keyword">long</span> back = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> ((readLen = file.read(buf)) != -<span class="number">1</span>) &#123;</span><br><span class="line">            times++;</span><br><span class="line">            <span class="keyword">int</span> cursor = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">while</span> (cursor &lt; readLen) &#123;</span><br><span class="line">                <span class="keyword">int</span> start = cursor;</span><br><span class="line">                <span class="keyword">int</span> offset = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">int</span> left = readLen - start;</span><br><span class="line">                <span class="keyword">while</span> (offset &lt; left) &#123;</span><br><span class="line">                    <span class="comment">// 数据文件中的每一行数据的末尾必须要有'\n'</span></span><br><span class="line">                    <span class="keyword">if</span> (buf[start + offset] == <span class="string">'\n'</span>)</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    offset++;</span><br><span class="line">                    cursor++;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (offset == left) &#123;</span><br><span class="line">                    back += left;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> (offset &gt; <span class="number">0</span> &amp;&amp; buf[start + offset - <span class="number">1</span>] == <span class="string">'\n'</span>)</span><br><span class="line">                        offset--;</span><br><span class="line">                    <span class="keyword">if</span> (offset &gt; <span class="number">0</span> &amp;&amp; buf[start + offset - <span class="number">1</span>] == <span class="string">'\r'</span>)</span><br><span class="line">                        offset--;</span><br><span class="line">                    String lineStr = <span class="keyword">new</span> String(buf, start, offset);</span><br><span class="line">                    <span class="comment">// 方便find查找</span></span><br><span class="line">                    <span class="keyword">int</span> realHashValue = lineStr.hashCode();</span><br><span class="line">                    <span class="comment">// 与方式取模，速度更快，前提是BASE必须是2^n-1</span></span><br><span class="line">                    <span class="keyword">int</span> hashCode = Math.abs(realHashValue) &amp; BASE;</span><br><span class="line">                    List&lt;LineInfo&gt; lineInfos = store.get(hashCode);</span><br><span class="line">                    <span class="keyword">if</span> (lineInfos == <span class="keyword">null</span>) &#123;</span><br><span class="line">                        lineInfos = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">                        store.put(hashCode, lineInfos);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="comment">// 顺序添加，更进一步的意思是按照出现的顺序添加，能简化查找操作</span></span><br><span class="line">                    lineInfos.add(<span class="keyword">new</span> LineInfo(lineNumber++, (times - <span class="number">1</span>) * bufLen - back + start, realHashValue));</span><br><span class="line">                &#125;</span><br><span class="line">                cursor++;</span><br><span class="line">            &#125;</span><br><span class="line">            file.seek(times * bufLen - back);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"build fast-mode has read lines "</span> + (lineNumber - <span class="number">1</span>));</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>查找数据的方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 查找</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> search</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">find</span><span class="params">(String search)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (search == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"string is null"</span>);</span><br><span class="line">    <span class="keyword">if</span> (store == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"has not built yet"</span>);</span><br><span class="line">    <span class="keyword">int</span> searchHashValue = search.hashCode();</span><br><span class="line">    <span class="keyword">int</span> hashCode = Math.abs(searchHashValue) &amp; BASE;</span><br><span class="line">    List&lt;LineInfo&gt; lineInfos = store.get(hashCode);</span><br><span class="line">    <span class="keyword">if</span> (lineInfos == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    List&lt;Integer&gt; lines = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        String lineStr = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">for</span> (LineInfo line : lineInfos) &#123;</span><br><span class="line">            <span class="comment">// hash不一样，内容肯定不一样，能加快判断的速度</span></span><br><span class="line">            <span class="keyword">if</span> (searchHashValue != line.hashValue)</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            file.seek(line.position);</span><br><span class="line">            lineStr = file.readLine();</span><br><span class="line">            <span class="comment">// 进一步判断内容</span></span><br><span class="line">            <span class="keyword">if</span> (search.equals(lineStr))</span><br><span class="line">                <span class="comment">// 行号从1开始</span></span><br><span class="line">                lines.add(line.lineNumber);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> lines.size() &gt; <span class="number">0</span> ? lines : <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h2><p>如果数据文件中的行数为<strong>10万</strong>，需要查找的数据为<strong>10</strong>条时，执行的结果如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line">====== HASH SEARCH ======</span><br><span class="line">START MAKING</span><br><span class="line">MAKING COST <span class="number">139</span></span><br><span class="line"></span><br><span class="line">FAST MODE</span><br><span class="line">START BUILDING</span><br><span class="line">BUILDING COST <span class="number">177</span></span><br><span class="line"></span><br><span class="line">START FINDING</span><br><span class="line"><span class="number">1</span> http:<span class="comment">//url.cn/</span></span><br><span class="line">FIND: <span class="number">6330</span></span><br><span class="line">EXAMPLE: <span class="number">1</span> <span class="number">5</span> <span class="number">10</span> <span class="number">20</span> <span class="number">22</span> </span><br><span class="line">FINDING STEP COST <span class="number">201</span></span><br><span class="line"><span class="number">49</span> http:<span class="comment">//url.cn/Ilq</span></span><br><span class="line">FIND: <span class="number">1</span></span><br><span class="line">EXAMPLE: <span class="number">49</span> </span><br><span class="line">FINDING STEP COST <span class="number">1</span></span><br><span class="line"><span class="number">19</span> http:<span class="comment">//url.cn/r0pX8W4I6</span></span><br><span class="line">FIND: <span class="number">1</span></span><br><span class="line">EXAMPLE: <span class="number">19</span> </span><br><span class="line">FINDING STEP COST <span class="number">0</span></span><br><span class="line"><span class="number">72</span> http:<span class="comment">//url.cn/1mhXGMclLYQk</span></span><br><span class="line">FIND: <span class="number">1</span></span><br><span class="line">EXAMPLE: <span class="number">72</span> </span><br><span class="line">FINDING STEP COST <span class="number">0</span></span><br><span class="line"><span class="number">120</span> http:<span class="comment">//url.cn/J</span></span><br><span class="line">FIND: <span class="number">101</span></span><br><span class="line">EXAMPLE: <span class="number">120</span> <span class="number">1778</span> <span class="number">1798</span> <span class="number">2787</span> <span class="number">3335</span> </span><br><span class="line">FINDING STEP COST <span class="number">4</span></span><br><span class="line"><span class="number">58</span> http:<span class="comment">//url.cn/ThZfMpoMVhLw</span></span><br><span class="line">FIND: <span class="number">1</span></span><br><span class="line">EXAMPLE: <span class="number">58</span> </span><br><span class="line">FINDING STEP COST <span class="number">0</span></span><br><span class="line"><span class="number">11</span> http:<span class="comment">//url.cn/C0o3lk4FyAOewkP</span></span><br><span class="line">FIND: <span class="number">1</span></span><br><span class="line">EXAMPLE: <span class="number">11</span> </span><br><span class="line">FINDING STEP COST <span class="number">0</span></span><br><span class="line"><span class="number">91</span> http:<span class="comment">//url.cn/NstBXfBXEEJD3</span></span><br><span class="line">FIND: <span class="number">1</span></span><br><span class="line">EXAMPLE: <span class="number">91</span> </span><br><span class="line">FINDING STEP COST <span class="number">0</span></span><br><span class="line"><span class="number">45</span> http:<span class="comment">//url.cn/yx</span></span><br><span class="line">FIND: <span class="number">2</span></span><br><span class="line">EXAMPLE: <span class="number">45</span> <span class="number">94836</span> </span><br><span class="line">FINDING STEP COST <span class="number">1</span></span><br><span class="line"><span class="number">93</span> http:<span class="comment">//url.cn/A9mo</span></span><br><span class="line">FIND: <span class="number">1</span></span><br><span class="line">EXAMPLE: <span class="number">93</span> </span><br><span class="line">FINDING STEP COST <span class="number">0</span></span><br><span class="line">FINDING TOTAL COST <span class="number">207</span></span><br><span class="line"></span><br><span class="line">SLOW MODE</span><br><span class="line">START BUILDING</span><br><span class="line">BUILDING COST <span class="number">4329</span></span><br><span class="line"></span><br><span class="line">START FINDING</span><br><span class="line"><span class="number">1</span> http:<span class="comment">//url.cn/</span></span><br><span class="line">FIND: <span class="number">6330</span></span><br><span class="line">EXAMPLE: <span class="number">1</span> <span class="number">5</span> <span class="number">10</span> <span class="number">20</span> <span class="number">22</span> </span><br><span class="line">FINDING STEP COST <span class="number">191</span></span><br><span class="line"><span class="number">49</span> http:<span class="comment">//url.cn/Ilq</span></span><br><span class="line">FIND: <span class="number">1</span></span><br><span class="line">EXAMPLE: <span class="number">49</span> </span><br><span class="line">FINDING STEP COST <span class="number">0</span></span><br><span class="line"><span class="number">19</span> http:<span class="comment">//url.cn/r0pX8W4I6</span></span><br><span class="line">FIND: <span class="number">1</span></span><br><span class="line">EXAMPLE: <span class="number">19</span> </span><br><span class="line">FINDING STEP COST <span class="number">0</span></span><br><span class="line"><span class="number">72</span> http:<span class="comment">//url.cn/1mhXGMclLYQk</span></span><br><span class="line">FIND: <span class="number">1</span></span><br><span class="line">EXAMPLE: <span class="number">72</span> </span><br><span class="line">FINDING STEP COST <span class="number">0</span></span><br><span class="line"><span class="number">120</span> http:<span class="comment">//url.cn/J</span></span><br><span class="line">FIND: <span class="number">101</span></span><br><span class="line">EXAMPLE: <span class="number">120</span> <span class="number">1778</span> <span class="number">1798</span> <span class="number">2787</span> <span class="number">3335</span> </span><br><span class="line">FINDING STEP COST <span class="number">5</span></span><br><span class="line"><span class="number">58</span> http:<span class="comment">//url.cn/ThZfMpoMVhLw</span></span><br><span class="line">FIND: <span class="number">1</span></span><br><span class="line">EXAMPLE: <span class="number">58</span> </span><br><span class="line">FINDING STEP COST <span class="number">0</span></span><br><span class="line"><span class="number">11</span> http:<span class="comment">//url.cn/C0o3lk4FyAOewkP</span></span><br><span class="line">FIND: <span class="number">1</span></span><br><span class="line">EXAMPLE: <span class="number">11</span> </span><br><span class="line">FINDING STEP COST <span class="number">0</span></span><br><span class="line"><span class="number">91</span> http:<span class="comment">//url.cn/NstBXfBXEEJD3</span></span><br><span class="line">FIND: <span class="number">1</span></span><br><span class="line">EXAMPLE: <span class="number">91</span> </span><br><span class="line">FINDING STEP COST <span class="number">0</span></span><br><span class="line"><span class="number">45</span> http:<span class="comment">//url.cn/yx</span></span><br><span class="line">FIND: <span class="number">2</span></span><br><span class="line">EXAMPLE: <span class="number">45</span> <span class="number">94836</span> </span><br><span class="line">FINDING STEP COST <span class="number">0</span></span><br><span class="line"><span class="number">93</span> http:<span class="comment">//url.cn/A9mo</span></span><br><span class="line">FIND: <span class="number">1</span></span><br><span class="line">EXAMPLE: <span class="number">93</span> </span><br><span class="line">FINDING STEP COST <span class="number">0</span></span><br><span class="line">FINDING TOTAL COST <span class="number">198</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">true</span></span><br></pre></td></tr></table></figure>
+<p>由测试结果可知：<br>1、慢速和快速构建hash表的结果一致(true)。<br>2、慢表的构建表的速度为4329毫秒，快表的构建表速度是177毫秒。<br>3、使用Hash表进行文件的查找速度非常快，不用测试都能看出比顺序查找快很多。当数据重复行较多时，操作的主要耗时在读取行并判断equals上，这里还是可以再改进的。</p>
+<p>接下来结合上面的内容再测试几组更大的数据规模，并使用Notepad++软件搜索计数功能手动验证部分结果，得到下表：</p>
+<p><img src="/uploads/0-common-images/0.jpg" alt="image"></p>
+<p>结果显示使用快速构建Hash表查找的方式的效果还是很不错的，实验的目的基本达成。</p>
+<p><strong>2017年12月22日补充：</strong></p>
+<p>如果将store改成双层hash，如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Map&lt;Hash值，&lt;某行数据的hash值,数据所在行的信息&gt;&gt;</span></span><br><span class="line"><span class="keyword">private</span> Map&lt;Integer, Map&lt;Integer, List&lt;LineInfo&gt;&gt;&gt; store;</span><br></pre></td></tr></table></figure></p>
+<p>虽然理论上查找速度会略微有提升，但是因为第二层Map有很多长度只有1的List，因此内存占用增大，CPU占用率也会大幅增加，查找速度反而又会下降。所以一层hash的效果更好一些。<br>不过也应该有其他更好的优化方式，等遇到再说吧。</p>
+<p><img src="/uploads/0-common-images/16.jpg" alt="image"></p>
+<h2 id="总结思考"><a href="#总结思考" class="headerlink" title="总结思考"></a>总结思考</h2><p>在解决这个问题的时候，也简单搜索了一下hash的具体应用，发现hash的用处广范而强大，比如分布式集群控制系统使用hash来实现，真的是简单的东西深挖下去不简单。</p>
+<p>多动手，多思考。</p>
+<p><a href="https://github.com/ChainGit/some-tests/tree/master/test11" target="_blank" rel="noopener">源码</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Chain Qian
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.leechain.top/2017/12/14-large-file-hash-search/" title="利用Hash进行大文本文件的行搜索">https://www.leechain.top/2017/12/14-large-file-hash-search/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/学习/" rel="tag"># 学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/11-java-multithreads-product-diagram/" rel="next" title="Java多线程之工作流网图">
+                <i class="fa fa-chevron-left"></i> Java多线程之工作流网图
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/18-java-ball-collision/" rel="prev" title="Java实现模拟小球二维完全弹性斜碰">
+                Java实现模拟小球二维完全弹性斜碰 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Chain Qian">
+            
+              <p class="site-author-name" itemprop="name">Chain Qian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ChainGit" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:chainz@foxmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#利用Hash进行大文本文件的行搜索"><span class="nav-number">1.</span> <span class="nav-text">利用Hash进行大文本文件的行搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述"><span class="nav-number">1.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题分析"><span class="nav-number">1.2.</span> <span class="nav-text">问题分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hash查找"><span class="nav-number">1.3.</span> <span class="nav-text">Hash查找</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#取模Hash法"><span class="nav-number">1.3.1.</span> <span class="nav-text">取模Hash法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#String-hashCode"><span class="nav-number">1.3.2.</span> <span class="nav-text">String.hashCode()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我的解决"><span class="nav-number">1.4.</span> <span class="nav-text">我的解决</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试结果"><span class="nav-number">1.5.</span> <span class="nav-text">测试结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结思考"><span class="nav-number">1.6.</span> <span class="nav-text">总结思考</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chain Qian</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">苏ICP备16052713号-1</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt7Bknuv';
+      var conf = 'prod_ef64fab63ed9004614a7a77b40203358';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="转载,学习,操作系统,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="操作系统原理之基础知识操作系统是很重要的基础知识，尽管现在的软件开发中不是特别需要考虑很底层的东西，但是了解操作系统的知识，对编程的深入理解也是有裨益的。现在结合这篇博客对操作系统基础知识做一些巩固和总结。 基本概念在信息化时代，软件被称为计算机系统的灵魂。而作为软件核心的操作系统，已经与现代计算机系统密不可分、融为一体。计算机系统自下而上可粗分为四个部分：硬件、操作系统、应用程序和用户（这里的划">
+<meta name="keywords" content="转载,学习,操作系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="操作系统原理之基础知识">
+<meta property="og:url" content="https://www.leechain.top/2017/07/15-operation-system-basic-knowledge/index.html">
+<meta property="og:site_name" content="天印湖畔映白鹭">
+<meta property="og:description" content="操作系统原理之基础知识操作系统是很重要的基础知识，尽管现在的软件开发中不是特别需要考虑很底层的东西，但是了解操作系统的知识，对编程的深入理解也是有裨益的。现在结合这篇博客对操作系统基础知识做一些巩固和总结。 基本概念在信息化时代，软件被称为计算机系统的灵魂。而作为软件核心的操作系统，已经与现代计算机系统密不可分、融为一体。计算机系统自下而上可粗分为四个部分：硬件、操作系统、应用程序和用户（这里的划">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/52.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/53.png">
+<meta property="og:updated_time" content="2018-11-12T10:04:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="操作系统原理之基础知识">
+<meta name="twitter:description" content="操作系统原理之基础知识操作系统是很重要的基础知识，尽管现在的软件开发中不是特别需要考虑很底层的东西，但是了解操作系统的知识，对编程的深入理解也是有裨益的。现在结合这篇博客对操作系统基础知识做一些巩固和总结。 基本概念在信息化时代，软件被称为计算机系统的灵魂。而作为软件核心的操作系统，已经与现代计算机系统密不可分、融为一体。计算机系统自下而上可粗分为四个部分：硬件、操作系统、应用程序和用户（这里的划">
+<meta name="twitter:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/52.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.leechain.top/2017/07/15-operation-system-basic-knowledge/">
+
+
+
+
+
+  <title>操作系统原理之基础知识 | 天印湖畔映白鹭</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天印湖畔映白鹭</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">LEECHAIN | 博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.leechain.top/2017/07/15-operation-system-basic-knowledge/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chain Qian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天印湖畔映白鹭">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">操作系统原理之基础知识</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-15T00:00:00+08:00">
+                2017-07-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/07/15-operation-system-basic-knowledge/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/07/15-operation-system-basic-knowledge/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </span></div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="操作系统原理之基础知识"><a href="#操作系统原理之基础知识" class="headerlink" title="操作系统原理之基础知识"></a>操作系统原理之基础知识</h1><p>操作系统是很重要的基础知识，尽管现在的软件开发中不是特别需要考虑很底层的东西，但是了解操作系统的知识，对编程的深入理解也是有裨益的。现在结合<a href="http://c.biancheng.net/cpp/u/xitong_1/" target="_blank" rel="noopener">这篇博客</a>对操作系统基础知识做一些巩固和总结。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>在信息化时代，软件被称为计算机系统的灵魂。而作为软件核心的操作系统，已经与现代计算机系统密不可分、融为一体。计算机系统自下而上可粗分为四个部分：<strong>硬件、操作系统、应用程序和用户</strong>（这里的划分与计算机组成原理的分层不同）。操作系统管理各种计算机硬件，为应用程序提供基础，并充当计算机<strong>硬件与用户之间的中介</strong>。</p>
+<p>硬件，如中央处理器、内存、输入/输出设备等，提供了基本的计算资源。应用程序，如字处理程序、电子制表软件、编译器、网络浏览器等，规定了按何种方式使用这些资源来解决用户的计算问题。操作系统控制和协调各用户的应用程序对硬件资源的分配与使用。</p>
+<p>在计算机系统的运行过程中，操作系统提供了正确使用这些资源的方法。</p>
+<p>综上所述，操作系统(Operating System, OS)是指控制和管理整个计算机系统的硬件和软件资源，并合理地组织调度计算机的工作和资源的分配，以提供给用户和其他软件方便的接口和环境的程序集合。计算机操作系统是随着计算机研究和应用的发展逐步形成并发展起来的，它是计算机系统中<strong>最基本的系统软件</strong>。</p>
+<h2 id="特征"><a href="#特征" class="headerlink" title="特征"></a>特征</h2><p>操作系统是一种系统软件，但与其他的系统软件和应用软件有很大的不同，它有自己的特殊性即基本特征。<br>操作系统的基本特征包括<strong>并发、共享、虚拟和异步</strong>。这些概念对理解和掌握操作系统的核心至关重要，将一直贯穿于各个章节中。</p>
+<h3 id="并发-Concurrence"><a href="#并发-Concurrence" class="headerlink" title="并发(Concurrence)"></a>并发(Concurrence)</h3><p>并发是指两个或多个事件在同一时间间隔内发生。操作系统的并发性是指计算机系统中同时存在多个运行着的程序，因此它具有处理和调度多个程序同时执行的能力。在操作系统 中，引入进程的目的是使程序能并发执行。</p>
+<p>注意同一时间间隔（并发）和同一时刻（并行）的区别。在多道程序环境下，一段时间内，宏观上有多道程序在同时执行，而在每一时刻，单处理机环境下实际仅能有一道程序执行，故微观上这些程序还是在分时地交替执行。橾作系统的并发性是通过<strong>分时</strong>得以实现的。</p>
+<p>注意，并行性是指系统具有可以同时进行运算或操作的特性，在同一时刻完成两种或两种以上的工作。并行性需要有相关硬件的支持，如多流水线或多处理机硬件环境。</p>
+<blockquote>
+<p>简单说：并发性是通过单处理器分时执行多个作业实现的，而并行性是指多处理器可以真正同时处理多个作业。</p>
+</blockquote>
+<h3 id="共享（Sharing"><a href="#共享（Sharing" class="headerlink" title="共享（Sharing)"></a>共享（Sharing)</h3><p>资源共享即共享，是指系统中的资源可供内存中多个并发执行的进程共同使用。</p>
+<blockquote>
+<p>共享可分为两种资源共享方式：互斥共享方式、同时访问方式。</p>
+</blockquote>
+<p>1) 互斥共享方式</p>
+<p>系统中的某些资源，如打印机、磁带机，虽然它们可以提供给多个进程使用，但为使所打印或记录的结果不致造成混淆，应规定<strong>在一段时间内只允许一个进程访问该资源</strong>。</p>
+<p>为此，当进程A访问某资源时，必须先提出请求，如果此时该资源空闲，系统便可将之分配给进程A使用，此后若再有其他进程也要访问该资源时（只要A未用完）则必须<strong>等待</strong>。仅当进程A访问完并释放该资源后，才允许另一进程对该资源进行访问。我们把这种资源共享方式称为互斥式共享，而把在一段时间内只允许一个进程访问的资源称为<strong>临界资源或独占资源</strong>。</p>
+<p>计算机系统中的大多数物理设备，以及某些软件中所用的栈、变量和表格，都属于临界资源，它们都要求被互斥地共享。</p>
+<p>2) 同时访问方式</p>
+<p>系统中还有另一类资源，允许在一段时间内由多个进程“同时”对它们进行访问。这里所谓的“同时”往往是宏观上的，而在微观上，这些进程可能是交替地对该资源进行访问即<strong>“分时共享”</strong>。典型的可供多个进程“同时”访问的资源是磁盘设备，一些用重入码编写的文件也可以被“同时”共享，即若干个用户同时访问该文件。</p>
+<p>并发和共享是操作系统两个最基本的特征，这两者之间又是互为存在条件的：</p>
+<blockquote>
+<p>并发则可能存在共享，而共享会影响并发。</p>
+</blockquote>
+<p>资源共享是以程序的并发为条件的，若系统不允许程序并发执行，则自然不存在资源共享问题；若系统不能对资源共享实施有效的管理，也必将影响到程序的并发执行，甚至根本无法并发执行。</p>
+<h3 id="虛拟（Virtual"><a href="#虛拟（Virtual" class="headerlink" title="虛拟（Virtual)"></a>虛拟（Virtual)</h3><p>虚拟是指把一个物理上的实体变为若干个逻辑上的对应物。物理实体（前者）是实的，即实际存在的；而后者是虚的，是用户感觉上的事物。用于实现虚拟的技术，称为虚拟技术。</p>
+<blockquote>
+<p>在操作系统中利用了多种虚拟技术，分别用来实现虚拟处理器、虚拟内存和虚拟外部设备等。</p>
+</blockquote>
+<p>在虚拟处理器技术中，是通过多道程序设计技术，让多道程序并发执行的方法，来分时使用一个处理器的。此时，虽然只有一个处理器，但它能同时为多个用户服务，使每个终端用户都感觉有一个中央处理器（CPU)在专门为它服务。利用多道程序设计技术，把一个物理上的CPU虚拟为多个逻辑上的CPU，称为虚拟处理器（比如笔者的电脑，配有酷睿i5处理器，只有两个物理处理器，但是从资源管理器中可以看到有四个逻辑处理器，也就是说每个物理处理器被分为2个逻辑处理器）。</p>
+<p>类似地，可以通过虚拟存储器技术，将一台机器的物理存储器变为虚拟存储器，以便从逻辑上来扩充存储器的容量（比如虚拟内存，利用用户的硬盘来实现对内存容量的扩充）。当然,这时用户所感觉到的内存容量是虚的。我们把用户所感觉到的存储器（实际是不存在的）称为虚拟存储器。</p>
+<p>还可以通过虚拟设备技术，将一台物理I/O设备虚拟为多台逻辑上的I/O设备，并允许每个用户占用一台逻辑上的I/O设备，这样便可以使原来仅允许在一段时间内由一个用户访问的设备（即临界资源)，变为在一段时间内允许多个用户同时访问的共享设备。</p>
+<p>因此，操作系统的虚拟技术可归纳为：</p>
+<blockquote>
+<p>时分复用技术（如处理器的分时共享）、空分复用技术（如虚拟存储器）。</p>
+</blockquote>
+<h3 id="异步-Asynchronism"><a href="#异步-Asynchronism" class="headerlink" title="异步(Asynchronism)"></a>异步(Asynchronism)</h3><p>在多道程序环境下，允许多个程序并发执行，但由于资源有限，进程的执行不是一贯到底，而是走走停停，以不可预知的速度向前推进，这就是进程的异步性。</p>
+<p>异步性使得操作系统运行在一种随机的环境下，可能导致进程产生与时间有关的错误（就像对全局变量的访问顺序不当会导致程序出错一样）。但是只要运行环境相同，操作系统必须保证多次运行进程，都获得相同的结果。这也是线程和进程管理部分的知识。</p>
+<h2 id="目标和功能"><a href="#目标和功能" class="headerlink" title="目标和功能"></a>目标和功能</h2><p>为了给多道程序提供良好的运行环境，操作系统应具有以下几方面的功能：<strong>处理机管理、 存储器管理、设备管理和文件管理</strong>。<br>为了方便用户使用操作系统，还必须向用户提供接口。同时操作系统可用来扩充机器，以提供更方便的服务、更高的资源利用率。</p>
+<h3 id="操作系统是计算机系统资源的管理者。"><a href="#操作系统是计算机系统资源的管理者。" class="headerlink" title="操作系统是计算机系统资源的管理者。"></a>操作系统是计算机系统资源的管理者。</h3><p>1) 处理机管理<br>在多道程序环境下，处理机的分配和运行都以进程（或线程）为基本单位，因而对处理机的管理可归结为对进程的管理。并发时在计算机内同时运行多个进程，所以，进程何时创建、何时撤销、如何管理、如何避免冲突、合理共享就是进程管理的最主要的任务。</p>
+<p>进程管理的主要功能有：进程控制、进程同步、进程通信、死锁处理、处理机调度等。</p>
+<p>2) 存储器管理<br>存储器管理是为了给多道程序的运行提供良好的环境，方便用户使用以及提高内存的利用率，主要包括内存分配、地址映射、内存保护与共享和内存扩充等功能。</p>
+<p>3) 文件管理<br>计算机中的信息都是以文件的形式存在的，操作系统中负责文件管理的部分称为文件系统。文件管理包括文件存储空间的管理、目录管理及文件读写管理和保护等。</p>
+<p>4) 设备管理<br>设备管理的主要任务是完成用户的I/O请求，方便用户使用各种设备，并提高设备的利用率，主要包括缓冲管理、设备分配、设备处理和虛拟设备等功能。</p>
+<h3 id="操作系统是用户与计算机硬件系统之间的接口。"><a href="#操作系统是用户与计算机硬件系统之间的接口。" class="headerlink" title="操作系统是用户与计算机硬件系统之间的接口。"></a>操作系统是用户与计算机硬件系统之间的接口。</h3><p>为方便用户使用计算机，操作系统还提供了用户接口。操作系统提供的接口主要分为两类：<br>一类是命令接口，普通用户可以利用这些操作命令来组织和控制作业的执行（比如Linux中有很多命令可以直接使用）；<br>一类是程序接口，编程人员可以使用它们来请求操作系统服务（比如Windows编程中有很多系统API提供调用）。</p>
+<p>1) 命令接口</p>
+<p>使用命令接口进行作业控制的主要方式有两种，即联机控制方式和脱机控制方式。按作业控制方式的不同，可以将命令接口分为联机命令接口和脱机命令接口。</p>
+<p>联机命令接口又称交互式命令接口，适用于分时或实时系统的接口。它由一组键盘操作命令组成。用户通过控制台或终端输入操作命令，向系统提出各种服务要求。用户每输入完一条命令，控制权就转入操作系统的命令解释程序，然后由命令解释程序对输入的命令解释并执行，完成指定的功能。之后，控制权又转回到控制台或终端，此时用户又可以输入下一条命令。</p>
+<p>脱机命令接口又称批处理命令接口，即适用于<strong>批处理系统</strong>，它由一组作业控制命令（或称作业控制语句）组成（比如Bash脚本）。脱机用户不能直接干预作业的运行，应事先用相应的作业控制命令形成一份作业操作说明书，连同作业一起提交给系统。当系统调度到该作业时，由系统中的命令解释程序对作业说明书上的命令或作业控制语句遂条解释执行，从而间接地控制作业的运行。</p>
+<p>2) 程序接口</p>
+<p>程序接口由一组系统调用命令（简称系统调用，也称广义指令）组成。用户通过在程序中使用这些系统调用命令来请求操作系统为其提供服务。用户在程序中可以直接使用这组系统调用命令向系统提出各种服务要求，如使用各种外部设备，进行有关磁盘文件的操作，申请分配和回收内存以及其他各种控制要求。也就是说，用户向系统接口发出合法请求后，由操作系统去执行，用户或应用程序无需干预。</p>
+<p>而当前最为流行的是图形用户界面(GUI)即图形接口，用户通过鼠标和键盘，在图形界面上单击或使用快捷键就能很方便地使用操作系统。不过GUI最终是通过调用程序接口实现的，严格地说它不属于操作系统的一部分。换句话说操作系统即使没有GUI，也一样能正常运行（比如Linux服务器版）。</p>
+<h3 id="操作系统用做扩充机器"><a href="#操作系统用做扩充机器" class="headerlink" title="操作系统用做扩充机器"></a>操作系统用做扩充机器</h3><p>没有任何软件支持的计算机称为裸机，它仅构成计算机系统的物质基础，而实际呈现在用户面前的计算机系统是经过若干层软件改造的计算机。<br>裸机在最里层，它的外面是操作系统，类似同心圆结构。操作系统提供资源管理功能、以及方便用户使用的各种服务，从而将裸机改造成功能更强、更方便使用的机器。</p>
+<p>通常把覆盖了软件的机器称为扩充机器，又称之为虚拟机。</p>
+<h2 id="发展与分类"><a href="#发展与分类" class="headerlink" title="发展与分类"></a>发展与分类</h2><h3 id="手工操作阶段（此阶段无操作系统）"><a href="#手工操作阶段（此阶段无操作系统）" class="headerlink" title="手工操作阶段（此阶段无操作系统）"></a>手工操作阶段（此阶段无操作系统）</h3><p>用户在计算机上算题的所有工作都要人工干预，如程序的装入、运行、结果的输出等。随着计算机硬件的发展，人机矛盾（速度和资源利用）越来越大，必须寻求新的解决办法。</p>
+<p>手工操作阶段有两个突出的特点：<br>1、用户独占全机，虽然不会出现因资源已被其他用户占用而等待的现象，但是资源利用率低。<br>2、CPU等待手工操作，CPU计算能力利用的不充分。</p>
+<p>唯一的解决办法就是用高速的机器代替相对较慢的手工操作来对作业进行控制。</p>
+<h3 id="批处理阶段（操作系统开始出现）"><a href="#批处理阶段（操作系统开始出现）" class="headerlink" title="批处理阶段（操作系统开始出现）"></a>批处理阶段（操作系统开始出现）</h3><p>为了解决人机矛盾、CPU和I/O设备之间速度不匹配的矛盾，出现了批处理系统。<br>它按发展历程又分为<strong>单道批处理系统、多道批处理系统</strong>（多道程序设计技术出现以后）。</p>
+<p>1) 单道批处理系统<br>系统对作业的处理是成批进行的，但内存中始终保持一道作业。该系统是在解决人机矛盾、CPU与I/O设备速率不匹配的矛盾中形成的。</p>
+<p>单道批处理系统的主要特征如下：<br>1、自动性。在顺利的情况下，磁带上的一批作业能自动地逐个依次运行，无需人工干预。 ‘<br>2、顺序性。磁带上的各道作业是顺序地进入内存，各道作业的完成顺序与它们进入内存的顺序，在正常情况下应完全相同，即先调入内存的作业先完成。<br>3、单道性。内存中仅有一道程序运行，即监督程序每次从磁带上只调入一道程序进入内存运行，当该程序完成或发生异常情况时，才调入其后继程序进入内存运行。</p>
+<p>但是此时面临的问题是：每次主机内存中仅存放一道作业，每当它运行期间（注意这里是“运行时”，并不是“完成后”）发出输入/输出请求后，高速的CPU便处于等待低速的I/O完成输入输出操作的状态。为此，为了进一步提高资源的利用率和系统的吞吐量，引入了多道程序技术。</p>
+<p>2) 多道批处理系统</p>
+<p>多道程序设计技术允许多个程序同时进入内存并运行。即同时把多个程序放入内存，并允许它们交替在CPU中运行，它们共享系统中的各种硬、软件资源。当一道程序因I/O请求而暂停运行时，CPU便立即转去运行另一道程序。它没有用某些机制提高某一技术方面的瓶颈问题，而是让系统的各个组成部分都尽量去“忙”，花费很少时间去切换任务，达到了系统各部件之间的并行工作，使其整体在单位时间内的效率翻倍。</p>
+<p>多道程序设计技术的特点有：<br>1、多道：计算机内存中同时存放多道相互独立的程序。<br>2、宏观上并行：同时进入系统的多道程序都处于运行过程中，即它们先后开始了各自的运行，但都未运行完毕。<br>3、微观上串行：内存中的多道程序轮流占有CPU，交替执行。</p>
+<p>多道程序设计技术的实现需要解决下列问题：<br>1、处理器分配问题。<br>2、内存分配问题。<br>3、I/O设备分配问题。<br>4、如何组织和存放大量的程序和数据，以便于用户使用和保证其安全性与一致性。</p>
+<p>釆用多道程序设计技术就相应的形成了多道批处理操作系统。该系统把用户提交的作业成批地送入计算机内存，然后由作业调度程序自动地选择作业运行。</p>
+<p>多道批处理操作系统优点是：<br>1、资源利用率高，多道程序共享计算机资源，从而使各种资源得到充分利用；<br>2、系统吞吐量大，CPU和其他资源保持“忙碌”状态。</p>
+<p>多道批处理操作系统缺点是：<br>1、用户响应的时间较长。<br>2、不提供人机交互能力，用户既不能了解自己程序的运行情况，也不能控制计算机。</p>
+<h3 id="分时操作系统"><a href="#分时操作系统" class="headerlink" title="分时操作系统"></a>分时操作系统</h3><p>在操作系统中釆用<strong>分时技术</strong>就形成了分时系统。</p>
+<p>所谓分时技术就是把处理器的运行时间分成很短的时间片，按时间片轮流把处理器分配给各联机作业使用。若某个作业在分配给它的时间片内不能完成其计算，则该作业暂时停止运行，把处理器让给其他作业使用，等待下一轮再继续运行。由于计算机速度很快，作业运行轮转得很快，给每个用户的感觉好像是自己独占一台计算机。</p>
+<p>分时操作系统是多个用户通过终端同时共享一台主机，这些终端连接在主机上，用户可以同时与主机进行交互操作而互不干扰。所以，实现分时系统最关键的问题是如何使用户能与自己的作业进行交互，即当用户在自己的终端上键入命令时，系统应能及时接收并及时处理该命令，再将结果返回用户。</p>
+<p>分时系统也是支持多道程序设计的系统，但它不同于多道批处理系统。</p>
+<p>多道批处理是实现作业自动控制而无需人工干预的系统，而分时系统是<strong>实现人机交互的系统</strong>。</p>
+<p>这使得分时系统具有与批处理系统不同的特征，其主要特征如下：<br>1、同时性。同时性也称多路性，指允许多个终端用户同时使用一台计算机，即一台计算机与若干台终端相连接，终端上的这些用户可以同时或基本同时使用计算机。<br>2、交互性。用户能够方便地与系统进行人机对话，即用户通过终端釆用人4^1对话的方式直接控制程序运行，与同程序进行交互。<br>3、独立性。系统中多个用户可以彼此独立地进行操作，互不干扰，单个用户感觉不到别人也在使用这台计算机，好像只有自己单独使用这台计算机一样。<br>4、及时性。用户请求能在很短时间内获得响应。分时系统釆用时间片轮转方式使一台计算机同时为多个终端服务，使用户能够对系统的及时响应感到满意。</p>
+<h3 id="实时操作系统"><a href="#实时操作系统" class="headerlink" title="实时操作系统"></a>实时操作系统</h3><p>虽然分时操作系统比较好地解决了人机交互问题，但是也是有它的局限性的。在一些应用场合，需要系统能对外部的信息在规定的时间（比时间片的时间还短）内作出处理（比如飞机订票系统或导弹制导系统)。因此，实时系统应运而生。</p>
+<p>为了能在某个时间限制内完成某些紧急任务而不需时间片排队，诞生了实时操作系统。这里的时间限制可以分为两种情况：<strong>硬实时系统、软实时系统</strong>。<br>如果某个动作必须绝对地在规定的时刻（或规定的时间范围）发生，则称为硬实时系统。例如，飞行器的飞行自动控制系统，这类系统必须提供绝对保证，让某个特定的动作在规定的时间内完成。如果能够接受偶尔违反时间规定，并且不会引起任何永久性的损害，则称为软实时系统，如飞机订票系统、银行管理系统。</p>
+<p>在实时操作系统的控制下，计算机系统接收到外部信号后及时进行处理，并且要在严格的时限内处理完接收的事件。<br>实时橾作系统的主要特点是及时性和可靠性。</p>
+<h3 id="网络操作系统"><a href="#网络操作系统" class="headerlink" title="网络操作系统"></a>网络操作系统</h3><p>网络操作系统把计算机网络中的各台计算机有机地结合起来，提供一种统一、经济而有效的使用各台计算机的方法，实现各个计算机之间的互相传送数据。<br>网络操作系统的主要特点是网络中各种资源的共享以及各台计算机之间的通信。</p>
+<h3 id="分布式计算机系统"><a href="#分布式计算机系统" class="headerlink" title="分布式计算机系统"></a>分布式计算机系统</h3><p>分布式计算机系统是由多台计算机组成并满足下列条件的系统：<br>1、系统中任意两台计算机通过通信方式交换信息；<br>2、系统中的每一台计算机都具有同等的地位，即没有主机也没有从机；<br>3、每台计算机上的资源为所有用户共享；<br>4、系统中的任意若千台计算机都可以构成一个子系统，并且还能重构；<br>5、任何工作都可以分布在几台计算机上，由它们并行工作、协同完成。</p>
+<p>用于管理分布式计算机系统的操作系统称为分布式计算机系统。<br>该系统的主要特点是分布性和并行性。分</p>
+<p>布式操作系统与网络操作系统本质上的不同之处在于分布式操作系统中，若干台计算机相互<strong>协同完成同一个任务</strong>。</p>
+<h3 id="个人计算机操作系统"><a href="#个人计算机操作系统" class="headerlink" title="个人计算机操作系统"></a>个人计算机操作系统</h3><p>个人计算机操作系统是目前使用最广泛的操作系统，能满足用户日常生活中的需求，比如文字处理、电子表格、游戏等。常见的有Windows、Linux和Macintosh等。</p>
+<p>操作系统的发展历程如下图所示：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/52.jpg" alt="image"></p>
+<p>此外具体细分还有嵌入式操作系统、服务器操作系统、多处理器操作系统等。</p>
+<h2 id="运行机制"><a href="#运行机制" class="headerlink" title="运行机制"></a>运行机制</h2><p>计算机系统中，通常CPU执行两种不同性质的程序：一种是操作系统<strong>内核程序</strong>；另一种是用户自编程序或系统外层的<strong>应用程序</strong>。</p>
+<p>对操作系统而言，这两种程序的作用不同，前者是后者的管理者，因此“管理程序”要执行一些<strong>特权指令</strong>，而“被管理程序”出于安全考虑不能执行这些指令。所谓特权指令，是指计算机中不允许用户直接使用的指令，如I/O指令、置中断指令，存取用于内存保护的寄存器、送程序状态字到程序状态字寄存器等指令。</p>
+<p>操作系统在具体实现上划分了<strong>用户态（目态）和核心态（管态)</strong>，以严格区分两类程序。</p>
+<p>在软件工程思想和结构程序设计方法的影响下诞生的现代操作系统，几乎都是<strong>层次式</strong>的结构。操作系统的各项功能分别被设置在不同的层次上。一些与硬件关联较紧密的模块，诸如时钟管理、中断处理、设备驱动等处于最底层。其次是运行频率较髙的程序，诸如进程管理、存储器管理和设备管理等。这两部分内容构成了操作系统的<strong>内核</strong>。这部分内容的指令操作工作在核心态。</p>
+<p>内核是计算机上配置的底层软件，是计算机功能的延伸。不同系统对内核的定义稍有区别，大多数操作系统内核包括四个方面的内容。</p>
+<h3 id="时钟管理"><a href="#时钟管理" class="headerlink" title="时钟管理"></a>时钟管理</h3><p>在计算机的各种部件中，时钟是最关键的设备，计算机取指令、分时实现很多是基于时钟的固定频率（节拍）。</p>
+<p>时钟的第一功能是计时，操作系统需要通过时钟管理，向用户提供标准的系统时间。<br>时钟的第二功能是中断的管理，可以实现进程的切换。诸如，在分时操作系统中，釆用时间片轮转调度的实现；在实时系统中，按截止时间控制运行的实现；在批处理系统中，通过时钟管理来衡量一个作业的运行程度等。</p>
+<p>因此，系统管理的方方面面无不依赖于时钟。</p>
+<h3 id="中断机制"><a href="#中断机制" class="headerlink" title="中断机制"></a>中断机制</h3><p>引入中断技术的初衷是提高多道程序运行环境中CPU的利用率，而且主要是针对外部设备的。后来逐步得到发展，形成了多种类型，成为操作系统各项操作的基础。例如，键盘或鼠标信息的输入、进程的管理和调度、系统功能的调用、设备驱动、文件访问等，无不依赖于中断机制。可以说，现代操作系统是靠<strong>中断驱动</strong>的软件。</p>
+<p>中断机制中，只有一小部分功能属于内核，负责保护和恢复中断现场的信息，转移控制权到相关的处理程序。这样可以减少中断的处理时间，提高系统的并行处理能力。</p>
+<h3 id="原语"><a href="#原语" class="headerlink" title="原语"></a>原语</h3><p>按层次结构设计的操作系统，底层必然是一些可被调用的公用程序片，它们各自完成一个规定的操作。<br>其特点是：<br>1、它们处于操作系统的最底层，是最接近硬件的部分。<br>2、这些程序的运行具有原子性（其操作只能一气呵成，这主要是从系统的安全性和便于管理考虑的）。<br>3、这些程序的运行时间都较短，而且调用频繁。</p>
+<p>通常把具有这些特点的程序称为<strong>原语（Atomic Operation)</strong>。<br>定义原语的直接方法是<strong>关闭中断</strong>，让它的所有动作<strong>不可分割地</strong>执行，执行完毕后再打开中断。</p>
+<p>系统中的设备驱动、CPU切换、进程通信等功能中的部分操作都可以定义为原语，使它们成为内核的组成部分。</p>
+<h3 id="用于系统控制的数据结构和管理"><a href="#用于系统控制的数据结构和管理" class="headerlink" title="用于系统控制的数据结构和管理"></a>用于系统控制的数据结构和管理</h3><p>系统中用来登记状态信息的数据结构很多，比如作业控制块、进程控制块(PCB)、设备控制块、各类链表、消息队列、缓冲区、空闲区登记表、内存分配表等。</p>
+<p>为了实现有效的管理，系统需要一些基本的操作，常见的操作有以下三种：<br>1、进程管理：进程状态管理、进程调度和分派、创建与撤销进程控制块等。<br>2、存储器管理：存储器的空间分配和回收、内存信息保护程序、代码对换程序等。<br>3、设备管理：缓冲区管理、设备分配和回收等。</p>
+<p>核心态指令实际上包括系统调用类指令和一些针对时钟、中断和原语的操作指令。</p>
+<h2 id="中断和异常"><a href="#中断和异常" class="headerlink" title="中断和异常"></a>中断和异常</h2><p>在操作系统中引入核心态和用户态这两种工作状态后，就需要考虑这两种状态之间如何进行<strong>状态切换</strong>。</p>
+<p>操作系统内核工作在核心态，而用户程序工作在用户态。但系统不允许用户程序实现核心态的功能，而它们有时又必须使用这些功能。因此，需要在核心态建立一些“门”，实现从用户态进入核心态。在实际操作系统中，CPU运行上层程序时<strong>唯一能进入这些“门”的途径就是通过中断或异常</strong>。当中断或异常发生时，运行用户态的CPU会立即进入核心态，这是通过硬件实现的（例如，用一个特殊寄存器的一位来表示CPU所处的工作状态，0表示核心态，1表示用户态。若要进入核心态，只需将该位置0即可)。</p>
+<p>中断是操作系统中非常重要的一个概念，对一个运行在计算机上的实用操作系统而言，缺少了中断机制，将是不可想象的。</p>
+<p>中断(Interruption)，也称<strong>外中断</strong>，指来自CPU执行指令以外的事件的发生，如设备发出的I/O结束中断，表示设备输入/输出处理已经完成，希望处理机能够向设备发下一个输入 /输出请求，同时让完成输入/输出后的程序继续运行；时钟中断，表示一个固定的时间片已到，让处理机处理计时、启动定时运行的任务等。这一类中断通常是与当前程序运行无关的事件，即它们与当前处理机运行的程序无关。</p>
+<p>异常(Exception)，也称<strong>内中断</strong>、例外或陷入(Trap)，指源自CPU执行指令内部的事件，如程序的非法操作码、地址越界、算术溢出、虚存系统的缺页以及专门的陷入指令等引起的事件。对异常的处理一般要依赖于当前程序的运行现场，而且异常不能被屏蔽，一旦出现应立即处理。</p>
+<p>关于内中断和外中断的联系与区别如下图所示：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/53.png" alt="image"></p>
+<h2 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h2><p>所谓系统调用就是用户在程序中调用操作系统所提供的一些子功能（接口），系统调用可以被看做特殊的公共子程序。系统中的各种共享资源都由操作系统统一掌管，因此在用户程序中，凡是与资源有关的操作（如存储分配、进行I/O传输以及管理文件等)，都必须通过系统调用方式向操作系统提出服务请求，并由操作系统代为完成。通常，一个操作系统提供的系统调用命令有几十乃至上百条之多。</p>
+<p>这些系统调用按功能大致可分为如下几类：<br>1、设备管理。完成设备的请求或释放，以及设备启动等功能。<br>2、文件管理。完成文件的读、写、创建及删除等功能。<br>3、进程控制。完成进程的创建、撤销、阻塞及唤醒等功能。<br>4、进程通信。完成进程之间的消息传递或信号传递等功能。<br>5、内存管理。完成内存的分配、回收以及获取作业占用内存区大小及始址等功能。</p>
+<p>显然，<strong>系统调用运行在系统的核心态</strong>。通过系统调用的方式来使用系统功能，可以保证系统的稳定性和安全性，防止用户随意更改或访问系统的数据或命令。系统调用命令是由操作系统提供的一个或多个子程序模块实现的。</p>
+<p>这样，操作系统的运行环境可以理解为：用户通过操作系统运行上层程序（如系统提供的命令解释程序或用户自编程序)，而这个上层程序的运行依赖于操作系统的底层管理程序提供服务支持，当需要管理程序服务时，系统则通过硬件中断机制进入核心态，运行管理程序；也可能是程序运行出现异常情况，被动地需要管理程序的服务，这时就通过异常处理来进入核心态。当管理程序运行结束时，用户程序需要继续运行，则通过相应的保存的程序现场退出中断处理程序或异常处理程序，返回断点处继续执行。</p>
+<p>在操作系统这一层面上，我们关心的是系统核心态和用户态的软件实现和切换，对于硬件层面的实现原理和详细理解，可以结合“计算机组成原理”课程中有关中断的内容进行学习。</p>
+<p>由用户态转向核心态的例子：<br>1、用户程序要求操作系统的服务，即系统调用。<br>2、发生一次中断。<br>3、用户程序中产生了一个错误状态。<br>4、用户程序中企图执行一条特权指令。</p>
+<p>从核心态转向用户态由一条指令实现，这条指令也是特权命令：一般是中断返回指令。</p>
+<p>值得注意的是：某个进程由用户态进入核心态，不是仅仅切换一下状态那么简单，运行过程中所使用的堆栈也可能需要由用户堆栈切换为系统堆栈，不过这个系统堆栈也是属于该进程的。</p>
+<h2 id="体系结构"><a href="#体系结构" class="headerlink" title="体系结构"></a>体系结构</h2><p>操作系统的体系结构是一个开放的问题。正如上文所述，操作系统在核心态为应用程序提供公共的服务，那么操作系统在核心态应该提供什么服务、以及怎样提供服务？<br>有关这个问题的回答形成了两种主要的体系结构：<strong>大内核和微内核</strong>。</p>
+<h3 id="大内核"><a href="#大内核" class="headerlink" title="大内核"></a>大内核</h3><p>大内核系统将操作系统的主要功能模块都作为一个紧密联系的<strong>整体</strong>运行在核心态，从而为应用提供高性能的系统服务。因为各管理模块之间共享信息，能有效利用相互之间的有效特性，所以具有无可比拟的<strong>性能优势</strong>。</p>
+<p>但随着体系结构和应用需求的不断发展，需要操作系统提供的服务越来越多，而且接口形式越来越复杂，操作系统的设计规模也急剧增长，操作系统也面临着“软件危机”困境。为此，操作系统设计人员试图按照复杂性、时间常数、抽象级别等因素，将操作系统内核分成基本进程管理、虚存、I/O与设备管理、IPC、文件系统等几个<strong>层次</strong>，继而定义层次之间的服务结构，提高操作系统内核设计上的模块化。但是由于层次之间的交互关系错综复杂，定义清晰的层次间接口非常困难，复杂的交互关系也使得<strong>层次之间的界限极其模糊</strong>。</p>
+<h3 id="微内核"><a href="#微内核" class="headerlink" title="微内核"></a>微内核</h3><p>为解决操作系统的内核代码难以维护的问题，于是提出了微内核的体系结构。它将内核中<strong>最基本的功能（如进程管理等）保留在内核</strong>，而将那些不需要在核心态执行的功能<strong>移到用户态</strong>执行，从而降低了内核的设计复杂性。而那些移出内核的操作系统代码根据<strong>分层</strong>的原则被划分成若干<strong>服务程序</strong>，它们的执行相互独立，交互则都<strong>借助于微内核进行通信</strong>。</p>
+<blockquote>
+<p>微内核结构有效地分离了内核与服务、服务与服务，使得它们之间的接口更加清晰，维护的代价大大降低，各部分可以独立地优化和演进，从而保证了操作系统的可靠性。</p>
+</blockquote>
+<p>微内核结构的最大问题是性能问题，因为需要<strong>频繁地在核心态和用户态之间进行切换，操作系统的执行开销偏大</strong>。因此有的操作系统将那些频繁使用的系统服务又移回内核，从而保证系统性能。但是有相当多的实验数据表明，体系结构不是引起性能下降的主要因素，体系结构带来的性能提升足以弥补切换开销带来的缺陷。为减少切换开销，也有人提出将不是所有的程序必须的系统服务改造成运行库链接到用户程序的一种解决方案，当程序需要时再装载，这样的体系结构称为库操作系统。</p>
+<h2 id="总结思考"><a href="#总结思考" class="headerlink" title="总结思考"></a>总结思考</h2><h3 id="并行性与并发性"><a href="#并行性与并发性" class="headerlink" title="并行性与并发性"></a>并行性与并发性</h3><p>并行性和并发性是既相似又有区别的两个概念。并行性是指两个或多个事件在<strong>同一时刻（瞬间同时）</strong>发生。并发性是指两个或多个事件在<strong>同一时间间隔（一段时间）</strong>内发生。</p>
+<p>在多道程序环境下，并发性是指在一段时间内，<strong>宏观</strong>上有多个程序在<strong>并发的同时运行</strong>，但在单处理器系统中每一时刻却仅能有一道程序执行，故<strong>微观</strong>上这些程序只能是<strong>分时地交替执行</strong>。倘若在计算机系统中有多个处理器，那每个处理器都可以执行各自的任务，也就意味着这些任务可以实现<strong>并行执行</strong>，但每个处理器仍然是在并发的执行。</p>
+<h3 id="特权指令与非特权指令"><a href="#特权指令与非特权指令" class="headerlink" title="特权指令与非特权指令"></a>特权指令与非特权指令</h3><p>所谓特权指令是指有<strong>特殊权限</strong>的指令，由于这类指令的权限最大，如果使用不当，将导致整个系统崩溃。比如：清内存、置时钟、分配系统资源、修改虚存的段表或页表、修改用户的访问权限等。如果所有的程序都能使用这些指令，那么可想而知眼前的正在使用的计算机每天会奔溃多少次。为了保证系统安全，这类指令只能由操作系统或其他系统软件使用，不直接提供给用户使用。因此，<strong>特权指令必须在核心态执行</strong>。实际上，CPU在核心态下可以执行指令系统的全集。形象地说，<strong>特权指令就是那些儿童不宜的东西，而非特权指令则是老少皆宜</strong>。</p>
+<p>为了防止用户程序中使用特权指令，<strong>用户态下只能使用非特权指令，核心态下可以使用全部指令</strong>。当在用户态下使用特权指令时，将产生中断以阻止用户使用特权指令。所以把用户程序放在用户态下运行，而操作系统中必须使用特权指令的那部分程序在核心态下运行，保证了计算机系统的安全可靠。</p>
+<blockquote>
+<p>从用户态转换为核心态的唯一途径是中断或异常。</p>
+</blockquote>
+<h3 id="访管指令与访管中断"><a href="#访管指令与访管中断" class="headerlink" title="访管指令与访管中断"></a>访管指令与访管中断</h3><p>访管指令是一条可以在用户态下执行的指令。在用户程序中，因要求操作系统提供服务而<strong>有意识地（功能需要）</strong>使用访管指令，从而产生一个中断事件（自愿中断），将操作系统转换为核心态，称为访管中断。访管中断由访管指令产生，程序员使用访管指令向操作系统请求服务。</p>
+<p>为什么要在程序中引入访管指令呢？<br>这是因为用户程序只能在用户态下运行，如果用户程序想要完成在用户态下无法完成的工作，该怎么办。所以解决这个问题就要靠访管指令。</p>
+<blockquote>
+<p>访管指令本身不是特权指令，其基本功能是让程序拥有“自愿进管”的手段，从而引起访管中断。</p>
+</blockquote>
+<p>当处于用户态的用户程序使用访管指令时，系统根据访管指令的操作数执行访管中断处理程序，访管中断处理程序将按系统调用的操作数和参数转到相应的例行子程序。完成服务功能后，退出中断回到用户态并返回到用户程序断点继续执行。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Chain Qian
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.leechain.top/2017/07/15-operation-system-basic-knowledge/" title="操作系统原理之基础知识">https://www.leechain.top/2017/07/15-operation-system-basic-knowledge/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/转载/" rel="tag"># 转载</a>
+          
+            <a href="/tags/学习/" rel="tag"># 学习</a>
+          
+            <a href="/tags/操作系统/" rel="tag"># 操作系统</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/12-one-interesting-interview-question-integer-cache/" rel="next" title="一个有趣的面试题：Integer的缓存机制">
+                <i class="fa fa-chevron-left"></i> 一个有趣的面试题：Integer的缓存机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/21-operation-system-file/" rel="prev" title="操作系统原理之文件管理">
+                操作系统原理之文件管理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Chain Qian">
+            
+              <p class="site-author-name" itemprop="name">Chain Qian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ChainGit" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:chainz@foxmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#操作系统原理之基础知识"><span class="nav-number">1.</span> <span class="nav-text">操作系统原理之基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">1.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征"><span class="nav-number">1.2.</span> <span class="nav-text">特征</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#并发-Concurrence"><span class="nav-number">1.2.1.</span> <span class="nav-text">并发(Concurrence)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#共享（Sharing"><span class="nav-number">1.2.2.</span> <span class="nav-text">共享（Sharing)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#虛拟（Virtual"><span class="nav-number">1.2.3.</span> <span class="nav-text">虛拟（Virtual)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异步-Asynchronism"><span class="nav-number">1.2.4.</span> <span class="nav-text">异步(Asynchronism)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目标和功能"><span class="nav-number">1.3.</span> <span class="nav-text">目标和功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#操作系统是计算机系统资源的管理者。"><span class="nav-number">1.3.1.</span> <span class="nav-text">操作系统是计算机系统资源的管理者。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作系统是用户与计算机硬件系统之间的接口。"><span class="nav-number">1.3.2.</span> <span class="nav-text">操作系统是用户与计算机硬件系统之间的接口。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作系统用做扩充机器"><span class="nav-number">1.3.3.</span> <span class="nav-text">操作系统用做扩充机器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发展与分类"><span class="nav-number">1.4.</span> <span class="nav-text">发展与分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#手工操作阶段（此阶段无操作系统）"><span class="nav-number">1.4.1.</span> <span class="nav-text">手工操作阶段（此阶段无操作系统）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#批处理阶段（操作系统开始出现）"><span class="nav-number">1.4.2.</span> <span class="nav-text">批处理阶段（操作系统开始出现）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分时操作系统"><span class="nav-number">1.4.3.</span> <span class="nav-text">分时操作系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实时操作系统"><span class="nav-number">1.4.4.</span> <span class="nav-text">实时操作系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络操作系统"><span class="nav-number">1.4.5.</span> <span class="nav-text">网络操作系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分布式计算机系统"><span class="nav-number">1.4.6.</span> <span class="nav-text">分布式计算机系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#个人计算机操作系统"><span class="nav-number">1.4.7.</span> <span class="nav-text">个人计算机操作系统</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行机制"><span class="nav-number">1.5.</span> <span class="nav-text">运行机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#时钟管理"><span class="nav-number">1.5.1.</span> <span class="nav-text">时钟管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中断机制"><span class="nav-number">1.5.2.</span> <span class="nav-text">中断机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原语"><span class="nav-number">1.5.3.</span> <span class="nav-text">原语</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用于系统控制的数据结构和管理"><span class="nav-number">1.5.4.</span> <span class="nav-text">用于系统控制的数据结构和管理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中断和异常"><span class="nav-number">1.6.</span> <span class="nav-text">中断和异常</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统调用"><span class="nav-number">1.7.</span> <span class="nav-text">系统调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#体系结构"><span class="nav-number">1.8.</span> <span class="nav-text">体系结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#大内核"><span class="nav-number">1.8.1.</span> <span class="nav-text">大内核</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#微内核"><span class="nav-number">1.8.2.</span> <span class="nav-text">微内核</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结思考"><span class="nav-number">1.9.</span> <span class="nav-text">总结思考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#并行性与并发性"><span class="nav-number">1.9.1.</span> <span class="nav-text">并行性与并发性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特权指令与非特权指令"><span class="nav-number">1.9.2.</span> <span class="nav-text">特权指令与非特权指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#访管指令与访管中断"><span class="nav-number">1.9.3.</span> <span class="nav-text">访管指令与访管中断</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chain Qian</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">苏ICP备16052713号-1</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt7Bknuv';
+      var conf = 'prod_ef64fab63ed9004614a7a77b40203358';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

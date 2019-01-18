@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="项目,示波器,NI-VISA,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="基于NI-VISA获取示波器波形数据实验室在做一个故障检测的项目，需要读取485串口发来的数据，为此使用了鼎阳的示波器SDS3054来获取和记录波形。示波器可以在触发信号下记录一次波形，但是项目要求波形能够远程实时获取和保存，并且能持续的记录。示波器支持NI-VISA编程，这就可以编程来实现示波器的控制。而NI-VISA的资料在网上也很少，费劲很大周折才搞出了这个一个小DEMO。在这过程中，也认识">
+<meta name="keywords" content="项目,示波器,NI-VISA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于NI-VISA获取示波器波形数据">
+<meta property="og:url" content="https://www.leechain.top/2016/07/21-lecroy-ni-visa-get-and-control-wave-trc/index.html">
+<meta property="og:site_name" content="天印湖畔映白鹭">
+<meta property="og:description" content="基于NI-VISA获取示波器波形数据实验室在做一个故障检测的项目，需要读取485串口发来的数据，为此使用了鼎阳的示波器SDS3054来获取和记录波形。示波器可以在触发信号下记录一次波形，但是项目要求波形能够远程实时获取和保存，并且能持续的记录。示波器支持NI-VISA编程，这就可以编程来实现示波器的控制。而NI-VISA的资料在网上也很少，费劲很大周折才搞出了这个一个小DEMO。在这过程中，也认识">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-12T10:04:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于NI-VISA获取示波器波形数据">
+<meta name="twitter:description" content="基于NI-VISA获取示波器波形数据实验室在做一个故障检测的项目，需要读取485串口发来的数据，为此使用了鼎阳的示波器SDS3054来获取和记录波形。示波器可以在触发信号下记录一次波形，但是项目要求波形能够远程实时获取和保存，并且能持续的记录。示波器支持NI-VISA编程，这就可以编程来实现示波器的控制。而NI-VISA的资料在网上也很少，费劲很大周折才搞出了这个一个小DEMO。在这过程中，也认识">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.leechain.top/2016/07/21-lecroy-ni-visa-get-and-control-wave-trc/">
+
+
+
+
+
+  <title>基于NI-VISA获取示波器波形数据 | 天印湖畔映白鹭</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天印湖畔映白鹭</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">LEECHAIN | 博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.leechain.top/2016/07/21-lecroy-ni-visa-get-and-control-wave-trc/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chain Qian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天印湖畔映白鹭">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">基于NI-VISA获取示波器波形数据</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-21T00:00:00+08:00">
+                2016-07-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/项目/" itemprop="url" rel="index">
+                    <span itemprop="name">项目</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2016/07/21-lecroy-ni-visa-get-and-control-wave-trc/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2016/07/21-lecroy-ni-visa-get-and-control-wave-trc/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </span></div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="基于NI-VISA获取示波器波形数据"><a href="#基于NI-VISA获取示波器波形数据" class="headerlink" title="基于NI-VISA获取示波器波形数据"></a>基于NI-VISA获取示波器波形数据</h1><p>实验室在做一个故障检测的项目，需要读取485串口发来的数据，为此使用了鼎阳的示波器SDS3054来获取和记录波形。示波器可以在触发信号下记录一次波形，但是项目要求波形能够远程实时获取和保存，并且能持续的记录。示波器支持NI-VISA编程，这就可以编程来实现示波器的控制。而NI-VISA的资料在网上也很少，费劲很大周折才搞出了这个一个小DEMO。在这过程中，也认识到查阅官方英文文档和直接使用搜索引擎之间的不同。如果有人需要其他帮助的，可以联系我。</p>
+<h2 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h2><p>以下摘自百度：<br>NI-VISA(Virtual Instrument Software Architecture，以下简称为”VISA”)是美国国家仪器  NI(National Instruments VISA)公司开发的一种用来与各种仪器总线进行通信的高级应用编程接口。VISA总线I/O软件是一个综合软件包，不受平台、总线和环境的限制，可用来对USB、GPIB、串口、VXI、PXI和以太网系统进行配置、编程和调试。VISA是虚拟仪器系统I/O接口软件。基于自底向上结构模型的VISA创造了一个统一形式的I/O控制函数集。一方面，对初学者或是简单任务的设计者来说， VISA提供了简单易用的控制函数集，在应用形式上相当简单; 另一方面，对复杂系统的组建者来说，VISA提供了非常强大的仪器控制功能与资源管理。</p>
+<p>简单将，NI-VISA屏蔽了底层的硬件细节，程序员只需要调用NI-VISA提供的函数和API，以及相关的SCPI指令集，就可以完成对示波器等设备的控制。这也不得不佩服做底层的工程师。</p>
+<h2 id="项目需求"><a href="#项目需求" class="headerlink" title="项目需求"></a>项目需求</h2><p>项目需要控制示波器完成：</p>
+<p>在外源触发信号的控制下，示波器工作在single模式下，记录触发信号通道，485串口数据通道的波形，并且在触发信号（一个小方波，上升沿触发）到来时，保存当前的波形。并且可以被实时的远程获取，且在获取到这一帧波形时，能自动的继续记录下一次波形。</p>
+<h2 id="项目源码"><a href="#项目源码" class="headerlink" title="项目源码"></a>项目源码</h2><p>项目中需要研究厂家的示波器保存文件TRC的文件格式，这里借鉴了一个外国网站上的Matlab代码<br>下载：<a href="/uploads/lecroy-ni-visa-get-and-control-wave-trc/main.m">main.m</a> <a href="/uploads/lecroy-ni-visa-get-and-control-wave-trc/ReadLeCroyBinaryWaveform.m">ReadLeCroyBinaryWaveform.m</a></p>
+<p>这个项目开发IDE为VS2013，开发语言为C（C++），需要安装好NI-VISA的相关软件，可以在官网<a href="http://teledynelecroy.com/support/softwaredownload/" target="_blank" rel="noopener">Teledyne Lecroy</a>下载示波器Oscilloscope软件。同时采用的是网络方式进行远程控制，需要配置安装好LeCroyVICPPassport.dll（官网也能下载到），当然也可以使用USB控制方式，不过只要改动连接命令即可，这个官方手册可以查询（需要手册可以联系我）。</p>
+<p>提供main.cpp，需要完整源码包的联系我<a href="/uploads/lecroy-ni-visa-get-and-control-wave-trc/161012_GetWaveTrcFromOscilloscope.rar">下载</a>。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"main.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span>&#123;</span><br><span class="line">	<span class="keyword">char</span> addr[<span class="number">100</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">	<span class="keyword">char</span> source[<span class="number">10</span>][<span class="number">5</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">	<span class="keyword">int</span> src_num = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (argc &lt; <span class="number">3</span>)&#123;</span><br><span class="line">		plog(<span class="string">"Usage:  Get waveforms from an oscilloscope.\n"</span>);</span><br><span class="line">		plog(<span class="string">"Tips:   Should be used in cmd mode.\n"</span>);</span><br><span class="line">		plog(<span class="string">"Format: [ADDR][SOURCE1][SOURCE2][SOURCE3]...\n"</span>);</span><br><span class="line">		plog(<span class="string">"Example:\n\tVICP::192.168.1.133 C1 C2 Z1 Z2\n\tUSB0::0x05FF::0x1023::SDS300B21443023::INSTR C1 C2 Z1 Z2\n"</span>);</span><br><span class="line">		plog(<span class="string">"\nPress any key to exit...\n"</span>);</span><br><span class="line">		getchar();</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//此处需要添加addr地址合法性、通道名有效性判断</span></span><br><span class="line"></span><br><span class="line">		<span class="keyword">char</span> tmp[<span class="number">100</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line"></span><br><span class="line">		src_num = argc<span class="number">-2</span>;</span><br><span class="line">		<span class="built_in">strcpy</span>(addr, argv[<span class="number">1</span>]);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span> m = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span> (; m &lt; argc<span class="number">-2</span>; m++)&#123;</span><br><span class="line">			<span class="built_in">memset</span>(tmp, <span class="number">0</span>, <span class="keyword">sizeof</span>(tmp));</span><br><span class="line">			<span class="built_in">strcpy</span>(tmp, argv[m+<span class="number">2</span>]);</span><br><span class="line">			<span class="built_in">strcpy</span>(source[m], _strupr(tmp));</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	plog(<span class="string">"ADDR:%s SOURCES(%d):"</span>,addr,src_num);</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> t = <span class="number">0</span>; t &lt; src_num;t++)&#123;</span><br><span class="line">		plog(<span class="string">"%s "</span>,source[t]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//开始工作</span></span><br><span class="line">	ViSession default_RM = <span class="number">-1</span>;								    <span class="comment">//default_resource_manager</span></span><br><span class="line">	ViSession ins = <span class="number">-1</span>;										    <span class="comment">//instrument</span></span><br><span class="line">	ViStatus  stat = <span class="number">-1</span>;									    <span class="comment">//status</span></span><br><span class="line">	ViUInt32  rt_cnt = <span class="number">-1</span>;								        <span class="comment">//read_count(or return_count)</span></span><br><span class="line">	ViUInt32  wt_cnt = <span class="number">-1</span>;								        <span class="comment">//write_count</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> str_rt_buf[RT_BUF_SIZE] = &#123; <span class="number">0</span> &#125;;		<span class="comment">//read_buf_size</span></span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> str_wt_buf[WT_BUF_SIZE] = &#123; <span class="number">0</span> &#125;;		<span class="comment">//write_buf_size</span></span><br><span class="line"></span><br><span class="line">	fflush(<span class="built_in">stdin</span>);</span><br><span class="line">	fflush(<span class="built_in">stdout</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//Open a session and find resources</span></span><br><span class="line">	<span class="keyword">if</span> (fun_visa_viConnect(&amp;default_RM, addr, str_rt_buf, &amp;ins) == <span class="number">-1</span>)&#123;</span><br><span class="line">		<span class="keyword">goto</span> ERR;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//设置一些属性，如超时时间等</span></span><br><span class="line">	<span class="comment">//属性设置前需要询问当前设置，设置完后也需要再次询问设置，以确认设置成功</span></span><br><span class="line">	<span class="comment">//stat=viSetAttribute();</span></span><br><span class="line">	<span class="keyword">if</span> (fun_visa_viPrintf(&amp;ins, <span class="string">"CHDR OFF;CORD HI;CFMT DEF9,WORD,BIN\n"</span>,<span class="string">"E001"</span>) == <span class="number">-1</span>)&#123;</span><br><span class="line">		<span class="keyword">goto</span> ERR;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (fun_visa_viPrintf(&amp;ins, <span class="string">"WFSU SP,0,NP,0,FP,0,SN,0\n"</span>, <span class="string">"E002"</span>) == <span class="number">-1</span>)&#123;</span><br><span class="line">		<span class="keyword">goto</span> ERR;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//获取波形数据并保存</span></span><br><span class="line">	<span class="comment">//建议用多线程实现</span></span><br><span class="line">	<span class="comment">//示波器触发频率不宜太频繁(即假设错误发生是偶然的)</span></span><br><span class="line">	<span class="keyword">int</span> rts = <span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">int</span> m = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">char</span> s_vbs_rt[<span class="number">100</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">	<span class="keyword">char</span> s_vbs_wt_ask[<span class="number">100</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">	<span class="keyword">char</span> s_vbs_wt_set[<span class="number">100</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">	<span class="keyword">char</span> filename[<span class="number">30</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">	<span class="keyword">char</span> time_tmp[<span class="number">20</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">	<span class="keyword">char</span> err_str[<span class="number">100</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">	<span class="keyword">int</span> err_times = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">strcat</span>(s_vbs_wt_ask, <span class="string">"VBS? 'Return=app.Acquisition.TriggerMode'\n"</span>);</span><br><span class="line">	<span class="built_in">strcat</span>(s_vbs_wt_set, <span class="string">"VBS 'app.Acquisition.TriggerMode=\"Single\"'\n"</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span> (<span class="number">1</span>)&#123;</span><br><span class="line">		err_times = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//循环询问示波器是否进入‘stopped’状态</span></span><br><span class="line">		<span class="built_in">memset</span>(time_tmp, <span class="number">0</span>, <span class="keyword">sizeof</span>(time_tmp));</span><br><span class="line">		get_timeNow(time_tmp, <span class="keyword">sizeof</span>(time_tmp));		</span><br><span class="line">		plog(<span class="string">"\n[%s] Waiting for trigger 'Stopped'...\n"</span>, time_tmp);</span><br><span class="line">		<span class="keyword">while</span> (<span class="number">1</span>)&#123;</span><br><span class="line">			<span class="built_in">memset</span>(time_tmp, <span class="number">0</span>, <span class="keyword">sizeof</span>(time_tmp));</span><br><span class="line">			get_timeNow(time_tmp, <span class="keyword">sizeof</span>(time_tmp));</span><br><span class="line"></span><br><span class="line">			<span class="built_in">memset</span>(err_str, <span class="number">0</span>, <span class="keyword">sizeof</span>(err_str));</span><br><span class="line">			<span class="built_in">strcat</span>(err_str, <span class="string">" ["</span>);</span><br><span class="line">			<span class="built_in">strcat</span>(err_str, time_tmp);</span><br><span class="line">			<span class="built_in">strcat</span>(err_str, <span class="string">"]ask for trigger 'Stopped'"</span>);</span><br><span class="line"></span><br><span class="line">			<span class="built_in">memset</span>(s_vbs_rt, <span class="number">0</span>, <span class="keyword">sizeof</span>(s_vbs_rt));</span><br><span class="line">			<span class="keyword">if</span>(fun_visa_viQuerf(&amp;ins, (<span class="keyword">unsigned</span> <span class="keyword">char</span> *)s_vbs_wt_ask, (<span class="keyword">unsigned</span> <span class="keyword">char</span> *)s_vbs_rt, err_str) == <span class="number">-1</span>)&#123;</span><br><span class="line">				err_times++;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (err_times == <span class="number">5</span>)&#123;</span><br><span class="line">				<span class="keyword">goto</span> ERR;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (findstr(s_vbs_rt,<span class="string">"Stopped"</span>) &gt;= <span class="number">0</span>)&#123;</span><br><span class="line">				plog(<span class="string">"[%s] Get trigger 'Stopped'!\n"</span>,time_tmp);</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			Sleep(<span class="number">1000</span>);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//休息一秒，让示波器显示波形，从而各个缓冲区均有数据</span></span><br><span class="line">		Sleep(<span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">//根据Source数量依次获取波形数据并保存</span></span><br><span class="line">		<span class="keyword">for</span> (m = <span class="number">0</span>; m &lt; src_num; m++)&#123;</span><br><span class="line">			rts = <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">			<span class="built_in">memset</span>(filename, <span class="number">0</span>, <span class="keyword">sizeof</span>(filename));</span><br><span class="line">			<span class="built_in">strcat</span>(filename,time_tmp);</span><br><span class="line">			<span class="built_in">strcat</span>(filename, <span class="string">"_"</span>);</span><br><span class="line">			<span class="built_in">strcat</span>(filename, source[m]);</span><br><span class="line">			<span class="built_in">strcat</span>(filename, <span class="string">".trc"</span>);</span><br><span class="line"></span><br><span class="line">			rts = fun_main_viGetWaveFromScopeAndSave(&amp;ins, source[m], str_wt_buf, str_rt_buf, filename);</span><br><span class="line">			<span class="keyword">if</span> (rts == <span class="number">0</span>) &#123;</span><br><span class="line">				plog(<span class="string">"Waveform in source %s has saved into file '%s'!\n"</span>, source[m], filename);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				plog(<span class="string">"Waveform data in source %s failed\n"</span>,source[m]);</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="comment">//需要休息会，让示波器上一个通道缓冲区重置，顺便让计算机写入文件</span></span><br><span class="line">			Sleep(<span class="number">200</span>);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		err_times = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//重新设置示波器为‘single’状态，注意示波器不宜触发太过频繁</span></span><br><span class="line">		<span class="built_in">memset</span>(time_tmp, <span class="number">0</span>, <span class="keyword">sizeof</span>(time_tmp));</span><br><span class="line">		get_timeNow(time_tmp, <span class="keyword">sizeof</span>(time_tmp));</span><br><span class="line">		plog(<span class="string">"[%s] Switch trigger into 'Single'...\n"</span>, time_tmp);</span><br><span class="line">		<span class="keyword">while</span> (<span class="number">1</span>)&#123;</span><br><span class="line">			<span class="built_in">memset</span>(time_tmp, <span class="number">0</span>, <span class="keyword">sizeof</span>(time_tmp));</span><br><span class="line">			get_timeNow(time_tmp, <span class="keyword">sizeof</span>(time_tmp));</span><br><span class="line"></span><br><span class="line">			<span class="built_in">memset</span>(err_str, <span class="number">0</span>, <span class="keyword">sizeof</span>(err_str));</span><br><span class="line">			<span class="built_in">strcat</span>(err_str, <span class="string">" ["</span>);</span><br><span class="line">			<span class="built_in">strcat</span>(err_str, time_tmp);</span><br><span class="line">			<span class="built_in">strcat</span>(err_str, <span class="string">"]switch trigger into 'Single'"</span>);</span><br><span class="line"></span><br><span class="line">			<span class="built_in">memset</span>(s_vbs_rt, <span class="number">0</span>, <span class="keyword">sizeof</span>(s_vbs_rt));</span><br><span class="line"></span><br><span class="line">			fun_visa_viPrintf(&amp;ins,s_vbs_wt_set, err_str);</span><br><span class="line">			Sleep(<span class="number">2000</span>);</span><br><span class="line">			<span class="keyword">if</span>(fun_visa_viQuerf(&amp;ins, (<span class="keyword">unsigned</span> <span class="keyword">char</span> *)s_vbs_wt_ask, (<span class="keyword">unsigned</span> <span class="keyword">char</span> *)s_vbs_rt, err_str)==<span class="number">-1</span>)&#123;</span><br><span class="line">				err_times++;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (err_times == <span class="number">5</span>)&#123;</span><br><span class="line">				<span class="keyword">goto</span> ERR;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (findstr(s_vbs_rt, <span class="string">"Single"</span>) &gt;= <span class="number">0</span>)&#123;</span><br><span class="line">				plog(<span class="string">"[%s] Get trigger 'Single'!\n"</span>, time_tmp);</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			Sleep(<span class="number">1000</span>);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">ERR:</span><br><span class="line">	stat = viClose(ins);</span><br><span class="line">	stat = viClose(default_RM);</span><br><span class="line">	fflush(<span class="built_in">stdin</span>);</span><br><span class="line">	fflush(<span class="built_in">stdout</span>);</span><br><span class="line">	plog(<span class="string">"\nProgram exited.\n"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="项目测试"><a href="#项目测试" class="headerlink" title="项目测试"></a>项目测试</h2><p>设置示波器的IP，并使得远程计算机和示波器最好在同一网络区域中。打开示波器设置面板，选择VICP方式，可以获得设备IP地址。</p>
+<p>在CMD中运行编译好的程序，比如scope.exe。</p>
+<p>485的数据通过差分探头接在示波器的C1和C2通道上，触发信号接在C3通道上。</p>
+<blockquote>
+<p>&gt; scope VICP::192.168.1.133 C1 C2 C3</p>
+</blockquote>
+<p>之后程序就能自动的获取持续的波形了。</p>
+<p>（以上过程截图均省略）</p>
+<blockquote>
+<p>完</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Chain Qian
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.leechain.top/2016/07/21-lecroy-ni-visa-get-and-control-wave-trc/" title="基于NI-VISA获取示波器波形数据">https://www.leechain.top/2016/07/21-lecroy-ni-visa-get-and-control-wave-trc/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/项目/" rel="tag"># 项目</a>
+          
+            <a href="/tags/示波器/" rel="tag"># 示波器</a>
+          
+            <a href="/tags/NI-VISA/" rel="tag"># NI-VISA</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/08-lcm-gcd-algorithm/" rel="next" title="求最小公倍数和最大公约数">
+                <i class="fa fa-chevron-left"></i> 求最小公倍数和最大公约数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/22-java-development-history/" rel="prev" title="Java前世今生和知识简概">
+                Java前世今生和知识简概 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Chain Qian">
+            
+              <p class="site-author-name" itemprop="name">Chain Qian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ChainGit" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:chainz@foxmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基于NI-VISA获取示波器波形数据"><span class="nav-number">1.</span> <span class="nav-text">基于NI-VISA获取示波器波形数据</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#项目背景"><span class="nav-number">1.1.</span> <span class="nav-text">项目背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目需求"><span class="nav-number">1.2.</span> <span class="nav-text">项目需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目源码"><span class="nav-number">1.3.</span> <span class="nav-text">项目源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目测试"><span class="nav-number">1.4.</span> <span class="nav-text">项目测试</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chain Qian</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">苏ICP备16052713号-1</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt7Bknuv';
+      var conf = 'prod_ef64fab63ed9004614a7a77b40203358';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

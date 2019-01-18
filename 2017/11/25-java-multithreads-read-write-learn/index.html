@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,学习,多线程,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Java多线程之读者写者问题读者写者问题也是经典的多线程问题，在实际生产应用中也是存在必要的意义的。 操作系统原理之进程和线程管理Java的多线程和并发知识纲要Java多线程之生产者和消费者模式Java多线程之哲学家就餐问题 问题描述有读者和写者两组并发进程，共享一个文件。当两个或以上的读进程同时访问共享数据时不会产生副作用，但若某个写进程和其他进程（读进程或写进程）同时访问共享数据时则可能导致数">
+<meta name="keywords" content="Java,学习,多线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java多线程之读者写者问题">
+<meta property="og:url" content="https://www.leechain.top/2017/11/25-java-multithreads-read-write-learn/index.html">
+<meta property="og:site_name" content="天印湖畔映白鹭">
+<meta property="og:description" content="Java多线程之读者写者问题读者写者问题也是经典的多线程问题，在实际生产应用中也是存在必要的意义的。 操作系统原理之进程和线程管理Java的多线程和并发知识纲要Java多线程之生产者和消费者模式Java多线程之哲学家就餐问题 问题描述有读者和写者两组并发进程，共享一个文件。当两个或以上的读进程同时访问共享数据时不会产生副作用，但若某个写进程和其他进程（读进程或写进程）同时访问共享数据时则可能导致数">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/22.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/26.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/27.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/23.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/24.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/25.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/30.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/31.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/32.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/33.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/28.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/29.png">
+<meta property="og:updated_time" content="2018-11-12T10:04:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java多线程之读者写者问题">
+<meta name="twitter:description" content="Java多线程之读者写者问题读者写者问题也是经典的多线程问题，在实际生产应用中也是存在必要的意义的。 操作系统原理之进程和线程管理Java的多线程和并发知识纲要Java多线程之生产者和消费者模式Java多线程之哲学家就餐问题 问题描述有读者和写者两组并发进程，共享一个文件。当两个或以上的读进程同时访问共享数据时不会产生副作用，但若某个写进程和其他进程（读进程或写进程）同时访问共享数据时则可能导致数">
+<meta name="twitter:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/22.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.leechain.top/2017/11/25-java-multithreads-read-write-learn/">
+
+
+
+
+
+  <title>Java多线程之读者写者问题 | 天印湖畔映白鹭</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天印湖畔映白鹭</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">LEECHAIN | 博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.leechain.top/2017/11/25-java-multithreads-read-write-learn/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chain Qian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天印湖畔映白鹭">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Java多线程之读者写者问题</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-25T00:00:00+08:00">
+                2017-11-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/11/25-java-multithreads-read-write-learn/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/11/25-java-multithreads-read-write-learn/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </span></div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Java多线程之读者写者问题"><a href="#Java多线程之读者写者问题" class="headerlink" title="Java多线程之读者写者问题"></a>Java多线程之读者写者问题</h1><p>读者写者问题也是经典的多线程问题，在实际生产应用中也是存在必要的意义的。</p>
+<p><a href="https://www.leechain.top/blog/2017/08/25-operation-system-multithreads.html">操作系统原理之进程和线程管理</a><br><a href="https://www.leechain.top/blog/2017/08/21-java-concurrency-brief.html">Java的多线程和并发知识纲要</a><br><a href="https://www.leechain.top/blog/2017/08/27-java-multithreads-producer-and-consumer-learn.html">Java多线程之生产者和消费者模式</a><br><a href="https://www.leechain.top/blog/2017/11/20-java-multithreads-philosopher-dinner-learn.html">Java多线程之哲学家就餐问题</a></p>
+<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>有读者和写者两组并发进程，共享一个文件。当两个或以上的读进程同时访问共享数据时不会产生副作用，但若某个写进程和其他进程（读进程或写进程）同时访问共享数据时则可能导致数据不一致的错误。</p>
+<p><img src="/uploads/multithreads-basic-knowledge/22.png" alt="读者和写者"></p>
+<p>因此要求：<br>①允许多个读者可以同时对文件执行读操作；<br>②只允许一个写者往文件中写信息；<br>③任一写者在完成写操作之前不允许其他读者或写者工作；<br>④写者执行写操作前，应让已有的读者和写者全部退出。</p>
+<h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h2><p>分析问题容易看出，读者和写者是互斥的，写者和写者也是互斥的，而读者和读者之间不存在互斥问题。</p>
+<p>当读者和写者都存在时，就会出现优先级问题，到底是读的优先还是写的人优先。</p>
+<p>因此，这个问题可以分为<strong>读者优先、弱写者优先（公平竞争）、强写者优先</strong>三种情况。</p>
+<p>对每一种情况要具体问题具体分析，找出每种情况下的访问规则。</p>
+<h2 id="我的解决"><a href="#我的解决" class="headerlink" title="我的解决"></a>我的解决</h2><p>不论当前的状态如何，任意写者进程与其他任何进程都互斥，用互斥信号量的PV操作即可。<br>读者的问题比较复杂，它必须实现与写者互斥的同时还要实现与其他读者的同步。</p>
+<p>因此，仅仅简单的一对PV操作是无法解决的。<br>这里可以使用一个计数器count，用它来判断当前是否有读者读文件。<br>当有读者的时候写者是无法写文件的，此时读者会一直占用文件；当没有读者的时候写者才可以写文件。<br>同时不同的读者对该计数器的访问也应该是互斥的。</p>
+<p>这里我假设了以下的情景：<br>写者进程针对share.txt不断进行写操作，读者进程则不断读取share.txt中的内容，并写到另一个文件中。<br>从而实现文件的实时拷贝，可以用于的场景比如：<br>写服务器不断的去记录log到同一个文件，然后其他服务器不断的去抓取这个log文件的内容拷贝到自己本地。</p>
+<h3 id="公共类和方法"><a href="#公共类和方法" class="headerlink" title="公共类和方法"></a>公共类和方法</h3><p>读者的抽象类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chain.test.day05;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.OutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.RandomAccessFile;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 读者抽象类</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> chain</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractReader</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">protected</span> <span class="keyword">volatile</span> RandomAccessFile file;</span><br><span class="line">	<span class="keyword">protected</span> OutputStream os;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">AbstractReader</span><span class="params">(<span class="keyword">int</span> id, RandomAccessFile file, OutputStream os)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.id = id;</span><br><span class="line">		<span class="keyword">this</span>.name = <span class="string">"Reader-"</span> + id;</span><br><span class="line">		<span class="keyword">this</span>.file = file;</span><br><span class="line">		<span class="keyword">this</span>.os = os;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> id;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 读文件</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">read</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 停止读取</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 开始读取</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">begin</span><span class="params">()</span></span>;</span><br><span class="line">    </span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 是否已完成工作</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">isFinished</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 休息一会</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> InterruptedException</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">rest</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">		System.out.println(getName() + <span class="string">" have a rest"</span>);</span><br><span class="line">		Thread.sleep(<span class="number">100</span> * ((<span class="keyword">int</span>) (Math.random() * <span class="number">9</span>) + <span class="number">0</span>));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>写者的抽象类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chain.test.day05;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.RandomAccessFile;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 写者抽象类</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> chain</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractWriter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">protected</span> <span class="keyword">volatile</span> RandomAccessFile file;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">protected</span> Random rand;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">AbstractWriter</span><span class="params">(<span class="keyword">int</span> id, RandomAccessFile file)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.id = id;</span><br><span class="line">		<span class="keyword">this</span>.name = <span class="string">"Writer-"</span> + id;</span><br><span class="line">		<span class="keyword">this</span>.file = file;</span><br><span class="line">		<span class="keyword">this</span>.rand = <span class="keyword">new</span> Random();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> id;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 写文件</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 停止读取</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 开始读取</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">begin</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 是否已完成工作</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">isFinished</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 休息一会</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> InterruptedException</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">rest</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">		System.out.println(getName() + <span class="string">" have a rest"</span>);</span><br><span class="line">		Thread.sleep(<span class="number">100</span> * ((<span class="keyword">int</span>) (Math.random() * <span class="number">9</span>) + <span class="number">0</span>));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>读者写者规则的抽象类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chain.test.day05;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 读者写者的规则的抽象类</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> chain</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractReaderWriterMethod</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 读者读文件</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> reader</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">read</span><span class="params">(AbstractReader reader)</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 写者写文件</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> writer</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(AbstractWriter writer)</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>主测试方法、Reader、Writer、读写规则、自定义信号量等的具体实现可以参看文末的源码链接。</p>
+<h3 id="读者优先"><a href="#读者优先" class="headerlink" title="读者优先"></a>读者优先</h3><p>test.properties：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">readers.num=<span class="number">5</span></span><br><span class="line">writers.num=<span class="number">5</span></span><br><span class="line">method.class=com.chain.test.day05.ReaderWriterMethod01</span><br><span class="line">file.path=C:\\Temps\\reader_writer</span><br><span class="line">file.name=share.txt</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chain.test.day05;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 读者优先算法</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * 自定义信号量做法</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> chain</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReaderWriterMethod01</span> <span class="keyword">extends</span> <span class="title">AbstractReaderWriterMethod</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 用于记录当前读者进程在读的数量</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> count;</span><br><span class="line">	<span class="comment">// 保证count的互斥操作</span></span><br><span class="line">	<span class="keyword">private</span> AbstractSemaphore mutex;</span><br><span class="line">	<span class="comment">// 用于保证读者和写者能互斥的访问文件</span></span><br><span class="line">	<span class="keyword">private</span> AbstractSemaphore rw;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">ReaderWriterMethod01</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		rw = <span class="keyword">new</span> Semaphore01(<span class="number">1</span>);</span><br><span class="line">		mutex = <span class="keyword">new</span> Semaphore01(<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">read</span><span class="params">(AbstractReader reader)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		System.out.println(reader.getName() + <span class="string">" wait for reading"</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 读者进程互斥访问count</span></span><br><span class="line">		mutex.P();</span><br><span class="line">		<span class="keyword">if</span> (count == <span class="number">0</span>)</span><br><span class="line">			<span class="comment">// 阻止写者进程写</span></span><br><span class="line">			rw.P();</span><br><span class="line">		<span class="comment">// 在执行读操作的读者进程+1</span></span><br><span class="line">		++count;</span><br><span class="line">		mutex.V();</span><br><span class="line"></span><br><span class="line">		reader.read();</span><br><span class="line"></span><br><span class="line">		mutex.P();</span><br><span class="line">		--count;</span><br><span class="line">		<span class="keyword">if</span> (count == <span class="number">0</span>)</span><br><span class="line">			<span class="comment">// 允许写者进程写</span></span><br><span class="line">			rw.V();</span><br><span class="line">		mutex.V();</span><br><span class="line"></span><br><span class="line">		System.out.println(reader.getName() + <span class="string">" finish reading"</span>);</span><br><span class="line"></span><br><span class="line">		reader.rest();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(AbstractWriter writer)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		System.out.println(writer.getName() + <span class="string">" wait for writing"</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 阻止读者进程读</span></span><br><span class="line">		rw.P();</span><br><span class="line">		writer.write();</span><br><span class="line">		<span class="comment">// 允许读者进程读</span></span><br><span class="line">		rw.V();</span><br><span class="line"></span><br><span class="line">		System.out.println(writer.getName() + <span class="string">" finish writing"</span>);</span><br><span class="line"></span><br><span class="line">		writer.rest();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在该算法中，读者进程是优先的，也就是说，当存在读者进程时，写者操作将被推后。而且只要有一个读者进程活跃（在读文件），随后而来的读者进程也是允许读取文件的。这样的方式下，可能会导致写者进程长时间等待，即存在<strong>写者进程“饿死”的情况</strong>。</p>
+<p>如果读者和写者的数量都为1时，可以看到两者交替进行，比较融洽：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/26.png" alt="读者和写者的数量都为1"></p>
+<p>如果读者数量为1，写者数量为多个（2个），可以看到写者不会同时写，读者和写者也是互斥的，工作也是正常的：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/27.png" alt="读者数量为1，写者为多个"></p>
+<p>如果读者数量较少（2个），写者数量适中，可以看到大部分都是读者进程在执行，但是写者进程还是有机会进行写操作的：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/23.png" alt="读者优先正常工作"></p>
+<p>但是如果读者数量较多（5个），可以看到写者进程进行写操作的机会很少，基本是读者进程在进行读操作：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/24.png" alt="写者饿死的情况"></p>
+<p>程序正常结束运行后检查各个文件的信息，可以看到信息一致。</p>
+<p><img src="/uploads/multithreads-basic-knowledge/25.png" alt="文件信息"></p>
+<p>修改方法中的信号量为JavaAPI信号量也是可以的，运行效果一致。</p>
+<h3 id="（强）写者优先"><a href="#（强）写者优先" class="headerlink" title="（强）写者优先"></a>（强）写者优先</h3><p>要让写者能优先得到执行的机会，可以参照读者优先中read如何让读者优先的部分，对照设计写者write部分。</p>
+<p>具体做法：<br>为了能做到写者优先，需要对读者部分增加一个队列信号量q，由写者进程控制这个队列信号量q。<br>每当有一个写进程在执行写操作时，队列就+1；直到队列为0，读进程才能进行读操作。<br>换句话说，只要有一个写进程得到了队列信号量q，那么之后就会一直占着q不放，直到所有的写进程都完成了写操作后才会释放q，这样的做法就能提高了写进程的优先级。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">readers.num=<span class="number">5</span></span><br><span class="line">writers.num=<span class="number">5</span></span><br><span class="line">method.class=com.chain.test.day05.ReaderWriterMethod04</span><br><span class="line">file.path=C:\\Temps\\reader_writer</span><br><span class="line">file.name=share.txt</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chain.test.day05;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 写者优先</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * 自定义信号量做法</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> chain</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReaderWriterMethod04</span> <span class="keyword">extends</span> <span class="title">AbstractReaderWriterMethod</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 用于记录当前读者进程在读的数量</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> readCount;</span><br><span class="line">	<span class="comment">// 保证readCount的互斥操作</span></span><br><span class="line">	<span class="keyword">private</span> AbstractSemaphore readMutex;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 用于记录当前写者进程在写的数量</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> writeCount;</span><br><span class="line">	<span class="comment">// 保证writeCount的互斥操作</span></span><br><span class="line">	<span class="keyword">private</span> AbstractSemaphore writeMutex;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 用于保证读者和写者能互斥的访问文件</span></span><br><span class="line">	<span class="keyword">private</span> AbstractSemaphore w;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> AbstractSemaphore q;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">ReaderWriterMethod04</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		w = <span class="keyword">new</span> Semaphore01(<span class="number">1</span>);</span><br><span class="line">		q = <span class="keyword">new</span> Semaphore01(<span class="number">1</span>);</span><br><span class="line">		writeMutex = <span class="keyword">new</span> Semaphore01(<span class="number">1</span>);</span><br><span class="line">		readMutex = <span class="keyword">new</span> Semaphore01(<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">read</span><span class="params">(AbstractReader reader)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		System.out.println(reader.getName() + <span class="string">" wait for reading"</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 只有当没有写进程在执行时，才能进行读操作</span></span><br><span class="line">		q.P();</span><br><span class="line"></span><br><span class="line">		readMutex.P();</span><br><span class="line">		<span class="keyword">if</span> (readCount == <span class="number">0</span>)</span><br><span class="line">			w.P();</span><br><span class="line">		++readCount;</span><br><span class="line">		readMutex.V();</span><br><span class="line"></span><br><span class="line">		q.V();</span><br><span class="line"></span><br><span class="line">		reader.read();</span><br><span class="line"></span><br><span class="line">		readMutex.P();</span><br><span class="line">		--readCount;</span><br><span class="line">		<span class="keyword">if</span> (readCount == <span class="number">0</span>)</span><br><span class="line">			w.V();</span><br><span class="line">		readMutex.V();</span><br><span class="line"></span><br><span class="line">		System.out.println(reader.getName() + <span class="string">" finish reading"</span>);</span><br><span class="line"></span><br><span class="line">		reader.rest();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(AbstractWriter writer)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		System.out.println(writer.getName() + <span class="string">" wait for writing"</span>);</span><br><span class="line"></span><br><span class="line">		writeMutex.P();</span><br><span class="line">		<span class="keyword">if</span> (writeCount == <span class="number">0</span>)</span><br><span class="line">			q.P();</span><br><span class="line">		++writeCount;</span><br><span class="line">		writeMutex.V();</span><br><span class="line"></span><br><span class="line">		w.P();</span><br><span class="line">		writer.write();</span><br><span class="line">		w.V();</span><br><span class="line"></span><br><span class="line">		writeMutex.P();</span><br><span class="line">		--writeCount;</span><br><span class="line">		<span class="keyword">if</span> (writeCount == <span class="number">0</span>)</span><br><span class="line">			<span class="comment">// 没有要写操作的写者，读者可以读文件</span></span><br><span class="line">			q.V();</span><br><span class="line">		writeMutex.V();</span><br><span class="line"></span><br><span class="line">		System.out.println(writer.getName() + <span class="string">" finish writing"</span>);</span><br><span class="line"></span><br><span class="line">		writer.rest();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在该算法中，写者进程是优先的，也就是说，当存在写者进程时，读者操作将被推后。写操作之间通过w信号量保证互斥，读和写进程通过w信号量保持互斥，写进程通过q信号量控制写进程。这样的方式下，可能会导致读者进程长时间等待，即存在<strong>读者进程“饿死”的情况</strong>。</p>
+<p>如果读者和写者的数量都为1时，可以看到两者交替进行，比较融洽：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/30.png" alt="读者和写者的数量都为1"></p>
+<p>如果读者和写者的数量都为2时，可以看到大部分都是写者进程在执行，但是读者进程还是有机会进行读操作的：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/31.png" alt="读者和写者的数量都为2"></p>
+<p>但是如果写者数量较多（3个），可以看到读者进程很少有机会进行读操作，基本是写者进程在进行写操作：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/32.png" alt="写者饿死的情况"></p>
+<p>程序正常结束运行后检查各个文件的信息，可以看到信息一致。</p>
+<p>由于这是强写者优先，所以都为3的情况下，读进程读完所有的内容时间所需太长（读进程获得执行的机会太少），不过可以修改Reader中一次buffer的大小，加快读取的速度。</p>
+<p><img src="/uploads/multithreads-basic-knowledge/33.png" alt="文件信息"></p>
+<h3 id="读写公平（弱写者优先）"><a href="#读写公平（弱写者优先）" class="headerlink" title="读写公平（弱写者优先）"></a>读写公平（弱写者优先）</h3><p>如果希望读写公平，即在多次操作下，读写操作的执行频率是差不多的。</p>
+<p>具体的做法：在读者优先的基础上只增加一个信号量q就可以做到读写公平。</p>
+<p>test.properties：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">readers.num=<span class="number">10</span></span><br><span class="line">writers.num=<span class="number">10</span></span><br><span class="line">method.class=com.chain.test.day05.ReaderWriterMethod05</span><br><span class="line">file.path=C:\\Temps\\reader_writer</span><br><span class="line">file.name=share.txt</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chain.test.day05;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 公平算法，在读者优先的基础上</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * 使用自定义信号量实现</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> chain</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReaderWriterMethod05</span> <span class="keyword">extends</span> <span class="title">AbstractReaderWriterMethod</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 用于记录当前读者进程在读的数量</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> count;</span><br><span class="line">	<span class="comment">// 保证count的互斥操作</span></span><br><span class="line">	<span class="keyword">private</span> AbstractSemaphore mutex;</span><br><span class="line">	<span class="comment">// 用于保证读者和写者能互斥的访问文件</span></span><br><span class="line">	<span class="keyword">private</span> AbstractSemaphore w;</span><br><span class="line">	<span class="comment">// 用于保证只有在写进程不需要写文件时读进程才去读文件</span></span><br><span class="line">	<span class="keyword">private</span> AbstractSemaphore q;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">ReaderWriterMethod05</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		q = <span class="keyword">new</span> Semaphore01(<span class="number">1</span>);</span><br><span class="line">		w = <span class="keyword">new</span> Semaphore01(<span class="number">1</span>);</span><br><span class="line">		mutex = <span class="keyword">new</span> Semaphore01(<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">read</span><span class="params">(AbstractReader reader)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		System.out.println(reader.getName() + <span class="string">" wait for writer to have a rest"</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 只有在写进程不需要写文件时读进程才去读文件</span></span><br><span class="line">		q.P();</span><br><span class="line"></span><br><span class="line">		System.out.println(reader.getName() + <span class="string">" wait for reading"</span>);</span><br><span class="line"></span><br><span class="line">		mutex.P();</span><br><span class="line">		<span class="keyword">if</span> (count == <span class="number">0</span>)</span><br><span class="line">			w.P();</span><br><span class="line">		++count;</span><br><span class="line">		mutex.V();</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 写进程可以尝试去写文件</span></span><br><span class="line">		<span class="comment">// 但是写进程仍然需要去判断rw</span></span><br><span class="line">		q.V();</span><br><span class="line"></span><br><span class="line">		reader.read();</span><br><span class="line"></span><br><span class="line">		mutex.P();</span><br><span class="line">		--count;</span><br><span class="line">		<span class="keyword">if</span> (count == <span class="number">0</span>)</span><br><span class="line">			w.V();</span><br><span class="line">		mutex.V();</span><br><span class="line"></span><br><span class="line">		System.out.println(reader.getName() + <span class="string">" finish reading"</span>);</span><br><span class="line"></span><br><span class="line">		reader.rest();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(AbstractWriter writer)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		System.out.println(writer.getName() + <span class="string">" wait for reader to have a rest"</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 写进程在读进程无需读取时进入</span></span><br><span class="line">		q.P();</span><br><span class="line"></span><br><span class="line">		System.out.println(writer.getName() + <span class="string">" wait for writing"</span>);</span><br><span class="line"></span><br><span class="line">		w.P();</span><br><span class="line"></span><br><span class="line">		writer.write();</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 读进程可以进行读操作</span></span><br><span class="line">		q.V();</span><br><span class="line"></span><br><span class="line">		w.V();</span><br><span class="line"></span><br><span class="line">		System.out.println(writer.getName() + <span class="string">" finish writing"</span>);</span><br><span class="line"></span><br><span class="line">		writer.rest();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样修改后，即使有再多的读写进程，两种操作的频率是差不多的：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/28.png" alt="公平算法"></p>
+<p>程序正常结束运行后检查各个文件的信息，可以看到信息一致：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/29.png" alt="文件信息"></p>
+<h2 id="总结思考"><a href="#总结思考" class="headerlink" title="总结思考"></a>总结思考</h2><p>为了做到读者之间互斥，可以给读者的读操作增加一个信号量w。<br>为了做到读者和写者之间的互斥，可以使用上面的信号量w。</p>
+<p>为了做到读者优先，可以个读者操作增加一个计数器read_count，只要有一个读者能得到执行，就会阻止写者进行操作，从而其他的读者也能执行。直到没有读者去进行读操作时，写者才有机会去执行。</p>
+<p>为了做到读写公平，可以在读者优先的基础上，给读者增加一个信号量q，这个信号量由写者控制。如果写者想执行操作，可以阻塞q，使得读者不能进行read_count操作，进而也就不能进行读操作。这种情况也被称为弱写者优先。</p>
+<p>为了做到写者优先，可以在读者优先的基础上，给写者也配备一个计数器write_count，读者增加一个信号量q，这个信号量由写者控制。如果写者想执行操作，和弱写者优先一样，阻塞q即可。但是不同的是，一旦写者获得执行权，写者的计数器write_count的作用和read_count一样，会保证其他的写者也能得到执行。直到没有写者去进行写操作时，读者才有机会去执行。这种情况也被称为强写者优先。</p>
+<p><a href="https://github.com/ChainGit/some-tests/tree/master/test07" target="_blank" rel="noopener">源码</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Chain Qian
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.leechain.top/2017/11/25-java-multithreads-read-write-learn/" title="Java多线程之读者写者问题">https://www.leechain.top/2017/11/25-java-multithreads-read-write-learn/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/学习/" rel="tag"># 学习</a>
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/20-java-multithreads-philosopher-dinner-learn/" rel="next" title="Java多线程之哲学家就餐问题">
+                <i class="fa fa-chevron-left"></i> Java多线程之哲学家就餐问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/05-udp-chat-room/" rel="prev" title="基于UDP的可用于公网的多线程设计的多人聊天室">
+                基于UDP的可用于公网的多线程设计的多人聊天室 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Chain Qian">
+            
+              <p class="site-author-name" itemprop="name">Chain Qian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ChainGit" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:chainz@foxmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java多线程之读者写者问题"><span class="nav-number">1.</span> <span class="nav-text">Java多线程之读者写者问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述"><span class="nav-number">1.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题分析"><span class="nav-number">1.2.</span> <span class="nav-text">问题分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我的解决"><span class="nav-number">1.3.</span> <span class="nav-text">我的解决</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#公共类和方法"><span class="nav-number">1.3.1.</span> <span class="nav-text">公共类和方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读者优先"><span class="nav-number">1.3.2.</span> <span class="nav-text">读者优先</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（强）写者优先"><span class="nav-number">1.3.3.</span> <span class="nav-text">（强）写者优先</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读写公平（弱写者优先）"><span class="nav-number">1.3.4.</span> <span class="nav-text">读写公平（弱写者优先）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结思考"><span class="nav-number">1.4.</span> <span class="nav-text">总结思考</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chain Qian</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">苏ICP备16052713号-1</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt7Bknuv';
+      var conf = 'prod_ef64fab63ed9004614a7a77b40203358';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

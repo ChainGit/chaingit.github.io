@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="学习,MySQL,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="MySQL复习笔记-IMySQL中一些重点知识的复习笔记，内容摘自书和一些学习视频，并会持续不断的完善。 测试数据来源：MySQL官方employees数据库。 MySQL复习笔记-IMySQL复习笔记-IIMySQL复习笔记-IIIMySQL复习笔记-IV 基础知识DB、DBMS、DBA DDL、DCL、DML 常见MySQL命令行命令。 基础查询、条件查询（where）、常见函数（分组函数）、">
+<meta name="keywords" content="学习,MySQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL复习笔记-I">
+<meta property="og:url" content="https://www.leechain.top/2018/01/10-mysql-review-note-1/index.html">
+<meta property="og:site_name" content="天印湖畔映白鹭">
+<meta property="og:description" content="MySQL复习笔记-IMySQL中一些重点知识的复习笔记，内容摘自书和一些学习视频，并会持续不断的完善。 测试数据来源：MySQL官方employees数据库。 MySQL复习笔记-IMySQL复习笔记-IIMySQL复习笔记-IIIMySQL复习笔记-IV 基础知识DB、DBMS、DBA DDL、DCL、DML 常见MySQL命令行命令。 基础查询、条件查询（where）、常见函数（分组函数）、">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/17.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/18.jpg">
+<meta property="og:updated_time" content="2018-11-12T10:04:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL复习笔记-I">
+<meta name="twitter:description" content="MySQL复习笔记-IMySQL中一些重点知识的复习笔记，内容摘自书和一些学习视频，并会持续不断的完善。 测试数据来源：MySQL官方employees数据库。 MySQL复习笔记-IMySQL复习笔记-IIMySQL复习笔记-IIIMySQL复习笔记-IV 基础知识DB、DBMS、DBA DDL、DCL、DML 常见MySQL命令行命令。 基础查询、条件查询（where）、常见函数（分组函数）、">
+<meta name="twitter:image" content="https://www.leechain.top/uploads/0-common-images/17.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.leechain.top/2018/01/10-mysql-review-note-1/">
+
+
+
+
+
+  <title>MySQL复习笔记-I | 天印湖畔映白鹭</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天印湖畔映白鹭</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">LEECHAIN | 博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.leechain.top/2018/01/10-mysql-review-note-1/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chain Qian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天印湖畔映白鹭">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">MySQL复习笔记-I</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-10T00:00:00+08:00">
+                2018-01-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2018/01/10-mysql-review-note-1/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2018/01/10-mysql-review-note-1/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </span></div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="MySQL复习笔记-I"><a href="#MySQL复习笔记-I" class="headerlink" title="MySQL复习笔记-I"></a>MySQL复习笔记-I</h1><p>MySQL中一些重点知识的复习笔记，内容摘自书和一些学习视频，并会持续不断的完善。</p>
+<p>测试数据来源：MySQL官方employees数据库。</p>
+<p><a href="https://www.leechain.top/blog/2018/01/10-mysql-review-note-1.html">MySQL复习笔记-I</a><br><a href="#">MySQL复习笔记-II</a><br><a href="#">MySQL复习笔记-III</a><br><a href="#">MySQL复习笔记-IV</a></p>
+<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>DB、DBMS、DBA</p>
+<p>DDL、DCL、DML</p>
+<p>常见MySQL命令行命令。</p>
+<p>基础查询、条件查询（where）、常见函数（分组函数）、分组查询（group by/having）、排序查询（order by）、连接查询、子查询、分页查询（limit）、联合查询（union）。</p>
+<h2 id="基础查询"><a href="#基础查询" class="headerlink" title="基础查询"></a>基础查询</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">基础查询语法：</span></span><br><span class="line"><span class="comment">select 查询列表 from 表名;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">特点：</span></span><br><span class="line"><span class="comment">1、查询列表可以是：表中的字段、常量值、表达式、函数</span></span><br><span class="line"><span class="comment">2、查询的结果是一个虚拟的表格</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">USE</span> myemployees;</span><br><span class="line"></span><br><span class="line"><span class="comment">#1.查询表中的单个字段</span></span><br><span class="line"><span class="keyword">SELECT</span> last_name <span class="keyword">FROM</span> employees;</span><br><span class="line"></span><br><span class="line"><span class="comment">#2.查询表中的多个字段</span></span><br><span class="line"><span class="keyword">SELECT</span> last_name,salary,email <span class="keyword">FROM</span> employees;</span><br><span class="line"></span><br><span class="line"><span class="comment">#3.查询表中的所有字段</span></span><br><span class="line"><span class="comment">## 方式一：</span></span><br><span class="line"><span class="keyword">SELECT</span> </span><br><span class="line">    <span class="string">`employee_id`</span>,</span><br><span class="line">    <span class="string">`first_name`</span>,</span><br><span class="line">    <span class="string">`last_name`</span>,</span><br><span class="line">    <span class="string">`phone_number`</span>,</span><br><span class="line">    <span class="string">`last_name`</span>,</span><br><span class="line">    <span class="string">`job_id`</span>,</span><br><span class="line">    <span class="string">`phone_number`</span>,</span><br><span class="line">    <span class="string">`job_id`</span>,</span><br><span class="line">    <span class="string">`salary`</span>,</span><br><span class="line">    <span class="string">`commission_pct`</span>,</span><br><span class="line">    <span class="string">`manager_id`</span>,</span><br><span class="line">    <span class="string">`department_id`</span>,</span><br><span class="line">    <span class="string">`hiredate`</span> </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">    employees ;</span><br><span class="line"><span class="comment">## 方式二：  </span></span><br><span class="line"> <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> employees;</span><br><span class="line"></span><br><span class="line"><span class="comment">#4.查询常量值</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="number">100</span>;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="string">'john'</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">#5.查询表达式</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="number">100</span>%<span class="number">98</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">#6.查询函数 </span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">VERSION</span>(); </span><br><span class="line"> </span><br><span class="line"><span class="comment">#7.起别名</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">①便于理解</span></span><br><span class="line"><span class="comment">②如果要查询的字段有重名的情况，使用别名可以区分开来</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">##方式一：使用as</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="number">100</span>%<span class="number">98</span> <span class="keyword">AS</span> 结果;</span><br><span class="line"><span class="keyword">SELECT</span> last_name <span class="keyword">AS</span> 姓,first_name <span class="keyword">AS</span> 名 <span class="keyword">FROM</span> employees;</span><br><span class="line"></span><br><span class="line"><span class="comment">##方式二：使用空格</span></span><br><span class="line"><span class="keyword">SELECT</span> last_name 姓,first_name 名 <span class="keyword">FROM</span> employees;</span><br><span class="line"></span><br><span class="line"><span class="comment">###案例：查询salary，显示结果为 out put</span></span><br><span class="line"><span class="keyword">SELECT</span> salary <span class="keyword">AS</span> <span class="string">"out put"</span> <span class="keyword">FROM</span> employees;</span><br><span class="line"></span><br><span class="line"><span class="comment">#8.去重</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##案例：查询员工表中涉及到的所有的部门编号</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> department_id <span class="keyword">FROM</span> employees;</span><br><span class="line"></span><br><span class="line"><span class="comment">#9.+号的作用</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">java中的+号：</span></span><br><span class="line"><span class="comment">①运算符，两个操作数都为数值型</span></span><br><span class="line"><span class="comment">②连接符，只要有一个操作数为字符串</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">mysql中的+号：</span></span><br><span class="line"><span class="comment">仅仅只有一个功能：运算符</span></span><br><span class="line"><span class="comment">若需要连接，使用concat函数。</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">select 100+90; 两个操作数都为数值型，则做加法运算</span></span><br><span class="line"><span class="comment">select '123'+90;只要其中一方为字符型，试图将字符型数值转换成数值型，如果转换成功，则继续做加法运算</span></span><br><span class="line"><span class="comment">select 'john'+90;	如果转换失败，则将字符型数值转换成0</span></span><br><span class="line"><span class="comment">select null+10; 只要其中一方为null，则结果肯定为null</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 案例：查询员工名和姓连接成一个字段，并显示为“姓名”</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">CONCAT</span>(<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>) <span class="keyword">AS</span> 结果;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> </span><br><span class="line">	<span class="keyword">CONCAT</span>(last_name,first_name) <span class="keyword">AS</span> 姓名</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	employees;</span><br></pre></td></tr></table></figure>
+<h2 id="条件查询"><a href="#条件查询" class="headerlink" title="条件查询"></a>条件查询</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">条件查询语法：</span></span><br><span class="line"><span class="comment">	select </span></span><br><span class="line"><span class="comment">		查询列表</span></span><br><span class="line"><span class="comment">	from</span></span><br><span class="line"><span class="comment">		表名</span></span><br><span class="line"><span class="comment">	where</span></span><br><span class="line"><span class="comment">		筛选条件;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">分类：</span></span><br><span class="line"><span class="comment">	一、按条件表达式筛选</span></span><br><span class="line"><span class="comment">	简单条件运算符：&gt; &lt; = != &lt;&gt; &gt;= &lt;=</span></span><br><span class="line"><span class="comment">	</span></span><br><span class="line"><span class="comment">	二、按逻辑表达式筛选</span></span><br><span class="line"><span class="comment">	逻辑运算符：</span></span><br><span class="line"><span class="comment">	  作用：用于连接条件表达式</span></span><br><span class="line"><span class="comment">		  java:  &amp;&amp;   ||    !</span></span><br><span class="line"><span class="comment">		  mysql: and  or   not</span></span><br><span class="line"><span class="comment">		</span></span><br><span class="line"><span class="comment">	&amp;&amp;和and：两个条件都为true，结果为true，反之为false</span></span><br><span class="line"><span class="comment">	||或or： 只要有一个条件为true，结果为true，反之为false</span></span><br><span class="line"><span class="comment">	!或not： 如果连接的条件本身为false，结果为true，反之为false</span></span><br><span class="line"><span class="comment">	</span></span><br><span class="line"><span class="comment">	三、模糊查询</span></span><br><span class="line"><span class="comment">		like</span></span><br><span class="line"><span class="comment">		between and</span></span><br><span class="line"><span class="comment">		in</span></span><br><span class="line"><span class="comment">    not in</span></span><br><span class="line"><span class="comment">		is null</span></span><br><span class="line"><span class="comment">    is not null</span></span><br><span class="line"><span class="comment">    ...</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">#一、按条件表达式筛选</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##案例1：查询工资&gt;12000的员工信息</span></span><br><span class="line"><span class="keyword">SELECT</span> </span><br><span class="line">	*</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	employees</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	salary&gt;<span class="number">12000</span>;</span><br><span class="line">	</span><br><span class="line"><span class="comment">##案例2：查询部门编号不等于90号的员工名和部门编号</span></span><br><span class="line"><span class="keyword">SELECT</span> </span><br><span class="line">	last_name,</span><br><span class="line">	department_id</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	employees</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	department_id&lt;&gt;<span class="number">90</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#二、按逻辑表达式筛选</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##案例1：查询工资z在10000到20000之间的员工名、工资以及奖金</span></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	last_name,</span><br><span class="line">	salary,</span><br><span class="line">	commission_pct</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	employees</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	salary&gt;=<span class="number">10000</span> <span class="keyword">AND</span> salary&lt;=<span class="number">20000</span>;</span><br><span class="line"><span class="comment">##案例2：查询部门编号不是在90到110之间，或者工资高于15000的员工信息</span></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	*</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	employees</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	<span class="keyword">NOT</span>(department_id&gt;=<span class="number">90</span> <span class="keyword">AND</span>  department_id&lt;=<span class="number">110</span>) <span class="keyword">OR</span> salary&gt;<span class="number">15000</span>;</span><br><span class="line"><span class="comment">#三、模糊查询</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">like</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">between and</span></span><br><span class="line"><span class="comment">in</span></span><br><span class="line"><span class="comment">is null|is not null</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">#1.【like】</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">特点：</span></span><br><span class="line"><span class="comment">①一般和通配符搭配使用</span></span><br><span class="line"><span class="comment">	通配符：</span></span><br><span class="line"><span class="comment">	% 任意【多】个字符,包含0个字符</span></span><br><span class="line"><span class="comment">	_ 任意【单】个字符</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">##案例1：查询员工名中包含字符a的员工信息</span></span><br><span class="line"><span class="keyword">select</span> </span><br><span class="line">	*</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">	employees</span><br><span class="line"><span class="keyword">where</span></span><br><span class="line">	last_name <span class="keyword">like</span> <span class="string">'%a%'</span>;<span class="comment">#abc</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##案例2：查询员工名中第三个字符为e，第五个字符为a的员工名和工资</span></span><br><span class="line"><span class="keyword">select</span></span><br><span class="line">	last_name,</span><br><span class="line">	salary</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	employees</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	last_name <span class="keyword">LIKE</span> <span class="string">'__n_l%'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">##案例3：查询员工名中第二个字符为_的员工名</span></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	last_name</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	employees</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	last_name <span class="keyword">LIKE</span> <span class="string">'_$_%'</span> ESCAPE <span class="string">'$'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#2.between and</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">①使用between and 可以提高语句的简洁度</span></span><br><span class="line"><span class="comment">②包含临界值</span></span><br><span class="line"><span class="comment">③两个临界值不要调换顺序</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">##案例1：查询员工编号在100到120之间的员工信息</span></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	*</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	employees</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	employee_id &gt;= <span class="number">120</span> <span class="keyword">AND</span> employee_id&lt;=<span class="number">100</span>;</span><br><span class="line"><span class="comment">##----------------------</span></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	*</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	employees</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	employee_id <span class="keyword">BETWEEN</span> <span class="number">120</span> <span class="keyword">AND</span> <span class="number">100</span>;</span><br><span class="line"><span class="comment">#3.in</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">含义：判断某字段的值是否属于in列表中的某一项</span></span><br><span class="line"><span class="comment">特点：</span></span><br><span class="line"><span class="comment">	①使用in提高语句简洁度</span></span><br><span class="line"><span class="comment">	②in列表的值类型必须一致或兼容</span></span><br><span class="line"><span class="comment">	③in列表中不支持通配符</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">##案例：查询员工的工种编号是 IT_PROG、AD_VP、AD_PRES中的一个员工名和工种编号</span></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	last_name,</span><br><span class="line">	job_id</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	employees</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	job_id = <span class="string">'IT_PROT'</span> <span class="keyword">OR</span> job_id = <span class="string">'AD_VP'</span> <span class="keyword">OR</span> JOB_ID =<span class="string">'AD_PRES'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">##------------------</span></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	last_name,</span><br><span class="line">	job_id</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	employees</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	job_id <span class="keyword">IN</span>( <span class="string">'IT_PROT'</span> ,<span class="string">'AD_VP'</span>,<span class="string">'AD_PRES'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">#4、is null</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">=或&lt;&gt;不能用于判断null值</span></span><br><span class="line"><span class="comment">is null或is not null 可以判断null值</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##案例1：查询没有奖金的员工名和奖金率</span></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	last_name,</span><br><span class="line">	commission_pct</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	employees</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	commission_pct <span class="keyword">IS</span> <span class="literal">NULL</span>;</span><br><span class="line"><span class="comment">##案例2：查询有奖金的员工名和奖金率</span></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	last_name,</span><br><span class="line">	commission_pct</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	employees</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	commission_pct <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>;</span><br><span class="line"><span class="comment">##----------以下为×</span></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	last_name,</span><br><span class="line">	commission_pct</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	employees</span><br><span class="line"><span class="keyword">WHERE</span> </span><br><span class="line">	salary <span class="keyword">IS</span> <span class="number">12000</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#安全等于  &lt;=&gt;</span></span><br><span class="line"><span class="comment">##案例1：查询没有奖金的员工名和奖金率</span></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	last_name,</span><br><span class="line">	commission_pct</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	employees</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	commission_pct &lt;=&gt;<span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">##案例2：查询工资为12000的员工信息</span></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	last_name,</span><br><span class="line">	salary</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	employees</span><br><span class="line"><span class="keyword">WHERE</span> </span><br><span class="line">	salary &lt;=&gt; <span class="number">12000</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 小结</span></span><br><span class="line">IS NULL: 仅仅可以判断NULL值，可读性较高，建议使用</span><br><span class="line">&lt;=&gt;    : 既可以判断NULL值，又可以判断普通的数值，可读性较低</span><br></pre></td></tr></table></figure>
+<h2 id="常见函数"><a href="#常见函数" class="headerlink" title="常见函数"></a>常见函数</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">常见函数</span></span><br><span class="line"><span class="comment">  概念：类似于java的方法，将一组逻辑语句封装在方法体中，对外暴露方法名</span></span><br><span class="line"><span class="comment">  好处：1、隐藏了实现细节  2、提高代码的重用性</span></span><br><span class="line"><span class="comment">  调用：select 函数名(实参列表) 【from 表】;</span></span><br><span class="line"><span class="comment">特点：</span></span><br><span class="line"><span class="comment">  ①叫什么（函数名）</span></span><br><span class="line"><span class="comment">	②干什么（函数功能）</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">分类：</span></span><br><span class="line"><span class="comment">	1、单行函数</span></span><br><span class="line"><span class="comment">	如 concat、length、ifnull等</span></span><br><span class="line"><span class="comment">	2、分组函数</span></span><br><span class="line"><span class="comment">	功能：做统计使用，又称为统计函数、聚合函数、组函数</span></span><br><span class="line"><span class="comment">	</span></span><br><span class="line"><span class="comment">常见函数：</span></span><br><span class="line"><span class="comment">	一、单行函数</span></span><br><span class="line"><span class="comment">  </span></span><br><span class="line"><span class="comment">	字符函数：</span></span><br><span class="line"><span class="comment">	length:获取字节个数(utf-8一个汉字代表3个字节,gbk为2个字节)</span></span><br><span class="line"><span class="comment">	concat</span></span><br><span class="line"><span class="comment">	substr</span></span><br><span class="line"><span class="comment">	instr</span></span><br><span class="line"><span class="comment">	trim</span></span><br><span class="line"><span class="comment">	upper</span></span><br><span class="line"><span class="comment">	lower</span></span><br><span class="line"><span class="comment">	lpad</span></span><br><span class="line"><span class="comment">	rpad</span></span><br><span class="line"><span class="comment">	replace</span></span><br><span class="line"><span class="comment">	</span></span><br><span class="line"><span class="comment">	数学函数：</span></span><br><span class="line"><span class="comment">	round</span></span><br><span class="line"><span class="comment">	ceil</span></span><br><span class="line"><span class="comment">	floor</span></span><br><span class="line"><span class="comment">	truncate</span></span><br><span class="line"><span class="comment">	mod</span></span><br><span class="line"><span class="comment">	</span></span><br><span class="line"><span class="comment">	日期函数：</span></span><br><span class="line"><span class="comment">	now</span></span><br><span class="line"><span class="comment">	curdate</span></span><br><span class="line"><span class="comment">	curtime</span></span><br><span class="line"><span class="comment">	year</span></span><br><span class="line"><span class="comment">	month</span></span><br><span class="line"><span class="comment">	monthname</span></span><br><span class="line"><span class="comment">	day</span></span><br><span class="line"><span class="comment">	hour</span></span><br><span class="line"><span class="comment">	minute</span></span><br><span class="line"><span class="comment">	second</span></span><br><span class="line"><span class="comment">	str_to_date</span></span><br><span class="line"><span class="comment">	date_format</span></span><br><span class="line"><span class="comment">  </span></span><br><span class="line"><span class="comment">	其他函数：</span></span><br><span class="line"><span class="comment">	version</span></span><br><span class="line"><span class="comment">	database</span></span><br><span class="line"><span class="comment">	user</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">	控制函数：</span></span><br><span class="line"><span class="comment">	if（mysql中if是一个函数）</span></span><br><span class="line"><span class="comment">	case</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#一、字符函数</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#1.length 获取参数值的字节个数</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">LENGTH</span>(<span class="string">'john'</span>);</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">LENGTH</span>(<span class="string">'张三丰hahaha'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> <span class="keyword">VARIABLES</span> <span class="keyword">LIKE</span> <span class="string">'%char%'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#2.concat 拼接字符串</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">CONCAT</span>(last_name,<span class="string">'_'</span>,first_name) 姓名 <span class="keyword">FROM</span> employees;</span><br><span class="line"></span><br><span class="line"><span class="comment">#3.upper、lower</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">UPPER</span>(<span class="string">'john'</span>);</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">LOWER</span>(<span class="string">'joHn'</span>);</span><br><span class="line"><span class="comment">#示例：将姓变大写，名变小写，然后拼接</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">CONCAT</span>(<span class="keyword">UPPER</span>(last_name),<span class="keyword">LOWER</span>(first_name))  姓名 <span class="keyword">FROM</span> employees;</span><br><span class="line"></span><br><span class="line"><span class="comment">#4.substr、substring</span></span><br><span class="line">注意：索引从1开始</span><br><span class="line"><span class="comment">#截取从指定索引处后面所有字符</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">SUBSTR</span>(<span class="string">'李莫愁爱上了陆展元'</span>,<span class="number">7</span>)  out_put;</span><br><span class="line"></span><br><span class="line"><span class="comment">#截取从指定索引处指定字符长度的字符</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">SUBSTR</span>(<span class="string">'李莫愁爱上了陆展元'</span>,<span class="number">1</span>,<span class="number">3</span>) out_put;</span><br><span class="line"></span><br><span class="line"><span class="comment">#案例：姓名中首字符大写，其他字符小写然后用_拼接，显示出来</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">CONCAT</span>(<span class="keyword">UPPER</span>(<span class="keyword">SUBSTR</span>(last_name,<span class="number">1</span>,<span class="number">1</span>)),<span class="string">'_'</span>,<span class="keyword">LOWER</span>(<span class="keyword">SUBSTR</span>(last_name,<span class="number">2</span>)))  out_put</span><br><span class="line"><span class="keyword">FROM</span> employees;</span><br><span class="line"></span><br><span class="line"><span class="comment">#5.instr 返回子串第一次出现的索引，如果找不到返回0</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">INSTR</span>(<span class="string">'杨不殷六侠悔爱上了殷六侠'</span>,<span class="string">'殷八侠'</span>) <span class="keyword">AS</span> out_put;</span><br><span class="line"></span><br><span class="line"><span class="comment">#6.trim</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">LENGTH</span>(<span class="keyword">TRIM</span>(<span class="string">'    张翠山    '</span>)) <span class="keyword">AS</span> out_put;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">TRIM</span>(<span class="string">'aa'</span> <span class="keyword">FROM</span> <span class="string">'aaaaaaaaa张aaaaaaaaaaaa翠山aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'</span>)  <span class="keyword">AS</span> out_put;</span><br><span class="line"></span><br><span class="line"><span class="comment">#7.lpad 用指定的字符实现左填充指定长度</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">LPAD</span>(<span class="string">'殷素素'</span>,<span class="number">2</span>,<span class="string">'*'</span>) <span class="keyword">AS</span> out_put;</span><br><span class="line"></span><br><span class="line"><span class="comment">#8.rpad 用指定的字符实现右填充指定长度</span></span><br><span class="line"><span class="keyword">SELECT</span> RPAD(<span class="string">'殷素素'</span>,<span class="number">12</span>,<span class="string">'ab'</span>) <span class="keyword">AS</span> out_put;</span><br><span class="line"></span><br><span class="line"><span class="comment">#9.replace 替换</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">REPLACE</span>(<span class="string">'周芷若周芷若周芷若周芷若张无忌爱上了周芷若'</span>,<span class="string">'周芷若'</span>,<span class="string">'赵敏'</span>) <span class="keyword">AS</span> out_put;</span><br><span class="line"></span><br><span class="line"><span class="comment">#二、数学函数</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#round 四舍五入</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">ROUND</span>(<span class="number">-1.55</span>);</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">ROUND</span>(<span class="number">1.567</span>,<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">#ceil 向上取整,返回&gt;=该参数的最小整数</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">CEIL</span>(<span class="number">-1.02</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">#floor 向下取整，返回&lt;=该参数的最大整数</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">FLOOR</span>(<span class="number">-9.99</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">#truncate 截断</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">TRUNCATE</span>(<span class="number">1.69999</span>,<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">#mod取余</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">mod(a,b) ：  a-a/b*b</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">mod(-10,-3):-10- (-10)/(-3)*（-3）=-1</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">MOD</span>(<span class="number">10</span>,<span class="number">-3</span>);</span><br><span class="line"><span class="keyword">SELECT</span> <span class="number">10</span>%<span class="number">3</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#三、日期函数</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#now 返回当前系统日期+时间</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">NOW</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">#curdate 返回当前系统日期，不包含时间</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">CURDATE</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">#curtime 返回当前时间，不包含日期</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">CURTIME</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">#可以获取指定的部分，年、月、日、小时、分钟、秒</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">YEAR</span>(<span class="keyword">NOW</span>()) 年;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">YEAR</span>(<span class="string">'1998-1-1'</span>) 年;</span><br><span class="line"><span class="keyword">SELECT</span>  <span class="keyword">YEAR</span>(hiredate) 年 <span class="keyword">FROM</span> employees;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">MONTH</span>(<span class="keyword">NOW</span>()) 月;</span><br><span class="line"><span class="keyword">SELECT</span> MONTHNAME(<span class="keyword">NOW</span>()) 月;</span><br><span class="line"></span><br><span class="line"><span class="comment">#str_to_date 将字符通过指定的格式转换成日期</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">STR_TO_DATE</span>(<span class="string">'1998-3-2'</span>,<span class="string">'%Y-%c-%d'</span>) <span class="keyword">AS</span> out_put;</span><br><span class="line"></span><br><span class="line"><span class="comment">#查询入职日期为1992--4-3的员工信息</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> employees <span class="keyword">WHERE</span> hiredate = <span class="string">'1992-4-3'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> employees <span class="keyword">WHERE</span> hiredate = <span class="keyword">STR_TO_DATE</span>(<span class="string">'4-3 1992'</span>,<span class="string">'%c-%d %Y'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">#date_format 将日期转换成字符</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DATE_FORMAT</span>(<span class="keyword">NOW</span>(),<span class="string">'%y年%m月%d日'</span>) <span class="keyword">AS</span> out_put;</span><br><span class="line"></span><br><span class="line"><span class="comment">#查询有奖金的员工名和入职日期(xx月/xx日 xx年)</span></span><br><span class="line"><span class="keyword">SELECT</span> last_name,<span class="keyword">DATE_FORMAT</span>(hiredate,<span class="string">'%m月/%d日 %y年'</span>) 入职日期</span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">WHERE</span> commission_pct <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#四、其他函数</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">VERSION</span>();</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DATABASE</span>();</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">USER</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">#五、流程控制函数</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#1.if函数： if else 的效果</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">IF</span>(<span class="number">10</span>&lt;<span class="number">5</span>,<span class="string">'大'</span>,<span class="string">'小'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> last_name,commission_pct,<span class="keyword">IF</span>(commission_pct <span class="keyword">IS</span> <span class="literal">NULL</span>,<span class="string">'没奖金，呵呵'</span>,<span class="string">'有奖金，嘻嘻'</span>) 备注</span><br><span class="line"><span class="keyword">FROM</span> employees;</span><br><span class="line"></span><br><span class="line"><span class="comment">#2.case函数的使用一： switch case 的效果</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">java中</span></span><br><span class="line"><span class="comment">switch(变量或表达式)&#123;</span></span><br><span class="line"><span class="comment">	case 常量1：语句1;break;</span></span><br><span class="line"><span class="comment">	...</span></span><br><span class="line"><span class="comment">	default:语句n;break;</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">mysql中</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">case 要判断的字段或表达式</span></span><br><span class="line"><span class="comment">when 常量1 then 要显示的值1或语句1;</span></span><br><span class="line"><span class="comment">when 常量2 then 要显示的值2或语句2;</span></span><br><span class="line"><span class="comment">...</span></span><br><span class="line"><span class="comment">else 要显示的值n或语句n;</span></span><br><span class="line"><span class="comment">end</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*案例：查询员工的工资，要求</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">部门号=30，显示的工资为1.1倍</span></span><br><span class="line"><span class="comment">部门号=40，显示的工资为1.2倍</span></span><br><span class="line"><span class="comment">部门号=50，显示的工资为1.3倍</span></span><br><span class="line"><span class="comment">其他部门，显示的工资为原工资</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> salary 原始工资,department_id,</span><br><span class="line"><span class="keyword">CASE</span> department_id</span><br><span class="line"><span class="keyword">WHEN</span> <span class="number">30</span> <span class="keyword">THEN</span> salary*<span class="number">1.1</span></span><br><span class="line"><span class="keyword">WHEN</span> <span class="number">40</span> <span class="keyword">THEN</span> salary*<span class="number">1.2</span></span><br><span class="line"><span class="keyword">WHEN</span> <span class="number">50</span> <span class="keyword">THEN</span> salary*<span class="number">1.3</span></span><br><span class="line"><span class="keyword">ELSE</span> salary</span><br><span class="line"><span class="keyword">END</span> <span class="keyword">AS</span> 新工资</span><br><span class="line"><span class="keyword">FROM</span> employees;</span><br><span class="line"></span><br><span class="line"><span class="comment">#3.case 函数的使用二：类似于多重if</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">java中：</span></span><br><span class="line"><span class="comment">if(条件1)&#123;</span></span><br><span class="line"><span class="comment">	语句1；</span></span><br><span class="line"><span class="comment">&#125;else if(条件2)&#123;</span></span><br><span class="line"><span class="comment">	语句2；</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">...</span></span><br><span class="line"><span class="comment">else&#123;</span></span><br><span class="line"><span class="comment">	语句n;</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">mysql中：</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">case </span></span><br><span class="line"><span class="comment">when 条件1 then 要显示的值1或语句1</span></span><br><span class="line"><span class="comment">when 条件2 then 要显示的值2或语句2</span></span><br><span class="line"><span class="comment">...</span></span><br><span class="line"><span class="comment">else 要显示的值n或语句n</span></span><br><span class="line"><span class="comment">end</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#案例：查询员工的工资的情况</span></span><br><span class="line">如果工资&gt;20000,显示A级别</span><br><span class="line">如果工资&gt;15000,显示B级别</span><br><span class="line">如果工资&gt;10000，显示C级别</span><br><span class="line">否则，显示D级别</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> salary,</span><br><span class="line"><span class="keyword">CASE</span> </span><br><span class="line"><span class="keyword">WHEN</span> salary&gt;<span class="number">20000</span> <span class="keyword">THEN</span> <span class="string">'A'</span></span><br><span class="line"><span class="keyword">WHEN</span> salary&gt;<span class="number">15000</span> <span class="keyword">THEN</span> <span class="string">'B'</span></span><br><span class="line"><span class="keyword">WHEN</span> salary&gt;<span class="number">10000</span> <span class="keyword">THEN</span> <span class="string">'C'</span></span><br><span class="line"><span class="keyword">ELSE</span> <span class="string">'D'</span></span><br><span class="line"><span class="keyword">END</span> <span class="keyword">AS</span> 工资级别</span><br><span class="line"><span class="keyword">FROM</span> employees;</span><br></pre></td></tr></table></figure>
+<h2 id="排序查询"><a href="#排序查询" class="headerlink" title="排序查询"></a>排序查询</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">排序查询语法：</span></span><br><span class="line"><span class="comment">select 查询列表</span></span><br><span class="line"><span class="comment">from 表名</span></span><br><span class="line"><span class="comment">【where  筛选条件】</span></span><br><span class="line"><span class="comment">order by 排序的字段或表达式;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">特点：</span></span><br><span class="line"><span class="comment">1、asc代表的是升序，可以省略</span></span><br><span class="line"><span class="comment">  desc代表的是降序</span></span><br><span class="line"><span class="comment">2、order by子句可以支持 单个字段、别名、表达式、函数、多个字段</span></span><br><span class="line"><span class="comment">3、order by子句在查询语句的最后面，除了limit子句</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#1、按单个字段排序</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> employees <span class="keyword">ORDER</span> <span class="keyword">BY</span> salary <span class="keyword">DESC</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#2、添加筛选条件再排序</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#案例：查询部门编号&gt;=90的员工信息，并按员工编号降序</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> *</span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">WHERE</span> department_id&gt;=<span class="number">90</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> employee_id <span class="keyword">DESC</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#3、按表达式排序</span></span><br><span class="line"><span class="comment">#案例：查询员工信息 按年薪降序</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> *,salary*<span class="number">12</span>*(<span class="number">1</span>+<span class="keyword">IFNULL</span>(commission_pct,<span class="number">0</span>))</span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> salary*<span class="number">12</span>*(<span class="number">1</span>+<span class="keyword">IFNULL</span>(commission_pct,<span class="number">0</span>)) <span class="keyword">DESC</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#4、按别名排序</span></span><br><span class="line"><span class="comment">#案例：查询员工信息 按年薪升序</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> *,salary*<span class="number">12</span>*(<span class="number">1</span>+<span class="keyword">IFNULL</span>(commission_pct,<span class="number">0</span>)) 年薪</span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> 年薪 <span class="keyword">ASC</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#5、按函数排序</span></span><br><span class="line"><span class="comment">#案例：查询员工名，并且按名字的长度降序</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">LENGTH</span>(last_name),last_name </span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> <span class="keyword">LENGTH</span>(last_name) <span class="keyword">DESC</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#6、按多个字段排序</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#案例：查询员工信息，要求先按工资降序，再按employee_id升序</span></span><br><span class="line"><span class="keyword">SELECT</span> *</span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> salary <span class="keyword">DESC</span>,employee_id <span class="keyword">ASC</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="分组查询"><a href="#分组查询" class="headerlink" title="分组查询"></a>分组查询</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">分组查询语法：</span></span><br><span class="line"><span class="comment">  select 查询列表</span></span><br><span class="line"><span class="comment">  from 表</span></span><br><span class="line"><span class="comment">  【where 筛选条件】</span></span><br><span class="line"><span class="comment">  group by 分组的字段</span></span><br><span class="line"><span class="comment">  having 分组后筛选</span></span><br><span class="line"><span class="comment">  【order by 排序的字段】;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">特点：</span></span><br><span class="line"><span class="comment">1、和分组函数一同查询的字段必须是group by后出现的字段</span></span><br><span class="line"><span class="comment">2、筛选分为两类：【分组前筛选和分组后筛选】</span></span><br><span class="line"><span class="comment">		针对的表	                		位置		         连接的关键字</span></span><br><span class="line"><span class="comment">分组前筛选（原始表）				      group by前	         where</span></span><br><span class="line"><span class="comment">分组后筛选（group by后的结果集）  group by后	         having</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">问题1：分组函数做筛选能不能放在where后面</span></span><br><span class="line"><span class="comment">答：不能</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">问题2：where——group by——having</span></span><br><span class="line"><span class="comment">一般来讲，能用分组前筛选的，尽量使用分组前筛选，提高效率</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">3、分组可以按单个字段也可以按多个字段</span></span><br><span class="line"><span class="comment">4、可以搭配着排序使用</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#引入：查询每个部门的员工个数</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(*) <span class="keyword">FROM</span> employees <span class="keyword">WHERE</span> department_id=<span class="number">90</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#1.简单的分组</span></span><br><span class="line"><span class="comment">##案例1：查询每个工种的员工平均工资</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">AVG</span>(salary),job_id</span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> job_id;</span><br><span class="line"><span class="comment">##案例2：查询每个位置的部门个数</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(*),location_id</span><br><span class="line"><span class="keyword">FROM</span> departments</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> location_id;</span><br><span class="line"></span><br><span class="line"><span class="comment">#2、可以实现分组前的筛选</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##案例1：查询邮箱中包含a字符的每个部门的最高工资</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">MAX</span>(salary),department_id</span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">WHERE</span> email <span class="keyword">LIKE</span> <span class="string">'%a%'</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> department_id;</span><br><span class="line"></span><br><span class="line"><span class="comment">##案例2：查询有奖金的每个领导手下员工的平均工资</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">AVG</span>(salary),manager_id</span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">WHERE</span> commission_pct <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="literal">NULL</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> manager_id;</span><br><span class="line"></span><br><span class="line"><span class="comment">#3、分组后筛选</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##案例1：查询哪个部门的员工个数&gt;5</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#①查询每个部门的员工个数</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(*),department_id</span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> department_id;</span><br><span class="line"></span><br><span class="line"><span class="comment">#② 筛选刚才①结果</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(*),department_id</span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> department_id</span><br><span class="line"><span class="keyword">HAVING</span> <span class="keyword">COUNT</span>(*)&gt;<span class="number">5</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">##案例2：每个工种有奖金的员工的最高工资&gt;12000的工种编号和最高工资</span></span><br><span class="line"><span class="keyword">SELECT</span> job_id,<span class="keyword">MAX</span>(salary)</span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">WHERE</span> commission_pct <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="literal">NULL</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> job_id</span><br><span class="line"><span class="keyword">HAVING</span> <span class="keyword">MAX</span>(salary)&gt;<span class="number">12000</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">##案例3：领导编号&gt;102的每个领导手下的最低工资大于5000的领导编号和最低工资</span></span><br><span class="line">manager_id&gt;102</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> manager_id,<span class="keyword">MIN</span>(salary)</span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> manager_id</span><br><span class="line"><span class="keyword">HAVING</span> <span class="keyword">MIN</span>(salary)&gt;<span class="number">5000</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#4.添加排序</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##案例：每个工种有奖金的员工的最高工资&gt;6000的工种编号和最高工资,按最高工资升序</span></span><br><span class="line"><span class="keyword">SELECT</span> job_id,<span class="keyword">MAX</span>(salary) m</span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">WHERE</span> commission_pct <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="literal">NULL</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> job_id</span><br><span class="line"><span class="keyword">HAVING</span> m&gt;<span class="number">6000</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> m;</span><br><span class="line"></span><br><span class="line"><span class="comment">#5.按多个字段分组</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##案例：查询每个工种每个部门的最低工资,并按最低工资降序</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">MIN</span>(salary),job_id,department_id</span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> department_id,job_id</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> <span class="keyword">MIN</span>(salary) <span class="keyword">DESC</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="连接查询"><a href="#连接查询" class="headerlink" title="连接查询"></a>连接查询</h2><p><img src="/uploads/0-common-images/17.png" alt="image"></p>
+<p><img src="/uploads/0-common-images/18.jpg" alt="image"></p>
+<h3 id="SQL92语法"><a href="#SQL92语法" class="headerlink" title="SQL92语法"></a>SQL92语法</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">含义：又称多表查询，当查询的字段来自于多个表时，就会用到连接查询</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">笛卡尔乘积现象：表1 有m行，表2有n行，结果=m*n行</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">发生原因：没有有效的连接条件</span></span><br><span class="line"><span class="comment">如何避免：添加有效的连接条件</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">分类：</span></span><br><span class="line"><span class="comment">	按年代分类：</span></span><br><span class="line"><span class="comment">	    sql92标准：仅仅支持内连接</span></span><br><span class="line"><span class="comment">	    sql99标准【推荐】：支持内连接 + 外连接（左外和右外） + 交叉连接</span></span><br><span class="line"><span class="comment">	</span></span><br><span class="line"><span class="comment">	按功能分类：</span></span><br><span class="line"><span class="comment">		内连接：</span></span><br><span class="line"><span class="comment">			等值连接</span></span><br><span class="line"><span class="comment">			非等值连接</span></span><br><span class="line"><span class="comment">			自连接</span></span><br><span class="line"><span class="comment">		外连接：</span></span><br><span class="line"><span class="comment">			左外连接</span></span><br><span class="line"><span class="comment">			右外连接</span></span><br><span class="line"><span class="comment">			全外连接</span></span><br><span class="line"><span class="comment">		交叉连接</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">USE</span> employees;</span><br><span class="line"></span><br><span class="line"><span class="comment"># sql92标准：内连接（仅支持）</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 笛卡尔积（没有有效的连接条件）</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> departments d,employees e;</span><br><span class="line"></span><br><span class="line"><span class="comment">## 等值连接</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  *</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  salaries s,</span><br><span class="line">  employees e</span><br><span class="line"><span class="keyword">WHERE</span> e.<span class="string">`emp_no`</span> = s.<span class="string">`emp_no`</span></span><br><span class="line">  <span class="keyword">AND</span> s.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">## 不等值连接</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  *</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  salaries s,</span><br><span class="line">  employees e</span><br><span class="line"><span class="keyword">WHERE</span> e.<span class="string">`emp_no`</span> = s.<span class="string">`emp_no`</span></span><br><span class="line">  <span class="keyword">AND</span> s.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line">  <span class="keyword">AND</span> s.<span class="string">`salary`</span> <span class="keyword">BETWEEN</span> <span class="number">80000</span> <span class="keyword">AND</span> <span class="number">100000</span>;</span><br><span class="line">  </span><br><span class="line"><span class="comment">## 自连接</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  *</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  salaries s1,</span><br><span class="line">  salaries s2</span><br><span class="line"><span class="keyword">WHERE</span> s1.<span class="string">`from_date`</span> = s2.<span class="string">`to_date`</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">## 练习：查询工资最高的在职经理所在的部门的工资最低的在职员工的姓名，职位，工资。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">嵌套双层查询可以解决 LIMIT &amp; SUBQUERY</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">### 1.查询出所有的在职经理的员工号</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> emp_no <span class="keyword">FROM</span> dept_manager dm <span class="keyword">WHERE</span> dm.<span class="string">`to_date`</span>=<span class="string">'9999-01-01'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">### 2.查出工资最高的经理的员工号</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  emp_no,</span><br><span class="line">  salary</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  salaries s</span><br><span class="line"><span class="keyword">WHERE</span> s.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line">  <span class="keyword">AND</span> s.emp_no <span class="keyword">IN</span></span><br><span class="line">  (<span class="keyword">SELECT</span> emp_no <span class="keyword">FROM</span> dept_manager dm <span class="keyword">WHERE</span> dm.<span class="string">`to_date`</span>=<span class="string">'9999-01-01'</span>)</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> s.salary <span class="keyword">DESC</span></span><br><span class="line"><span class="keyword">LIMIT</span> <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">### 3.查出工资最高的经理的部门号</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  dm.dept_no</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  dept_manager dm</span><br><span class="line"><span class="keyword">WHERE</span> dm.<span class="string">`emp_no`</span> <span class="keyword">IN</span></span><br><span class="line">  (<span class="keyword">SELECT</span> t.emp_no <span class="keyword">FROM</span> ( <span class="keyword">SELECT</span></span><br><span class="line">  emp_no,</span><br><span class="line">  salary</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  salaries s</span><br><span class="line"><span class="keyword">WHERE</span> s.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line">  <span class="keyword">AND</span> s.emp_no <span class="keyword">IN</span></span><br><span class="line">  (<span class="keyword">SELECT</span> emp_no <span class="keyword">FROM</span> dept_manager dm <span class="keyword">WHERE</span> dm.<span class="string">`to_date`</span>=<span class="string">'9999-01-01'</span>)</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> s.salary <span class="keyword">DESC</span></span><br><span class="line"><span class="keyword">LIMIT</span> <span class="number">1</span>) <span class="keyword">AS</span> t);</span><br><span class="line">        </span><br><span class="line"><span class="comment">### 4.由3结果查询该部门内所有在职员工号</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  de.<span class="string">`emp_no`</span></span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  dept_emp de</span><br><span class="line"><span class="keyword">WHERE</span> de.<span class="string">`dept_no`</span> <span class="keyword">IN</span></span><br><span class="line">  ( <span class="keyword">SELECT</span></span><br><span class="line">  dm.dept_no</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  dept_manager dm</span><br><span class="line"><span class="keyword">WHERE</span> dm.<span class="string">`emp_no`</span> <span class="keyword">IN</span></span><br><span class="line">  (<span class="keyword">SELECT</span> t.emp_no <span class="keyword">FROM</span> (<span class="keyword">SELECT</span></span><br><span class="line">  emp_no,</span><br><span class="line">  salary,</span><br><span class="line">  from_date,</span><br><span class="line">  <span class="keyword">to_date</span></span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  salaries s</span><br><span class="line"><span class="keyword">WHERE</span> s.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line">  <span class="keyword">AND</span> s.emp_no <span class="keyword">IN</span></span><br><span class="line">  (<span class="keyword">SELECT</span></span><br><span class="line">    emp_no</span><br><span class="line">  <span class="keyword">FROM</span></span><br><span class="line">    dept_manager dm <span class="keyword">WHERE</span> dm.<span class="string">`to_date`</span>=<span class="string">'9999-01-01'</span>)</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> s.salary <span class="keyword">DESC</span></span><br><span class="line"><span class="keyword">LIMIT</span> <span class="number">1</span>) <span class="keyword">AS</span> t)) <span class="keyword">AND</span> de.<span class="string">`to_date`</span>=<span class="string">'9999-01-01'</span>;</span><br><span class="line"></span><br><span class="line">          </span><br><span class="line"><span class="comment">### 5.由4结果查询工资最低的员工号</span></span><br><span class="line"><span class="keyword">SELECT</span> s.<span class="string">`emp_no`</span>,s.<span class="string">`salary`</span> <span class="keyword">FROM</span> salaries s <span class="keyword">WHERE</span> s.<span class="string">`emp_no`</span> <span class="keyword">IN</span> (<span class="keyword">SELECT</span></span><br><span class="line">  de.<span class="string">`emp_no`</span></span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  dept_emp de</span><br><span class="line"><span class="keyword">WHERE</span> de.<span class="string">`dept_no`</span> <span class="keyword">IN</span></span><br><span class="line">  ( <span class="keyword">SELECT</span></span><br><span class="line">  dm.dept_no</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  dept_manager dm</span><br><span class="line"><span class="keyword">WHERE</span> dm.<span class="string">`emp_no`</span> <span class="keyword">IN</span></span><br><span class="line">  (<span class="keyword">SELECT</span> t.emp_no <span class="keyword">FROM</span> (<span class="keyword">SELECT</span></span><br><span class="line">  emp_no,</span><br><span class="line">  salary,</span><br><span class="line">  from_date,</span><br><span class="line">  <span class="keyword">to_date</span></span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  salaries s</span><br><span class="line"><span class="keyword">WHERE</span> s.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line">  <span class="keyword">AND</span> s.emp_no <span class="keyword">IN</span></span><br><span class="line">  (<span class="keyword">SELECT</span></span><br><span class="line">    emp_no</span><br><span class="line">  <span class="keyword">FROM</span></span><br><span class="line">    dept_manager dm <span class="keyword">WHERE</span> dm.<span class="string">`to_date`</span>=<span class="string">'9999-01-01'</span>)</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> s.salary <span class="keyword">DESC</span></span><br><span class="line"><span class="keyword">LIMIT</span> <span class="number">1</span>) <span class="keyword">AS</span> t)) <span class="keyword">AND</span> de.<span class="string">`to_date`</span>=<span class="string">'9999-01-01'</span>) <span class="keyword">AND</span> s.<span class="string">`to_date`</span>=<span class="string">'9999-01-01'</span> <span class="keyword">ORDER</span> <span class="keyword">BY</span> s.<span class="string">`salary`</span> <span class="keyword">LIMIT</span> <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">### 6.由5结果查询出所需信息</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  s.<span class="string">`emp_no`</span>,</span><br><span class="line">  <span class="keyword">CONCAT</span>(</span><br><span class="line">    e.<span class="string">`first_name`</span>,</span><br><span class="line">    <span class="string">' '</span>,</span><br><span class="line">    e.<span class="string">`last_name`</span></span><br><span class="line">  ) <span class="keyword">AS</span> <span class="string">'name'</span>,</span><br><span class="line">  t.<span class="string">`title`</span>,</span><br><span class="line">  s.<span class="string">`salary`</span></span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  employees e,</span><br><span class="line">  titles t,</span><br><span class="line">  (<span class="keyword">SELECT</span></span><br><span class="line">    s.<span class="string">`emp_no`</span>,</span><br><span class="line">    s.<span class="string">`salary`</span></span><br><span class="line">  <span class="keyword">FROM</span></span><br><span class="line">    salaries s</span><br><span class="line">  <span class="keyword">WHERE</span> s.<span class="string">`emp_no`</span> <span class="keyword">IN</span></span><br><span class="line">    (<span class="keyword">SELECT</span></span><br><span class="line">      de.<span class="string">`emp_no`</span></span><br><span class="line">    <span class="keyword">FROM</span></span><br><span class="line">      dept_emp de</span><br><span class="line">    <span class="keyword">WHERE</span> de.<span class="string">`dept_no`</span> <span class="keyword">IN</span></span><br><span class="line">      (<span class="keyword">SELECT</span></span><br><span class="line">        dm.dept_no</span><br><span class="line">      <span class="keyword">FROM</span></span><br><span class="line">        dept_manager dm</span><br><span class="line">      <span class="keyword">WHERE</span> dm.<span class="string">`emp_no`</span> <span class="keyword">IN</span></span><br><span class="line">        (<span class="keyword">SELECT</span></span><br><span class="line">          t.emp_no</span><br><span class="line">        <span class="keyword">FROM</span></span><br><span class="line">          (<span class="keyword">SELECT</span></span><br><span class="line">            emp_no,</span><br><span class="line">            salary,</span><br><span class="line">            from_date,</span><br><span class="line">            <span class="keyword">to_date</span></span><br><span class="line">          <span class="keyword">FROM</span></span><br><span class="line">            salaries s</span><br><span class="line">          <span class="keyword">WHERE</span> s.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line">            <span class="keyword">AND</span> s.emp_no <span class="keyword">IN</span></span><br><span class="line">            (<span class="keyword">SELECT</span></span><br><span class="line">              emp_no</span><br><span class="line">            <span class="keyword">FROM</span></span><br><span class="line">              dept_manager dm</span><br><span class="line">            <span class="keyword">WHERE</span> dm.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span>)</span><br><span class="line">          <span class="keyword">ORDER</span> <span class="keyword">BY</span> s.salary <span class="keyword">DESC</span></span><br><span class="line">          <span class="keyword">LIMIT</span> <span class="number">1</span>) <span class="keyword">AS</span> t))</span><br><span class="line">      <span class="keyword">AND</span> de.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span>)</span><br><span class="line">    <span class="keyword">AND</span> s.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line">  <span class="keyword">ORDER</span> <span class="keyword">BY</span> s.<span class="string">`salary`</span></span><br><span class="line">  <span class="keyword">LIMIT</span> <span class="number">1</span>) <span class="keyword">AS</span> s</span><br><span class="line"><span class="keyword">WHERE</span> e.<span class="string">`emp_no`</span> = t.<span class="string">`emp_no`</span></span><br><span class="line">  <span class="keyword">AND</span> t.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line">  <span class="keyword">AND</span> s.<span class="string">`emp_no`</span> = e.<span class="string">`emp_no`</span>;</span><br><span class="line"></span><br><span class="line">+<span class="comment">--------+----------------+-------+--------+</span></span><br><span class="line">| emp_no | name           | title | salary |</span><br><span class="line">+<span class="comment">--------+----------------+-------+--------+</span></span><br><span class="line">|  65337 | Youngkon Munck | Staff |  39821 |</span><br><span class="line">+<span class="comment">--------+----------------+-------+--------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">2.60</span> sec)</span><br></pre></td></tr></table></figure>
+<h3 id="SQL99语法"><a href="#SQL99语法" class="headerlink" title="SQL99语法"></a>SQL99语法</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">sql99语法：</span></span><br><span class="line"><span class="comment">	select 查询列表</span></span><br><span class="line"><span class="comment">	from 表1 别名 </span></span><br><span class="line"><span class="comment">	【连接类型】join </span></span><br><span class="line"><span class="comment">	表2 别名 </span></span><br><span class="line"><span class="comment">	on 连接条件</span></span><br><span class="line"><span class="comment">	【where 筛选条件】</span></span><br><span class="line"><span class="comment">	【group by 分组】</span></span><br><span class="line"><span class="comment">	【having 筛选条件】</span></span><br><span class="line"><span class="comment">	【order by 排序列表】</span></span><br><span class="line"><span class="comment">	</span></span><br><span class="line"><span class="comment">分类：</span></span><br><span class="line"><span class="comment">	内连接（★）：【inner】 join</span></span><br><span class="line"><span class="comment">	外连接</span></span><br><span class="line"><span class="comment">		左外(★):left 【outer】 join</span></span><br><span class="line"><span class="comment">		右外(★)：right 【outer】 join</span></span><br><span class="line"><span class="comment">		全外：full【outer】join</span></span><br><span class="line"><span class="comment">	交叉连接：cross join</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">USE</span> employees;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> departments;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> dept_emp;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 内连接（相交部分）</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">语法：</span></span><br><span class="line"><span class="comment">	select 查询列表</span></span><br><span class="line"><span class="comment">	from 表1 别名</span></span><br><span class="line"><span class="comment">	【inner】 join 表2 别名</span></span><br><span class="line"><span class="comment">	on 连接条件;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">分类：</span></span><br><span class="line"><span class="comment">	等值</span></span><br><span class="line"><span class="comment">	非等值</span></span><br><span class="line"><span class="comment">	自连接</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">特点：</span></span><br><span class="line"><span class="comment">	①添加排序、分组、筛选</span></span><br><span class="line"><span class="comment">	②inner可以省略</span></span><br><span class="line"><span class="comment">	③与sql92相比，筛选条件放在where后面，连接条件放在on后面，提高分离性，便于阅读</span></span><br><span class="line"><span class="comment">	④inner join连接和sql92语法中的连接效果是一样的，都是查询多表的【交集】</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 笛卡尔积</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">cross join是纯粹的笛卡尔积，理论上不应该支持on语法，但是MySQL在这方面做的比较奇怪。</span></span><br><span class="line"><span class="comment">cross join也可以添加on条件。</span></span><br><span class="line"><span class="comment">所以在mysql中，cross join和inner join可以等同，相互替代。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> employees,departments;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> employees <span class="keyword">INNER</span> <span class="keyword">JOIN</span> departments;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> employees <span class="keyword">JOIN</span> departments;</span><br><span class="line"></span><br><span class="line"><span class="comment">## 等值连接</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  *</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  salaries s</span><br><span class="line">  <span class="keyword">JOIN</span> employees e</span><br><span class="line">    <span class="keyword">ON</span> e.<span class="string">`emp_no`</span> = s.<span class="string">`emp_no`</span></span><br><span class="line">    <span class="keyword">AND</span> s.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line"><span class="keyword">WHERE</span> e.<span class="string">`first_name`</span> = <span class="string">'Parto'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 外连接</span></span><br><span class="line"> <span class="comment">/*</span></span><br><span class="line"><span class="comment"> 应用场景：用于查询一个表中有，另一个表没有的记录</span></span><br><span class="line"><span class="comment"> </span></span><br><span class="line"><span class="comment"> 特点：</span></span><br><span class="line"><span class="comment">	1、外连接的查询结果为主表中的所有记录</span></span><br><span class="line"><span class="comment">		如果从表中有和它匹配的，则显示匹配的值</span></span><br><span class="line"><span class="comment">		如果从表中没有和它匹配的，则显示null</span></span><br><span class="line"><span class="comment">		【外连接查询结果 = 内连接结果 + 主表中有而从表没有的记录】</span></span><br><span class="line"><span class="comment">	2、左外连接，left join左边的是主表</span></span><br><span class="line"><span class="comment">	   右外连接，right join右边的是主表</span></span><br><span class="line"><span class="comment">	3、左外和右外交换两个表的顺序，可以实现同样的效果 </span></span><br><span class="line"><span class="comment">	4、【全外连接 = 内连接的结果 + 表1中有但表2没有的 + 表2中有但表1没有的】</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">## 左外连接</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  *</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  departments d</span><br><span class="line">  <span class="keyword">LEFT</span> <span class="keyword">OUTER</span> <span class="keyword">JOIN</span> dept_emp de</span><br><span class="line">    <span class="keyword">ON</span> d.<span class="string">`dept_no`</span> = de.<span class="string">`dept_no`</span></span><br><span class="line">    <span class="keyword">AND</span> de.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span>;</span><br><span class="line">    </span><br><span class="line"><span class="comment">## 右外连接</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  *</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  dept_emp de</span><br><span class="line">  <span class="keyword">RIGHT</span> <span class="keyword">OUTER</span> <span class="keyword">JOIN</span> departments d</span><br><span class="line">    <span class="keyword">ON</span> d.<span class="string">`dept_no`</span> = de.<span class="string">`dept_no`</span></span><br><span class="line">    <span class="keyword">AND</span> de.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span>;</span><br><span class="line">    </span><br><span class="line"><span class="comment">## 左外连接（不包含相交部分）</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  *</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  departments d</span><br><span class="line">  <span class="keyword">LEFT</span> <span class="keyword">OUTER</span> <span class="keyword">JOIN</span> dept_emp de</span><br><span class="line">    <span class="keyword">ON</span> d.<span class="string">`dept_no`</span> = de.<span class="string">`dept_no`</span></span><br><span class="line">    <span class="keyword">AND</span> de.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line">    <span class="keyword">WHERE</span> de.<span class="string">`dept_no`</span> <span class="keyword">IS</span> <span class="literal">NULL</span>;</span><br><span class="line">    </span><br><span class="line"><span class="comment">## 右外连接（不包含相交部分）</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  *</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  dept_emp de</span><br><span class="line">  <span class="keyword">RIGHT</span> <span class="keyword">OUTER</span> <span class="keyword">JOIN</span> departments d</span><br><span class="line">    <span class="keyword">ON</span> d.<span class="string">`dept_no`</span> = de.<span class="string">`dept_no`</span></span><br><span class="line">    <span class="keyword">AND</span> de.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line">    <span class="keyword">WHERE</span> de.<span class="string">`dept_no`</span> <span class="keyword">IS</span> <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">## 不包含相交部分</span></span><br><span class="line"> (<span class="keyword">SELECT</span></span><br><span class="line">  *</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  departments d</span><br><span class="line">  <span class="keyword">LEFT</span> <span class="keyword">OUTER</span> <span class="keyword">JOIN</span> dept_emp de</span><br><span class="line">    <span class="keyword">ON</span> d.<span class="string">`dept_no`</span> = de.<span class="string">`dept_no`</span></span><br><span class="line">    <span class="keyword">AND</span> de.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line"><span class="keyword">WHERE</span> de.<span class="string">`dept_no`</span> <span class="keyword">IS</span> <span class="literal">NULL</span>)</span><br><span class="line"><span class="keyword">UNION</span></span><br><span class="line">(<span class="keyword">SELECT</span></span><br><span class="line">  *</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  departments d</span><br><span class="line">  <span class="keyword">RIGHT</span> <span class="keyword">OUTER</span> <span class="keyword">JOIN</span> dept_emp de</span><br><span class="line">    <span class="keyword">ON</span> d.<span class="string">`dept_no`</span> = de.<span class="string">`dept_no`</span></span><br><span class="line">    <span class="keyword">AND</span> de.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line"><span class="keyword">WHERE</span> d.<span class="string">`dept_no`</span> <span class="keyword">IS</span> <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">## 全连接（包含三部分）</span></span><br><span class="line"> <span class="comment">/*</span></span><br><span class="line"><span class="comment">union默认是去重的，如果不想去重，使用union all</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">(<span class="keyword">SELECT</span></span><br><span class="line">  *</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  departments d</span><br><span class="line">  <span class="keyword">LEFT</span> <span class="keyword">OUTER</span> <span class="keyword">JOIN</span> dept_emp de</span><br><span class="line">    <span class="keyword">ON</span> d.<span class="string">`dept_no`</span> = de.<span class="string">`dept_no`</span></span><br><span class="line">    <span class="keyword">AND</span> de.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span>)</span><br><span class="line"><span class="keyword">UNION</span></span><br><span class="line">(<span class="keyword">SELECT</span></span><br><span class="line">  *</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  departments d</span><br><span class="line">  <span class="keyword">RIGHT</span></span><br><span class="line">  <span class="keyword">OUTER</span> <span class="keyword">JOIN</span> dept_emp de</span><br><span class="line">    <span class="keyword">ON</span> d.<span class="string">`dept_no`</span> = de.<span class="string">`dept_no`</span></span><br><span class="line">    <span class="keyword">AND</span> de.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span>);</span><br><span class="line">    </span><br><span class="line"><span class="comment"># 练习：查询工资最高的在职经理所在的部门的工资最低的在职员工的姓名，职位，工资。</span></span><br><span class="line"> <span class="comment">## 1.查出所有的在职经理</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  dm.<span class="string">`emp_no`</span>,</span><br><span class="line">  dm.<span class="string">`dept_no`</span></span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  dept_manager dm <span class="keyword">WHERE</span> dm.<span class="string">`to_date`</span>=<span class="string">'9999-01-01'</span>;</span><br><span class="line">  </span><br><span class="line"><span class="comment">## 2.查出1中的经理中工资最高的</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  s.<span class="string">`emp_no`</span>,</span><br><span class="line">  s.<span class="string">`salary`</span></span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  salaries s</span><br><span class="line"><span class="keyword">WHERE</span> s.<span class="string">`emp_no`</span> <span class="keyword">IN</span></span><br><span class="line">  (<span class="keyword">SELECT</span></span><br><span class="line">    dm.<span class="string">`emp_no`</span></span><br><span class="line">  <span class="keyword">FROM</span></span><br><span class="line">    dept_manager dm</span><br><span class="line">  <span class="keyword">WHERE</span> dm.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span>)</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> s.<span class="string">`salary`</span> <span class="keyword">DESC</span></span><br><span class="line"><span class="keyword">LIMIT</span> <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">## 3.查出2中的经理所在的部门</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  dm.<span class="string">`dept_no`</span></span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  dept_manager dm</span><br><span class="line"><span class="keyword">WHERE</span> dm.<span class="string">`emp_no`</span> <span class="keyword">IN</span></span><br><span class="line">  (<span class="keyword">SELECT</span></span><br><span class="line">    t.<span class="string">`emp_no`</span></span><br><span class="line">  <span class="keyword">FROM</span></span><br><span class="line">    (<span class="keyword">SELECT</span></span><br><span class="line">      s.<span class="string">`emp_no`</span>,</span><br><span class="line">      s.<span class="string">`salary`</span></span><br><span class="line">    <span class="keyword">FROM</span></span><br><span class="line">      salaries s</span><br><span class="line">    <span class="keyword">WHERE</span> s.<span class="string">`emp_no`</span> <span class="keyword">IN</span></span><br><span class="line">      (<span class="keyword">SELECT</span></span><br><span class="line">        dm.<span class="string">`emp_no`</span></span><br><span class="line">      <span class="keyword">FROM</span></span><br><span class="line">        dept_manager dm</span><br><span class="line">      <span class="keyword">WHERE</span> dm.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span>)</span><br><span class="line">    <span class="keyword">ORDER</span> <span class="keyword">BY</span> s.<span class="string">`salary`</span> <span class="keyword">DESC</span></span><br><span class="line">    <span class="keyword">LIMIT</span> <span class="number">1</span>) <span class="keyword">AS</span> t);</span><br><span class="line"></span><br><span class="line"><span class="comment">## 4.查出3中部门的所有在职员工</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  de.<span class="string">`emp_no`</span></span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  dept_emp de</span><br><span class="line"><span class="keyword">WHERE</span> de.<span class="string">`dept_no`</span> <span class="keyword">IN</span></span><br><span class="line">  (<span class="keyword">SELECT</span></span><br><span class="line">    dm.<span class="string">`dept_no`</span></span><br><span class="line">  <span class="keyword">FROM</span></span><br><span class="line">    dept_manager dm</span><br><span class="line">  <span class="keyword">WHERE</span> dm.<span class="string">`emp_no`</span> <span class="keyword">IN</span></span><br><span class="line">    (<span class="keyword">SELECT</span></span><br><span class="line">      t.<span class="string">`emp_no`</span></span><br><span class="line">    <span class="keyword">FROM</span></span><br><span class="line">      (<span class="keyword">SELECT</span></span><br><span class="line">        s.<span class="string">`emp_no`</span>,</span><br><span class="line">        s.<span class="string">`salary`</span></span><br><span class="line">      <span class="keyword">FROM</span></span><br><span class="line">        salaries s</span><br><span class="line">      <span class="keyword">WHERE</span> s.<span class="string">`emp_no`</span> <span class="keyword">IN</span></span><br><span class="line">        (<span class="keyword">SELECT</span></span><br><span class="line">          dm.<span class="string">`emp_no`</span></span><br><span class="line">        <span class="keyword">FROM</span></span><br><span class="line">          dept_manager dm</span><br><span class="line">        <span class="keyword">WHERE</span> dm.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span>)</span><br><span class="line">      <span class="keyword">ORDER</span> <span class="keyword">BY</span> s.<span class="string">`salary`</span> <span class="keyword">DESC</span></span><br><span class="line">      <span class="keyword">LIMIT</span> <span class="number">1</span>) <span class="keyword">AS</span> t)) <span class="keyword">AND</span> de.<span class="string">`to_date`</span>=<span class="string">'9999-01-01'</span>;</span><br><span class="line">      </span><br><span class="line"><span class="comment">## 5.查询4中所有员工的工资最低的员工号</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  s.<span class="string">`emp_no`</span>,</span><br><span class="line">  s.<span class="string">`salary`</span></span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  salaries s</span><br><span class="line"><span class="keyword">WHERE</span> s.<span class="string">`emp_no`</span> <span class="keyword">IN</span></span><br><span class="line">  (<span class="keyword">SELECT</span></span><br><span class="line">    de.<span class="string">`emp_no`</span></span><br><span class="line">  <span class="keyword">FROM</span></span><br><span class="line">    dept_emp de</span><br><span class="line">  <span class="keyword">WHERE</span> de.<span class="string">`dept_no`</span> <span class="keyword">IN</span></span><br><span class="line">    (<span class="keyword">SELECT</span></span><br><span class="line">      dm.<span class="string">`dept_no`</span></span><br><span class="line">    <span class="keyword">FROM</span></span><br><span class="line">      dept_manager dm</span><br><span class="line">    <span class="keyword">WHERE</span> dm.<span class="string">`emp_no`</span> <span class="keyword">IN</span></span><br><span class="line">      (<span class="keyword">SELECT</span></span><br><span class="line">        t.<span class="string">`emp_no`</span></span><br><span class="line">      <span class="keyword">FROM</span></span><br><span class="line">        (<span class="keyword">SELECT</span></span><br><span class="line">          s.<span class="string">`emp_no`</span>,</span><br><span class="line">          s.<span class="string">`salary`</span></span><br><span class="line">        <span class="keyword">FROM</span></span><br><span class="line">          salaries s</span><br><span class="line">        <span class="keyword">WHERE</span> s.<span class="string">`emp_no`</span> <span class="keyword">IN</span></span><br><span class="line">          (<span class="keyword">SELECT</span></span><br><span class="line">            dm.<span class="string">`emp_no`</span></span><br><span class="line">          <span class="keyword">FROM</span></span><br><span class="line">            dept_manager dm</span><br><span class="line">          <span class="keyword">WHERE</span> dm.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span>)</span><br><span class="line">          <span class="keyword">AND</span> s.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line">        <span class="keyword">ORDER</span> <span class="keyword">BY</span> s.<span class="string">`salary`</span> <span class="keyword">DESC</span></span><br><span class="line">        <span class="keyword">LIMIT</span> <span class="number">1</span>) <span class="keyword">AS</span> t))</span><br><span class="line">    <span class="keyword">AND</span> de.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span>)</span><br><span class="line">  <span class="keyword">AND</span> s.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> s.<span class="string">`salary`</span></span><br><span class="line"><span class="keyword">LIMIT</span> <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">      </span><br><span class="line"><span class="comment">## 6.查询5中的员工所需信息</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  e.<span class="string">`emp_no`</span>,</span><br><span class="line">  <span class="keyword">CONCAT</span>(</span><br><span class="line">    e.<span class="string">`first_name`</span>,</span><br><span class="line">    <span class="string">' '</span>,</span><br><span class="line">    e.<span class="string">`last_name`</span></span><br><span class="line">  ) <span class="keyword">AS</span> <span class="string">'name'</span>,</span><br><span class="line">  p.<span class="string">`salary`</span>,</span><br><span class="line">  t.<span class="string">`title`</span></span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  employees e</span><br><span class="line">  <span class="keyword">JOIN</span> titles t</span><br><span class="line">    <span class="keyword">ON</span> e.<span class="string">`emp_no`</span> = t.<span class="string">`emp_no`</span></span><br><span class="line">    <span class="keyword">AND</span> t.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line">  <span class="keyword">JOIN</span></span><br><span class="line">    (<span class="keyword">SELECT</span></span><br><span class="line">  s.<span class="string">`emp_no`</span>,</span><br><span class="line">  s.<span class="string">`salary`</span></span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  salaries s</span><br><span class="line"><span class="keyword">WHERE</span> s.<span class="string">`emp_no`</span> <span class="keyword">IN</span></span><br><span class="line">  (<span class="keyword">SELECT</span></span><br><span class="line">    de.<span class="string">`emp_no`</span></span><br><span class="line">  <span class="keyword">FROM</span></span><br><span class="line">    dept_emp de</span><br><span class="line">  <span class="keyword">WHERE</span> de.<span class="string">`dept_no`</span> <span class="keyword">IN</span></span><br><span class="line">    (<span class="keyword">SELECT</span></span><br><span class="line">      dm.<span class="string">`dept_no`</span></span><br><span class="line">    <span class="keyword">FROM</span></span><br><span class="line">      dept_manager dm</span><br><span class="line">    <span class="keyword">WHERE</span> dm.<span class="string">`emp_no`</span> <span class="keyword">IN</span></span><br><span class="line">      (<span class="keyword">SELECT</span></span><br><span class="line">        t.<span class="string">`emp_no`</span></span><br><span class="line">      <span class="keyword">FROM</span></span><br><span class="line">        (<span class="keyword">SELECT</span></span><br><span class="line">          s.<span class="string">`emp_no`</span>,</span><br><span class="line">          s.<span class="string">`salary`</span></span><br><span class="line">        <span class="keyword">FROM</span></span><br><span class="line">          salaries s</span><br><span class="line">        <span class="keyword">WHERE</span> s.<span class="string">`emp_no`</span> <span class="keyword">IN</span></span><br><span class="line">          (<span class="keyword">SELECT</span></span><br><span class="line">            dm.<span class="string">`emp_no`</span></span><br><span class="line">          <span class="keyword">FROM</span></span><br><span class="line">            dept_manager dm</span><br><span class="line">          <span class="keyword">WHERE</span> dm.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span>)</span><br><span class="line">          <span class="keyword">AND</span> s.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line">        <span class="keyword">ORDER</span> <span class="keyword">BY</span> s.<span class="string">`salary`</span> <span class="keyword">DESC</span></span><br><span class="line">        <span class="keyword">LIMIT</span> <span class="number">1</span>) <span class="keyword">AS</span> t))</span><br><span class="line">    <span class="keyword">AND</span> de.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span>)</span><br><span class="line">  <span class="keyword">AND</span> s.<span class="string">`to_date`</span> = <span class="string">'9999-01-01'</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> s.<span class="string">`salary`</span></span><br><span class="line"><span class="keyword">LIMIT</span> <span class="number">1</span>) <span class="keyword">AS</span> p</span><br><span class="line">    <span class="keyword">ON</span> p.<span class="string">`emp_no`</span> = e.<span class="string">`emp_no`</span>;</span><br><span class="line"></span><br><span class="line">+<span class="comment">--------+----------------+--------+-------+</span></span><br><span class="line">| emp_no | name           | salary | title |</span><br><span class="line">+<span class="comment">--------+----------------+--------+-------+</span></span><br><span class="line">|  65337 | Youngkon Munck |  39821 | Staff |</span><br><span class="line">+<span class="comment">--------+----------------+--------+-------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">2.48</span> sec)</span><br></pre></td></tr></table></figure>
+<h2 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">子查询含义：</span></span><br><span class="line"><span class="comment">	出现在其他语句中的select语句，称为子查询或内查询</span></span><br><span class="line"><span class="comment">	外部的查询语句，称为主查询或外查询</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">分类：</span></span><br><span class="line"><span class="comment">	按子查询出现的位置：</span></span><br><span class="line"><span class="comment">		select后面：</span></span><br><span class="line"><span class="comment">			仅仅支持标量子查询</span></span><br><span class="line"><span class="comment">		from后面：</span></span><br><span class="line"><span class="comment">			支持表子查询</span></span><br><span class="line"><span class="comment">		where或having后面：★</span></span><br><span class="line"><span class="comment">			标量子查询（单行） √</span></span><br><span class="line"><span class="comment">			列子查询  （多行） √</span></span><br><span class="line"><span class="comment">			行子查询</span></span><br><span class="line"><span class="comment">		exists后面（相关子查询）</span></span><br><span class="line"><span class="comment">			表子查询</span></span><br><span class="line"><span class="comment">	</span></span><br><span class="line"><span class="comment">	按结果集的行列数不同：</span></span><br><span class="line"><span class="comment">		标量子查询（结果集只有一行一列）</span></span><br><span class="line"><span class="comment">		列子查询（结果集只有一列多行）</span></span><br><span class="line"><span class="comment">		行子查询（结果集有一行多列）</span></span><br><span class="line"><span class="comment">		表子查询（结果集一般为多行多列）</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment"># where或having后面</span></span><br><span class="line"> <span class="comment">/*</span></span><br><span class="line"><span class="comment">1、标量子查询（单行子查询）</span></span><br><span class="line"><span class="comment">2、列子查询（多行子查询）</span></span><br><span class="line"><span class="comment">3、行子查询（多列多行）</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">特点：</span></span><br><span class="line"><span class="comment">①子查询放在小括号内</span></span><br><span class="line"><span class="comment">②子查询一般放在条件的右侧</span></span><br><span class="line"><span class="comment">③标量子查询，一般搭配着单行操作符使用</span></span><br><span class="line"><span class="comment">	比如：&gt; &lt; &gt;= &lt;= = &lt;&gt;</span></span><br><span class="line"><span class="comment">列子查询，一般搭配着多行操作符使用</span></span><br><span class="line"><span class="comment">	比如：in、any/some、all</span></span><br><span class="line"><span class="comment">④子查询的执行优先于主查询执行，主查询的条件用到了子查询的结果</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 行子查询（结果集一行多列或多行多列）</span></span><br><span class="line"><span class="comment">### 案例：查询员工编号最小并且工资最高的员工信息</span></span><br><span class="line"><span class="keyword">SELECT</span> * </span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">WHERE</span> (employee_id,salary)=(</span><br><span class="line">	<span class="keyword">SELECT</span> <span class="keyword">MIN</span>(employee_id),<span class="keyword">MAX</span>(salary)</span><br><span class="line">	<span class="keyword">FROM</span> employees</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment"># select后面</span></span><br><span class="line"> <span class="comment">/*</span></span><br><span class="line"><span class="comment">仅仅支持标量子查询</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">## 案例：查询每个部门的员工个数</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  d.*,</span><br><span class="line">  (<span class="keyword">SELECT</span></span><br><span class="line">    <span class="keyword">COUNT</span>(*)</span><br><span class="line">  <span class="keyword">FROM</span></span><br><span class="line">    employees e</span><br><span class="line">  <span class="keyword">WHERE</span> e.department_id = d.<span class="string">`department_id`</span>) 个数</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  departments d;</span><br><span class="line">  </span><br><span class="line"><span class="comment"># from后面</span></span><br><span class="line"> <span class="comment">/*</span></span><br><span class="line"><span class="comment">将子查询结果充当一张表，【必须起别名】。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment"># exists后面（相关子查询）</span></span><br><span class="line"> <span class="comment">/*</span></span><br><span class="line"><span class="comment">语法：</span></span><br><span class="line"><span class="comment">	exists(完整的查询语句)</span></span><br><span class="line"><span class="comment">结果：</span></span><br><span class="line"><span class="comment">	1或0</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">## 案例：查询有员工的部门名</span></span><br><span class="line"><span class="comment">### in</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  department_name</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  departments d</span><br><span class="line"><span class="keyword">WHERE</span> d.<span class="string">`department_id`</span> <span class="keyword">IN</span></span><br><span class="line">  (<span class="keyword">SELECT</span></span><br><span class="line">    department_id</span><br><span class="line">  <span class="keyword">FROM</span></span><br><span class="line">    employees) </span><br><span class="line"></span><br><span class="line"><span class="comment">### exists</span></span><br><span class="line">   <span class="keyword">SELECT</span></span><br><span class="line">    department_name</span><br><span class="line">  <span class="keyword">FROM</span></span><br><span class="line">    departments d</span><br><span class="line">  <span class="keyword">WHERE</span> <span class="keyword">EXISTS</span></span><br><span class="line">    (<span class="keyword">SELECT</span></span><br><span class="line">      *</span><br><span class="line">    <span class="keyword">FROM</span></span><br><span class="line">      employees e</span><br><span class="line">    <span class="keyword">WHERE</span> d.<span class="string">`department_id`</span> = e.<span class="string">`department_id`</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="分页查询"><a href="#分页查询" class="headerlink" title="分页查询"></a>分页查询</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">【分页查询】</span></span><br><span class="line"><span class="comment">应用场景：</span></span><br><span class="line"><span class="comment">	当要显示的数据，一页显示不全，需要分页提交sql请求</span></span><br><span class="line"><span class="comment">语法：</span></span><br><span class="line"><span class="comment">	select 查询列表</span></span><br><span class="line"><span class="comment">	from 表</span></span><br><span class="line"><span class="comment">	【join type join 表2</span></span><br><span class="line"><span class="comment">	on 连接条件</span></span><br><span class="line"><span class="comment">	where 筛选条件</span></span><br><span class="line"><span class="comment">	group by 分组字段</span></span><br><span class="line"><span class="comment">	having 分组后的筛选</span></span><br><span class="line"><span class="comment">	order by 排序的字段】</span></span><br><span class="line"><span class="comment">	limit 【offset,】size;</span></span><br><span class="line"><span class="comment">	</span></span><br><span class="line"><span class="comment">	offset要显示条目的起始索引（起始索引从0开始）</span></span><br><span class="line"><span class="comment">	size 要显示的条目个数</span></span><br><span class="line"><span class="comment">特点：</span></span><br><span class="line"><span class="comment">	①limit语句放在查询语句的最后</span></span><br><span class="line"><span class="comment">	②公式</span></span><br><span class="line"><span class="comment">		要显示的页数 page，每页的条目数size</span></span><br><span class="line"><span class="comment">	</span></span><br><span class="line"><span class="comment">	select 查询列表</span></span><br><span class="line"><span class="comment">	from 表</span></span><br><span class="line"><span class="comment">	limit (page-1)*size,size;</span></span><br><span class="line"><span class="comment">	</span></span><br><span class="line"><span class="comment">	size=10</span></span><br><span class="line"><span class="comment">	page    </span></span><br><span class="line"><span class="comment">	1	0</span></span><br><span class="line"><span class="comment">	2  	10</span></span><br><span class="line"><span class="comment">	3	20</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">#案例1：查询前五条员工信息</span></span><br><span class="line"> <span class="keyword">SELECT</span></span><br><span class="line">  *</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">  employees</span><br><span class="line"><span class="keyword">LIMIT</span> <span class="number">0</span>, <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span>  employees <span class="keyword">LIMIT</span> <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#案例2：查询第11条——第25条</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span>  employees <span class="keyword">LIMIT</span> <span class="number">10</span>,<span class="number">15</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#案例3：有奖金的员工信息，并且工资较高的前10名显示出来</span></span><br><span class="line"><span class="keyword">SELECT</span> </span><br><span class="line">    * </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">    employees </span><br><span class="line"><span class="keyword">WHERE</span> commission_pct <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> </span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> salary <span class="keyword">DESC</span> </span><br><span class="line"><span class="keyword">LIMIT</span> <span class="number">10</span> ;</span><br></pre></td></tr></table></figure>
+<h2 id="联合查询"><a href="#联合查询" class="headerlink" title="联合查询"></a>联合查询</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">联合查询：</span></span><br><span class="line"><span class="comment">union（联合、合并）：将多条查询语句的结果合并成一个结果</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">语法：</span></span><br><span class="line"><span class="comment">  (查询语句1)</span></span><br><span class="line"><span class="comment">  union</span></span><br><span class="line"><span class="comment">  (查询语句2)</span></span><br><span class="line"><span class="comment">  union</span></span><br><span class="line"><span class="comment">  ...</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">应用场景：</span></span><br><span class="line"><span class="comment">要查询的结果来自于多个表，且多个表没有直接的连接关系，但查询的信息一致时</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">特点：★</span></span><br><span class="line"><span class="comment">1、要求多条查询语句的查询列数是一致的，否则报错。</span></span><br><span class="line"><span class="comment">2、要求多条查询语句的查询的每一列的类型和顺序最好一致，不然数据意义错误。</span></span><br><span class="line"><span class="comment">3、union关键字默认去重，如果使用union all 可以包含重复项。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#引入的案例：查询部门编号&gt;90或邮箱包含a的员工信息</span></span><br><span class="line"><span class="comment">##做法一：</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> employees <span class="keyword">WHERE</span> email <span class="keyword">LIKE</span> <span class="string">'%a%'</span> <span class="keyword">OR</span> department_id&gt;<span class="number">90</span>;</span><br><span class="line"><span class="comment">##做法二：</span></span><br><span class="line">(<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> employees  <span class="keyword">WHERE</span> email <span class="keyword">LIKE</span> <span class="string">'%a%'</span>)</span><br><span class="line"><span class="keyword">UNION</span></span><br><span class="line">(<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> employees  <span class="keyword">WHERE</span> department_id&gt;<span class="number">90</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">##案例：查询中国用户中男性的信息以及外国用户中年男性的用户信息</span></span><br><span class="line">(<span class="keyword">SELECT</span> <span class="keyword">id</span>,cname <span class="keyword">FROM</span> t_ca <span class="keyword">WHERE</span> csex=<span class="string">'男'</span>)</span><br><span class="line"><span class="keyword">UNION</span> ALL</span><br><span class="line">(<span class="keyword">SELECT</span> t_id,tname <span class="keyword">FROM</span> t_ua <span class="keyword">WHERE</span> tGender=<span class="string">'male'</span>;)</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Chain Qian
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.leechain.top/2018/01/10-mysql-review-note-1/" title="MySQL复习笔记-I">https://www.leechain.top/2018/01/10-mysql-review-note-1/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/学习/" rel="tag"># 学习</a>
+          
+            <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/18-java-ball-collision/" rel="next" title="Java实现模拟小球二维完全弹性斜碰">
+                <i class="fa fa-chevron-left"></i> Java实现模拟小球二维完全弹性斜碰
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/20-linux-share-printer/" rel="prev" title="树莓派3搭建cups或p910nd打印服务器">
+                树莓派3搭建cups或p910nd打印服务器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Chain Qian">
+            
+              <p class="site-author-name" itemprop="name">Chain Qian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ChainGit" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:chainz@foxmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL复习笔记-I"><span class="nav-number">1.</span> <span class="nav-text">MySQL复习笔记-I</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基础知识"><span class="nav-number">1.1.</span> <span class="nav-text">基础知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础查询"><span class="nav-number">1.2.</span> <span class="nav-text">基础查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条件查询"><span class="nav-number">1.3.</span> <span class="nav-text">条件查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见函数"><span class="nav-number">1.4.</span> <span class="nav-text">常见函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#排序查询"><span class="nav-number">1.5.</span> <span class="nav-text">排序查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分组查询"><span class="nav-number">1.6.</span> <span class="nav-text">分组查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#连接查询"><span class="nav-number">1.7.</span> <span class="nav-text">连接查询</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL92语法"><span class="nav-number">1.7.1.</span> <span class="nav-text">SQL92语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL99语法"><span class="nav-number">1.7.2.</span> <span class="nav-text">SQL99语法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#子查询"><span class="nav-number">1.8.</span> <span class="nav-text">子查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分页查询"><span class="nav-number">1.9.</span> <span class="nav-text">分页查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#联合查询"><span class="nav-number">1.10.</span> <span class="nav-text">联合查询</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chain Qian</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">苏ICP备16052713号-1</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt7Bknuv';
+      var conf = 'prod_ef64fab63ed9004614a7a77b40203358';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

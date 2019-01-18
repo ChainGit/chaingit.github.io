@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,算法,学习,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Java实现基于哈夫曼的压缩/解压缩算法通信课信息论中介绍了哈夫曼编码，这里想着编程实现一下压缩和解压缩。 博主水平有限，有不正确的地方欢迎指正。 算法介绍David Huffman和他的压缩算法 —— Huffman Code，是一种通过字符出现频率，结合 Priority Queue 和二叉树来进行的一种压缩算法，这种二叉树又叫Huffman二叉树（一种带权重的树）。他又被称为最优二叉树，是一">
+<meta name="keywords" content="Java,算法,学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java实现基于哈夫曼的压缩算法">
+<meta property="og:url" content="https://www.leechain.top/2017/11/15-java-huffman-codec/index.html">
+<meta property="og:site_name" content="天印湖畔映白鹭">
+<meta property="og:description" content="Java实现基于哈夫曼的压缩/解压缩算法通信课信息论中介绍了哈夫曼编码，这里想着编程实现一下压缩和解压缩。 博主水平有限，有不正确的地方欢迎指正。 算法介绍David Huffman和他的压缩算法 —— Huffman Code，是一种通过字符出现频率，结合 Priority Queue 和二叉树来进行的一种压缩算法，这种二叉树又叫Huffman二叉树（一种带权重的树）。他又被称为最优二叉树，是一">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/d/d8/HuffmanCodeAlg.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/java-huffman-codec/1.jpg">
+<meta property="og:updated_time" content="2018-11-12T10:04:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java实现基于哈夫曼的压缩算法">
+<meta name="twitter:description" content="Java实现基于哈夫曼的压缩/解压缩算法通信课信息论中介绍了哈夫曼编码，这里想着编程实现一下压缩和解压缩。 博主水平有限，有不正确的地方欢迎指正。 算法介绍David Huffman和他的压缩算法 —— Huffman Code，是一种通过字符出现频率，结合 Priority Queue 和二叉树来进行的一种压缩算法，这种二叉树又叫Huffman二叉树（一种带权重的树）。他又被称为最优二叉树，是一">
+<meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/commons/d/d8/HuffmanCodeAlg.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.leechain.top/2017/11/15-java-huffman-codec/">
+
+
+
+
+
+  <title>Java实现基于哈夫曼的压缩算法 | 天印湖畔映白鹭</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天印湖畔映白鹭</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">LEECHAIN | 博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.leechain.top/2017/11/15-java-huffman-codec/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chain Qian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天印湖畔映白鹭">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Java实现基于哈夫曼的压缩算法</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-15T00:00:00+08:00">
+                2017-11-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/11/15-java-huffman-codec/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/11/15-java-huffman-codec/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </span></div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Java实现基于哈夫曼的压缩-解压缩算法"><a href="#Java实现基于哈夫曼的压缩-解压缩算法" class="headerlink" title="Java实现基于哈夫曼的压缩/解压缩算法"></a>Java实现基于哈夫曼的压缩/解压缩算法</h1><p>通信课信息论中介绍了哈夫曼编码，这里想着编程实现一下压缩和解压缩。</p>
+<p>博主水平有限，有不正确的地方欢迎指正。</p>
+<h2 id="算法介绍"><a href="#算法介绍" class="headerlink" title="算法介绍"></a>算法介绍</h2><p>David Huffman和他的压缩算法 —— Huffman Code，是一种通过字符出现频率，结合 Priority Queue 和二叉树来进行的一种压缩算法，这种二叉树又叫Huffman二叉树（一种带权重的树）。他又被称为最优二叉树，是一类带权路径长度最短的树。</p>
+<p>压缩可以分为无损压缩和有损压缩。</p>
+<p>有损压缩，指的是压缩之后就无法完整还原原始信息，但是压缩率可以很高，主要应用于视频、话音等数据的压缩，因为损失了一点信息，人是很难察觉的，或者说，也没必要那么清晰照样可以看可以听。</p>
+<p>无损压缩，则用于文件等等必须完整还原信息的场合，ZIP自然就是一种无损压缩，在通信原理中介绍数据压缩的时候，往往是从信息论的角度出发，引出香农所定义的熵的概念。</p>
+<p>哈夫曼编码是一种无损编码，可以完全正确的压缩和还原数据，就是运算速度比较慢。</p>
+<p>算法介绍可以参看这篇<a href="http://blog.jobbole.com/20091/" target="_blank" rel="noopener">博客</a>。</p>
+<p>哈夫曼树具有如下特性：<br>1）对于同一组权值，所能得到的哈夫曼树不一定是唯一的。<br>2）哈夫曼树的左右子树可以互换，因为这并不影响树的带权路径长度。<br>3）带权值的节点都是叶子节点，不带权值的节点都是某棵子二叉树的根节点。<br>4）权值越大的节点越靠近哈夫曼树的根节点，权值越小的节点越远离哈夫曼树的根节点。<br>5）哈夫曼树中只有叶子节点和度为2的节点，没有度为1的节点。<br>6）一棵有n个叶子节点的哈夫曼树共有2n-1个节点。<br>7）每个字符编码不会成为另一个编码的前缀。</p>
+<p>Huffman编码的过程大致如下：<br>1、统计一个文件以各个字符出现的次数<br>2、以各个字符出现的次数为权值建立哈夫曼树<br>3、根据哈夫曼树计算出每个字符的哈夫曼编码（可以用从树根到该字符所在到叶子节点的路径来表示）<br>4、将原文件的各个字符用编出的码字替换<br>5、将各个字符出现的次数信息和新生成的数据结合存储，则为压缩过程。</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/d/d8/HuffmanCodeAlg.png" alt="image"></p>
+<p>Huffmana解码的过程大致如下：<br>1、获得存储的压缩文件中的各个字符出现的次数信息<br>2、根据各个字符出现的次数信息重新构建哈夫曼树<br>3、对压缩数据依次进行检索，根据每次检索的位数据获得对应的哈夫曼码，进而获得对应的字符。<br>4、将翻译出的字符连接起来，则为解压缩过程。</p>
+<p>构树的过程大致有两种(来自百度)：</p>
+<p><img src="/uploads/java-huffman-codec/1.jpg" alt="image"></p>
+<p>但是与这篇博客介绍的方法不同的是，本文实现的构树算法是采用(a)，而前者使用的是(b)。<br>方法(a)编出的码字更加均匀一点。</p>
+<p>原本需要1B空间存储的数据，比如字符’a’，需要一个字节来存储，可能对应的哈夫曼编码只是11，即只需要两个bit来存储，进而起到压缩效果。</p>
+<h2 id="算法源码"><a href="#算法源码" class="headerlink" title="算法源码"></a>算法源码</h2><p>源码可以从<a href="https://github.com/ChainGit/algorithm-learn/blob/master/chain/test03" target="_blank" rel="noopener">这里</a>访问。</p>
+<h2 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h2><p>这里就只贴出测试的结果。</p>
+<p>java<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br></pre></td><td class="code"><pre><span class="line">orgin string: 11a11aa1aa1a111aaa</span><br><span class="line">decode string: 11a11aa1aa1a111aaa</span><br><span class="line">origin-data-length: 144</span><br><span class="line">encode-data-length: 18</span><br><span class="line">encode-times: 8.0</span><br><span class="line">encode-percent: 0.13</span><br><span class="line">decode-data-length: 144</span><br><span class="line"></span><br><span class="line">orgin string: 11a11aa1aa1a111aaa</span><br><span class="line">decode string: 11a11aa1aa1a111aaa</span><br><span class="line">origin-data-length: 144</span><br><span class="line">encode-data-length: 144</span><br><span class="line">encode times: 1.0</span><br><span class="line">encode percent: 1.0</span><br><span class="line">decode-data-length: 144</span><br><span class="line"></span><br><span class="line">orgin string: 我和他说你很好，他和我说你很好，他和你说我很好，我和你说他很好，你和我说他很好，你和他说我很好，你很好，我很好，她很好，他和我很好，你和我很好，你和他很好，他和我很好，他和你很好，我和你很好，我和他很好，你和他和他很好，我和他和他很好，他和你和你很好，他和我和他很好，很好很好很好很好很好很好很好很好很好很好很好，好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好</span><br><span class="line">decode string: 我和他说你很好，他和我说你很好，他和你说我很好，我和你说他很好，你和我说他很好，你和他说我很好，你很好，我很好，她很好，他和我很好，你和我很好，你和他很好，他和我很好，他和你很好，我和你很好，我和他很好，你和他和他很好，我和他和他很好，他和你和你很好，他和我和他很好，很好很好很好很好很好很好很好很好很好很好很好，好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好好</span><br><span class="line">origin-data-length: 4896</span><br><span class="line">encode-data-length: 2241</span><br><span class="line">encode-times: 2.18</span><br><span class="line">encode-percent: 0.46</span><br><span class="line">decode-data-length: 4896</span><br><span class="line"></span><br><span class="line">orgin string: 我和他说你很好 ...</span><br><span class="line">decode string: 我和他说你很好 ...</span><br><span class="line">origin-data-length: 4896</span><br><span class="line">encode-data-length: 3184</span><br><span class="line">encode times: 1.54</span><br><span class="line">encode percent: 0.65</span><br><span class="line">decode-data-length: 4896</span><br><span class="line"></span><br><span class="line">C:\Temps\huffman_test\test.txt</span><br><span class="line">orgin string: 123abc123abc ...</span><br><span class="line">decode string: 123abc123abc ...</span><br><span class="line">origin-data-length: 10368</span><br><span class="line">encode-data-length: 3456</span><br><span class="line">encode-times: 3.0</span><br><span class="line">encode-percent: 0.33</span><br><span class="line">decode-data-length: 10368</span><br><span class="line"></span><br><span class="line">orgin string: 123abc123abc ...</span><br><span class="line">decode string: 123abc123abc ...</span><br><span class="line">origin-data-length: 10368</span><br><span class="line">encode-data-length: 3768</span><br><span class="line">encode times: 2.75</span><br><span class="line">encode percent: 0.36</span><br><span class="line">decode-data-length: 10368</span><br><span class="line"></span><br><span class="line">C:\Temps\huffman_test\数字.txt</span><br><span class="line">origin-data-length: 5743272</span><br><span class="line">encode-data-length: 2421825</span><br><span class="line">encode-times: 2.37</span><br><span class="line">encode-percent: 0.42</span><br><span class="line">decode-data-length: 5743272</span><br><span class="line"></span><br><span class="line">origin-data-length: 5743272</span><br><span class="line">encode-data-length: 2422432</span><br><span class="line">encode times: 2.37</span><br><span class="line">encode percent: 0.42</span><br><span class="line">decode-data-length: 5743272</span><br><span class="line"></span><br><span class="line">C:\Temps\huffman_test\圣经.txt</span><br><span class="line">origin-data-length: 35741304</span><br><span class="line">encode-data-length: 20348325</span><br><span class="line">encode-times: 1.76</span><br><span class="line">encode-percent: 0.57</span><br><span class="line">decode-data-length: 35741304</span><br><span class="line"></span><br><span class="line">origin-data-length: 35741304</span><br><span class="line">encode-data-length: 20352048</span><br><span class="line">encode times: 1.76</span><br><span class="line">encode percent: 0.57</span><br><span class="line">decode-data-length: 35741304</span><br><span class="line"></span><br><span class="line">C:\Temps\huffman_test\简爱.txt</span><br><span class="line">origin-data-length: 8919976</span><br><span class="line">encode-data-length: 5176611</span><br><span class="line">encode-times: 1.72</span><br><span class="line">encode-percent: 0.58</span><br><span class="line">decode-data-length: 8919976</span><br><span class="line"></span><br><span class="line">origin-data-length: 8919976</span><br><span class="line">encode-data-length: 5180864</span><br><span class="line">encode times: 1.72</span><br><span class="line">encode percent: 0.58</span><br><span class="line">decode-data-length: 8919976</span><br><span class="line"></span><br><span class="line">C:\Temps\huffman_test\test.jpg</span><br><span class="line">origin-data-length: 8535152</span><br><span class="line">encode-data-length: 8285268</span><br><span class="line">encode-times: 1.03</span><br><span class="line">encode-percent: 0.97</span><br><span class="line">decode-data-length: 8535152</span><br><span class="line"></span><br><span class="line">origin-data-length: 8535152</span><br><span class="line">encode-data-length: 8297584</span><br><span class="line">encode times: 1.03</span><br><span class="line">encode percent: 0.97</span><br><span class="line">decode-data-length: 8535152</span><br><span class="line"></span><br><span class="line">C:\Temps\huffman_test\test.bmp</span><br><span class="line">origin-data-length: 3026224</span><br><span class="line">encode-data-length: 467555</span><br><span class="line">encode-times: 6.47</span><br><span class="line">encode-percent: 0.15</span><br><span class="line">decode-data-length: 3026224</span><br><span class="line"></span><br><span class="line">origin-data-length: 3026224</span><br><span class="line">encode-data-length: 469120</span><br><span class="line">encode times: 6.45</span><br><span class="line">encode percent: 0.16</span><br><span class="line">decode-data-length: 3026224</span><br><span class="line"></span><br><span class="line">C:\Temps\huffman_test\test.mp4</span><br><span class="line">origin-data-length: 4956832</span><br><span class="line">encode-data-length: 4955436</span><br><span class="line">encode-times: 1.0</span><br><span class="line">encode-percent: 1.0</span><br><span class="line">decode-data-length: 4956832</span><br><span class="line"></span><br><span class="line">origin-data-length: 4956832</span><br><span class="line">encode-data-length: 4967752</span><br><span class="line">encode times: 1.0</span><br><span class="line">encode percent: 1.0</span><br><span class="line">decode-data-length: 4956832</span><br><span class="line"></span><br><span class="line">C:\Temps\huffman_test\test.exe</span><br><span class="line">origin-data-length: 27959936</span><br><span class="line">encode-data-length: 20832169</span><br><span class="line">encode-times: 1.34</span><br><span class="line">encode-percent: 0.75</span><br><span class="line">decode-data-length: 27959936</span><br><span class="line"></span><br><span class="line">origin-data-length: 27959936</span><br><span class="line">encode-data-length: 20844488</span><br><span class="line">encode times: 1.34</span><br><span class="line">encode percent: 0.75</span><br><span class="line">decode-data-length: 27959936</span><br><span class="line"></span><br><span class="line">C:\Temps\huffman_test\test.zip</span><br><span class="line">origin-data-length: 110320</span><br><span class="line">encode-data-length: 110023</span><br><span class="line">encode-times: 1.0</span><br><span class="line">encode-percent: 1.0</span><br><span class="line">decode-data-length: 110320</span><br><span class="line"></span><br><span class="line">origin-data-length: 110320</span><br><span class="line">encode-data-length: 122336</span><br><span class="line">encode times: 0.9</span><br><span class="line">encode percent: 1.11</span><br><span class="line">decode-data-length: 110320</span><br><span class="line"></span><br><span class="line">C:\Temps\huffman_test\test.pdf</span><br><span class="line">origin-data-length: 13177832</span><br><span class="line">encode-data-length: 13163269</span><br><span class="line">encode-times: 1.0</span><br><span class="line">encode-percent: 1.0</span><br><span class="line">decode-data-length: 13177832</span><br><span class="line"></span><br><span class="line">origin-data-length: 13177832</span><br><span class="line">encode-data-length: 13175584</span><br><span class="line">encode times: 1.0</span><br><span class="line">encode percent: 1.0</span><br><span class="line">decode-data-length: 13177832</span><br><span class="line"></span><br><span class="line">worst test</span><br><span class="line">origin-data-length: 2048</span><br><span class="line">encode-data-length: 2048</span><br><span class="line">encode-times: 1.0</span><br><span class="line">encode-percent: 1.0</span><br><span class="line">decode-data-length: 2048</span><br></pre></td></tr></table></figure></p>
+<p>汇总如下（不严谨）：</p>
+<table>
+<thead>
+<tr>
+<th>文件类型</th>
+<th>压缩比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>纯数字(txt)</td>
+<td>0.42</td>
+</tr>
+<tr>
+<td>英文文学(txt)</td>
+<td>0.58</td>
+</tr>
+<tr>
+<td>图片(jpg)</td>
+<td>0.97</td>
+</tr>
+<tr>
+<td>图片(bmp)</td>
+<td>0.16</td>
+</tr>
+<tr>
+<td>视频(mp4)</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>程序(exe)</td>
+<td>0.75</td>
+</tr>
+<tr>
+<td>压缩文件(zip)</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>pdf</td>
+<td>1.0</td>
+</tr>
+</tbody>
+</table>
+<p>最糟糕的情况就是：文本中总共有256种字符，每种字符出现的频率（次数、概率）相同；或者在二进制文件中，每个字节的二进制都存在，即有256种情况，每种情况出现的概率相同。这样编出来的哈夫曼树也是一颗满二叉树，树的高度为9。</p>
+<p>测试中的部分详细信息如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">第一个测试：</span><br><span class="line">orgin string: 11a11aa1aa1a111aaa</span><br><span class="line">decode string: 11a11aa1aa1a111aaa</span><br><span class="line">origin-data-length: 144</span><br><span class="line">encode-data-length: 18</span><br><span class="line">encode-times: 8.0</span><br><span class="line">encode-percent: 0.13</span><br><span class="line">decode-data-length: 144</span><br><span class="line"></span><br><span class="line">detail: </span><br><span class="line">huffman-tree-height: 2</span><br><span class="line">huffman-statistics-table: </span><br><span class="line">0, key: 49, times: 9</span><br><span class="line">1, key: 97, times: 9</span><br><span class="line">origin-data-length: 144</span><br><span class="line">encode-data-length: 18</span><br><span class="line">encode-times: 8.0</span><br><span class="line">encode-percent: 0.13</span><br><span class="line"></span><br><span class="line">最糟糕的测试：</span><br><span class="line">worst test</span><br><span class="line">origin-data-length: 2048</span><br><span class="line">encode-data-length: 2048</span><br><span class="line">encode-times: 1.0</span><br><span class="line">encode-percent: 1.0</span><br><span class="line">decode-data-length: 2048</span><br><span class="line"></span><br><span class="line">detail: </span><br><span class="line">huffman-tree-height: 9</span><br><span class="line">huffman-statistics-table: </span><br><span class="line">0, key: 0, times: 1</span><br><span class="line">1, key: 1, times: 1</span><br><span class="line">2, key: 2, times: 1</span><br><span class="line">3, key: 3, times: 1</span><br><span class="line">...</span><br><span class="line">n, key: n, times: 1</span><br><span class="line">...</span><br><span class="line">253, key: 253, times: 1</span><br><span class="line">254, key: 254, times: 1</span><br><span class="line">255, key: 255, times: 1</span><br><span class="line">origin-data-length: 2048</span><br><span class="line">encode-data-length: 2048</span><br><span class="line">encode-times: 1.0</span><br><span class="line">encode-percent: 1.0</span><br></pre></td></tr></table></figure>
+<h2 id="补充说明"><a href="#补充说明" class="headerlink" title="补充说明"></a>补充说明</h2><p>计算一下哈夫曼编码的压缩性能。</p>
+<p>假设在计算中忽略哈夫曼树的本身额外的存储（换句话说，只有原文件不仅体积大，而且包含的字符数量多时才可以忽略哈夫曼本身的存储消耗）。</p>
+<p>用len表示原数据串长度，path(i)表示每i个字符的编码长度。<br>那么根据原理可以知道，原数据串通过哈夫曼压缩后的长度为：</p>
+<blockquote>
+<p>hlen = sum(path(i)) ; 1 &lt;= i &lt;= len</p>
+</blockquote>
+<p>这个式子虽然正确但是不直观，所以假设一种平均情况进行估算：</p>
+<p>假如一个串长度为n，一共包含m个不同的字符，那么所构建成的哈夫曼树的总结点数为 2*m-1。</p>
+<p>如果n很大，那么可以忽略树本身的保存所需要占用的空间。</p>
+<p>如果假设此串中每个字符出现的<strong>次数都是相同的</strong>，那么也可以假设，它们所生成的哈夫曼树是完全二叉树。<br>即每个叶子(字符)的深度为log(m)+1，则路径长度为log(m)。</p>
+<p>log(m) 即为该串字符的平均路径长度，那么压缩后的串长为log(m)/8。</p>
+<p>由上可以得出平均压缩比的公式为：</p>
+<blockquote>
+<p>n <em> log(2 </em> m - 1)/8/n = log(2 * m - 1)/8;</p>
+</blockquote>
+<p>可见压缩比的大小主要与m有关，即不同的字符越少越好。</p>
+<p>ASCII码的范围为0～255，共有256种不同字符，代入上式得：</p>
+<p>log(2*256-1) ＝ 6.23 … </p>
+<p>向上取整为7(路径个数哪有小数)。<br>进一步有：</p>
+<p>7/8 = 0.875 = %87.5</p>
+<p>所以哈夫曼编码的平均压缩比为 %87.5。</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="http://blog.jobbole.com/20091/" target="_blank" rel="noopener">伯乐在线</a><br><a href="http://blog.csdn.net/to_be_better/article/details/50431352" target="_blank" rel="noopener">csdn</a><br><a href="https://en.wikipedia.org/wiki/Huffman_coding" target="_blank" rel="noopener">wikipedia</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Chain Qian
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.leechain.top/2017/11/15-java-huffman-codec/" title="Java实现基于哈夫曼的压缩算法">https://www.leechain.top/2017/11/15-java-huffman-codec/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+            <a href="/tags/学习/" rel="tag"># 学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/01-how-to-make-hexo-site/" rel="next" title="如何搭建免费又好用的静态博客">
+                <i class="fa fa-chevron-left"></i> 如何搭建免费又好用的静态博客
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/20-java-multithreads-philosopher-dinner-learn/" rel="prev" title="Java多线程之哲学家就餐问题">
+                Java多线程之哲学家就餐问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Chain Qian">
+            
+              <p class="site-author-name" itemprop="name">Chain Qian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ChainGit" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:chainz@foxmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java实现基于哈夫曼的压缩-解压缩算法"><span class="nav-number">1.</span> <span class="nav-text">Java实现基于哈夫曼的压缩/解压缩算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#算法介绍"><span class="nav-number">1.1.</span> <span class="nav-text">算法介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法源码"><span class="nav-number">1.2.</span> <span class="nav-text">算法源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试结果"><span class="nav-number">1.3.</span> <span class="nav-text">测试结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#补充说明"><span class="nav-number">1.4.</span> <span class="nav-text">补充说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">1.5.</span> <span class="nav-text">参考文章</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chain Qian</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">苏ICP备16052713号-1</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt7Bknuv';
+      var conf = 'prod_ef64fab63ed9004614a7a77b40203358';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

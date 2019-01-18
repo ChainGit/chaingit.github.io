@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Linux,Ubuntu,服务器,VirtualBox,运维,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在Ubuntu服务器中安装和配置VirtualBox实验室购置了两台服务器，原本是将所有的业务都装在了物理机上，也供其他的成员学习使用。时间长了后发现，这样的“一篮子鸡蛋”做法不可取，存在安全问题。为此学习了服务器安装虚拟机的方法，这之中也走了不少弯路。最终，实现将业务分离在不同的虚拟机上，且当有成员需要服务器进行学习时，也能提供独立的平台和故障恢复功能，管理起来很方便。  配置环境和软件：Ubu">
+<meta name="keywords" content="Linux,Ubuntu,服务器,VirtualBox,运维">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在Ubuntu服务器中安装和配置VirtualBox">
+<meta property="og:url" content="https://www.leechain.top/2016/07/03-use-vbox-on-linux/index.html">
+<meta property="og:site_name" content="天印湖畔映白鹭">
+<meta property="og:description" content="在Ubuntu服务器中安装和配置VirtualBox实验室购置了两台服务器，原本是将所有的业务都装在了物理机上，也供其他的成员学习使用。时间长了后发现，这样的“一篮子鸡蛋”做法不可取，存在安全问题。为此学习了服务器安装虚拟机的方法，这之中也走了不少弯路。最终，实现将业务分离在不同的虚拟机上，且当有成员需要服务器进行学习时，也能提供独立的平台和故障恢复功能，管理起来很方便。  配置环境和软件：Ubu">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-12T10:04:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在Ubuntu服务器中安装和配置VirtualBox">
+<meta name="twitter:description" content="在Ubuntu服务器中安装和配置VirtualBox实验室购置了两台服务器，原本是将所有的业务都装在了物理机上，也供其他的成员学习使用。时间长了后发现，这样的“一篮子鸡蛋”做法不可取，存在安全问题。为此学习了服务器安装虚拟机的方法，这之中也走了不少弯路。最终，实现将业务分离在不同的虚拟机上，且当有成员需要服务器进行学习时，也能提供独立的平台和故障恢复功能，管理起来很方便。  配置环境和软件：Ubu">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.leechain.top/2016/07/03-use-vbox-on-linux/">
+
+
+
+
+
+  <title>在Ubuntu服务器中安装和配置VirtualBox | 天印湖畔映白鹭</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天印湖畔映白鹭</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">LEECHAIN | 博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.leechain.top/2016/07/03-use-vbox-on-linux/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chain Qian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天印湖畔映白鹭">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">在Ubuntu服务器中安装和配置VirtualBox</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-03T00:00:00+08:00">
+                2016-07-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/运维/" itemprop="url" rel="index">
+                    <span itemprop="name">运维</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2016/07/03-use-vbox-on-linux/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2016/07/03-use-vbox-on-linux/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </span></div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="在Ubuntu服务器中安装和配置VirtualBox"><a href="#在Ubuntu服务器中安装和配置VirtualBox" class="headerlink" title="在Ubuntu服务器中安装和配置VirtualBox"></a>在Ubuntu服务器中安装和配置VirtualBox</h1><p>实验室购置了两台服务器，原本是将所有的业务都装在了物理机上，也供其他的成员学习使用。时间长了后发现，这样的“一篮子鸡蛋”做法不可取，存在安全问题。<br>为此学习了服务器安装虚拟机的方法，这之中也走了不少弯路。最终，实现将业务分离在不同的虚拟机上，且当有成员需要服务器进行学习时，也能提供独立的平台和故障恢复功能，管理起来很方便。</p>
+<blockquote>
+<p>配置环境和软件：<br>Ubuntu 14.04 64位<br>Oracle VirtualBox 5.x</p>
+</blockquote>
+<hr>
+<h2 id="安装和配置过程"><a href="#安装和配置过程" class="headerlink" title="安装和配置过程"></a>安装和配置过程</h2><h3 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h3><h4 id="安装Ubuntu"><a href="#安装Ubuntu" class="headerlink" title="安装Ubuntu"></a>安装Ubuntu</h4><p>安装Ubuntu服务器版，这里不做阐述。实验室服务器安装的时Ubuntu 14.04 LTS 64位版本，且服务器需要支持虚拟化（一般支持）。</p>
+<h4 id="安装VirtualBox"><a href="#安装VirtualBox" class="headerlink" title="安装VirtualBox"></a>安装VirtualBox</h4><p>安装Linux版的VirtualBox，并做简单的配置<br>进入<a href="https://www.virtualbox.org/" target="_blank" rel="noopener">Oracle VirtualBox</a>官网，下载与系统对应的<a href="https://www.virtualbox.org/wiki/Linux_Downloads" target="_blank" rel="noopener">Linux版本</a>的VirtualBox。我这里时Ubuntu 14.04，因此下载<strong>Ubuntu 14.04 (“Trusty”) / 14.10 (“Utopic”) / 15.04 (“Vivid”)</strong>中AMD64版本，下载好deb包即可。<br>当然也可以使用apt安装方式，官网有详细说明。</p>
+<blockquote>
+<p>安装VirtualBox：<br>&gt; sudo apt-get update<br>&gt; sudo dpkg -i virtualbox-5.xxx-Ubuntu-trusty_amd64.deb<br>如果安装出现错误<br>&gt; sudo at-get -f install<br>再执行dpkg即可</p>
+</blockquote>
+<p>另外需要下载好 VirtualBox 5.xxx Oracle VM VirtualBox Extension Pack 包。建议也下载好官网上的帮助手册（<a href="/uploads/use-vbox-on-linux/vboxmanage.txt">下载</a>）。</p>
+<h4 id="设置VirtualBox"><a href="#设置VirtualBox" class="headerlink" title="设置VirtualBox"></a>设置VirtualBox</h4><p>因为服务器是纯命令行界面，不能像桌面VirtualBox那样方便鼠标点击，所以设置均需要使用命令，好在VBox的命令也很强大。</p>
+<p>1、安装一同下载好的VIrtualBox的扩展包。</p>
+<blockquote>
+<p>&gt; vboxmanage extpack install Oracle_VM_VirtualBox_Extension_Pack-5.xxx.vbox-extpack</p>
+</blockquote>
+<p>2、可以修改虚拟机的安装路径。</p>
+<blockquote>
+<p>&gt; vboxmanage setproperty machinefolder “存放虚拟机安装位置的目录”</p>
+</blockquote>
+<p>3、设置VRDE auth library。<br>虚拟机安装系统时，可以对其进行远程登陆显示，就好像安装了一个远程显示器一样，方便操作。这里建议在局域网中安装虚拟机系统，因为VRDE并不是很安全，且安装好后也需要关闭对应的虚拟机的VRDE的功能。</p>
+<blockquote>
+<p>&gt; vboxmanage setproperty vrdeauthlibrary “VBoxAuthSimple”</p>
+</blockquote>
+<p>4、 设置VBox开启自启动<br>这样可以使得Ubuntu物理机服务器启动时，虚拟机也能定时启动。</p>
+<blockquote>
+<p>&gt; vboxmanage setproperty autostartdbpath /etc/vbox</p>
+</blockquote>
+<h3 id="使用VirtualBox"><a href="#使用VirtualBox" class="headerlink" title="使用VirtualBox"></a>使用VirtualBox</h3><h4 id="在VirtualBox中安装Ubuntu-Server"><a href="#在VirtualBox中安装Ubuntu-Server" class="headerlink" title="在VirtualBox中安装Ubuntu Server"></a>在VirtualBox中安装Ubuntu Server</h4><p>注：安装部分 <a href="http://www.linuxidc.com/Linux/2016-04/129728.htm" target="_blank" rel="noopener">参考1</a> <a href="http://beiersi.iteye.com/blog/1266645" target="_blank" rel="noopener">参考2</a> <a href="http://www.sijitao.net/1712.html" target="_blank" rel="noopener">参考3</a></p>
+<p>1、进入到VirtualBox的虚拟机安装目录。<br>默认是<strong>/home/用户名</strong>下的VirtualBox VMs 目录，如果更改了VirtualBox的设置，则进入设置中的Default machine folder配置的虚拟机安装目录。</p>
+<blockquote>
+<p>确保安装目录的可读写权限。</p>
+</blockquote>
+<p>2、新建目录，设置为安装系统的存储路径，比如ubuntu-vm-server-01</p>
+<blockquote>
+<p>&gt; mkdir ubuntu-vm-server-01<br>&gt; cd ubuntu-vm-server-01</p>
+</blockquote>
+<p>3、新建一个大小为100G的vdi磁盘（–size 单位 M）。<br>默认使用动态增加的方式，简单讲就是虚拟机系统用多少就占多少实际物理硬盘空间（只可增不会减），而虚拟机系统会认为磁盘大小为100G。</p>
+<blockquote>
+<p>&gt; vboxmanage createmedium disk –filename ubuntu-vm-server-01.vdi –size 102400</p>
+</blockquote>
+<p>4、新建vbox虚拟机文件并注册（–ostype 设置系统格式）。<br>可以使用<strong>vboxmanage list ostypes</strong>查看vbox支持的系统格式。</p>
+<blockquote>
+<p>&gt; vboxmanage createvm –name ubuntu-vm-server-01.vdi–ostype “Ubuntu_64” –register</p>
+</blockquote>
+<p>5、新建SATA磁盘控制器并将3中新建的vdi磁盘绑定到该虚拟机。</p>
+<blockquote>
+<p>&gt; vboxmanage storagectl ubuntu-vm-server-01–name “SATA Controller” –add sata –controller IntelAHCI<br>&gt; vboxmanage storageattach ubuntu-vm-server-01 –storagectl “SATA Controller” –port 0 –device 0 –type hdd –medium ubuntu-vm-server-01.vdi</p>
+</blockquote>
+<p>6、新建IDE控制器，设置它为dvd，并绑定系统ios文件到该dvd。<br>注：–medium为你的iso路径。</p>
+<blockquote>
+<p>&gt; vboxmanage storagectl ubuntu-vm-server-01–name “IDE Controller” –add ide<br>&gt; vboxmanage storageattach ubuntu-vm-server-01–storagectl “IDE Controller” –port 0 –device 0 –type dvddrive –medium /home/downloads/ubuntu-14.04.4-server-amd64.iso</p>
+</blockquote>
+<p>7、查看自己的网卡信息，并设置虚拟机的网卡为桥接方式（bridged）。</p>
+<blockquote>
+<p>&gt; ifconfig<br>输出：<br>eth0      Link encap:Ethernet  HWaddr f4:4d:30:1b:34:e1<br>          inet addr:192.168.100.8  Bcast:192.168.100.255  Mask:255.255.255.0</p>
+</blockquote>
+<p>将虚拟机的第一块“网卡”nic1和eth0绑定。</p>
+<blockquote>
+<p>&gt; vboxmanage modifyvm ubuntu-vm-server-01–nic1 bridged –bridgeadapter1 eth0</p>
+</blockquote>
+<p>8、设置虚拟机的IO控制，启动项顺序，内存大小，CPU数量，显存大小等其他设置（可以参考<a href="/uploads/use-vbox-on-linux/vboxmanage.txt">手册</a>）。<br>注：安装系统时先设置dvd为第一启动项，disk为第二启动项，安装好后再掉过来。</p>
+<blockquote>
+<p>&gt; vboxmanage modifyvm ubuntu-vm-server-01 –ioapic on<br>&gt; vboxmanage modifyvm ubuntu-vm-server-01 –boot1 dvd  –boot2 disk  –boot3 none  –boot4 none<br>&gt; vboxmanage modifyvm ubuntu-vm-server-01 –memory 2048  –vram 128</p>
+</blockquote>
+<p>9、设置远程桌面访问。<br>可以使用Windows自带的远程桌面连接程序连接虚拟机，也可以使用Ubuntu桌面版自带的Remmina remote desktop client。vrde模式的认证库是VBoxAuth，使用系统的用户来认证。官方文档还提供了一个VBoxAuthSimple认证库。<br>这里设置成VBoxAuthSimple认证库：</p>
+<blockquote>
+<p># 设定vrdeauthtype为external<br>&gt; vboxmanage modifyvm ubuntu-vm-server-01 –vrdeauthtype external<br># 设定vrdeauthlibrary 为 VBoxAuthSimple<br>&gt; vboxmanage modifyvm ubuntu-vm-server-01 –vrdeauthlibrary VBoxAuthSimple<br># 生成加密的密码字串，比如我要设定一个密码为 1234<br>&gt; vboxmanage internalcommands passwordhash “1234”<br># 输出，复制加密的密码字串<br>&gt; Password hash: XXXXXXX<br># 添加一个VBoxAuthSimple用户，用户名：test 密码：1234<br>&gt; vboxmanage setextradata ubuntu-vm-server-01 “VBoxAuthSimple/users/test” XXXXXXX<br># 开启vrde服务<br>&gt; vboxmanage controlvm ubuntu-vm-server-01 vrde on vrdeport 3389</p>
+</blockquote>
+<p>vrde服务可以在虚拟机运行时动态开启和关闭。</p>
+<p>这样可以设置一些与系统用户无关的用户和密码用于远程桌面登陆。</p>
+<blockquote>
+<p>另外，Windows使用远程登陆时需要注意，如果登陆一直卡在准备阶段，需要在连接设置里勾选上<strong>允许我保存凭证</strong>。</p>
+</blockquote>
+<p>10、启动虚拟机。<br>万事具备，启动虚拟机开始安装。因为服务器没有桌面程序，所以需要使用headless方式启动。</p>
+<blockquote>
+<p>&gt; vboxmanage startvm ubuntu-vm-server-01 –type=headless</p>
+</blockquote>
+<p>11、现在就可以用rdesktop远程连接虚拟机了<br>连接的 IP为服务器IP，端口为3389，需要确保服务器的防火墙3389可访问。</p>
+<blockquote>
+<p>&gt; rdesktop localhost:3389</p>
+</blockquote>
+<p>12.安装完成后需要修改启动项顺序，并退出dvd上的iso，可以关闭vrde。</p>
+<blockquote>
+<p>&gt; vboxmanage storageattach ubuntu-vm-server-01 –storagectl “IDE Controller” –port 0 –device 0 –type dvddrive –medium <strong>none</strong></p>
+</blockquote>
+<h4 id="在VirtualBox中安装其他操作系统"><a href="#在VirtualBox中安装其他操作系统" class="headerlink" title="在VirtualBox中安装其他操作系统"></a>在VirtualBox中安装其他操作系统</h4><p>大致安装过程和安装Ubuntu Server类似，我的建议是可以参照桌面版的VirtualBox安装其他操作系统的方式来反推命令的设置。</p>
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><blockquote>
+<p>vboxmanage controlvm  &lt;uuid|vmname&gt;<br>pause | resume | reset | poweroff | savestate<br>| acpipowerbutton | acpisleepbutton |</p>
+</blockquote>
+<h2 id="其他事项"><a href="#其他事项" class="headerlink" title="其他事项"></a>其他事项</h2><h3 id="实现VirtualBox开机自启动"><a href="#实现VirtualBox开机自启动" class="headerlink" title="实现VirtualBox开机自启动"></a>实现VirtualBox开机自启动</h3><p>1、 在/etc/default中新建virtualbox文件</p>
+<blockquote>
+<p>&gt; sudo vim /etc/default/vbox</p>
+</blockquote>
+<p>添加如下内容</p>
+<blockquote>
+<p>VBOXAUTOSTART_DB=/etc/vbox<br>VBOXAUTOSTART_CONFIG=/etc/vbox/autostart.conf</p>
+</blockquote>
+<p>2、 设置vbox目录的权限，添加vbox用户到vboxusers用户组</p>
+<blockquote>
+<p>&gt; sudo chgrp vboxusers /etc/vbox<br>&gt; sudo chmod 1775 /etc/vbox<br>&gt; sudo adduser vbox vboxusers</p>
+</blockquote>
+<p>3、 新建虚拟机自动启动配置文件autostart.conf并添加如下内容</p>
+<blockquote>
+<p>&gt; sudo vim /etc/vbox/autostart.conf</p>
+<p># default policy is to deny starting a VM, the other option is “allow”.<br>default_policy = deny<br># user vbox is allowed to start virtual machines but starting them<br># will be delayed for 120 seconds<br>vbox= {<br>       allow = true<br>       startup_delay = 120<br>}</p>
+</blockquote>
+<p>4、 设置开启自动启动<br>设置成功后会在/etc/vbox目录下生成vbox.start文件。</p>
+<blockquote>
+<p>&gt; vboxmanage setproperty autostartdbpath /etc/vbox<br>&gt; vboxmanage modifyvm ubuntu-vm-server-01 –autostart-enabled on</p>
+</blockquote>
+<p>如果最后一步出现以下类似的错误，那么需要用这个命令groups vbox确认vbox用户已经添加到vboxusers组中，而且vbox对/etc/vbox有写权限。</p>
+<blockquote>
+<p>VBoxManage: error: Adding machine ‘ubuntu-vm-server-01’ to the autostart database failed with VERR_ACCESS_DENIED</p>
+</blockquote>
+<h3 id="设置虚拟机的快照"><a href="#设置虚拟机的快照" class="headerlink" title="设置虚拟机的快照"></a>设置虚拟机的快照</h3><p>快照是一个很好的功能，可以备份系统的状态，在虚拟机因病毒或者黑客破坏后，也能迅速恢复到备份时的状态。<br>新建快照</p>
+<blockquote>
+<p>&gt; vboxmanage snapshot ubuntu-vm-server-01 take “snapshot-001”;</p>
+</blockquote>
+<p>删除快照</p>
+<blockquote>
+<p>会将虚拟机的修改写入磁盘<br> &gt; vboxmanage snapshot ubuntu-vm-server-01 delete “snapshot-001”;</p>
+</blockquote>
+<p>回滚快照</p>
+<blockquote>
+<p>恢复虚拟机到备份时的状态<br>&gt; vboxmanage snapshot ubuntu-vm-server-01 restore “snapshot-001”;</p>
+</blockquote>
+<h3 id="复制虚拟机"><a href="#复制虚拟机" class="headerlink" title="复制虚拟机"></a>复制虚拟机</h3><p>安装好虚拟机系统后，再开一个虚拟机新安装系统很麻烦，可以使用虚拟机复制。</p>
+<blockquote>
+</blockquote>
+<p>方法一：<br>使用vboxmanage clonevm 将现有的系统克隆。<br>&gt; vboxmanage clonevm “”ubuntu-vm-server-02” –name “ubuntu-vm-server-01” –register<br>使用vboxmanage list vms查看到新的虚拟机已经复制成功。</p>
+<blockquote>
+</blockquote>
+<p>方法二：<br>使用vboxmanage clonehd 复制vdi磁盘。<br>首先：<br>&gt; vboxmanage clonehd ubuntu-vm-server-01.vdi ubuntu-vm-server-02..vdi<br>会生成一个新的UUID但内容一样的磁盘，复制到ubuntu-vm-server-02目录下，进入ubuntu-vm-server-02目录，然后就和使用VirtualBox部分差不多，区别是不用再安装系统，使用磁盘即可。</p>
+<blockquote>
+<p>完</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Chain Qian
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.leechain.top/2016/07/03-use-vbox-on-linux/" title="在Ubuntu服务器中安装和配置VirtualBox">https://www.leechain.top/2016/07/03-use-vbox-on-linux/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+            <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+          
+            <a href="/tags/服务器/" rel="tag"># 服务器</a>
+          
+            <a href="/tags/VirtualBox/" rel="tag"># VirtualBox</a>
+          
+            <a href="/tags/运维/" rel="tag"># 运维</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/22-book-javahxjs1/" rel="next" title="Java核心技术--卷I">
+                <i class="fa fa-chevron-left"></i> Java核心技术--卷I
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/08-lcm-gcd-algorithm/" rel="prev" title="求最小公倍数和最大公约数">
+                求最小公倍数和最大公约数 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Chain Qian">
+            
+              <p class="site-author-name" itemprop="name">Chain Qian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ChainGit" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:chainz@foxmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#在Ubuntu服务器中安装和配置VirtualBox"><span class="nav-number">1.</span> <span class="nav-text">在Ubuntu服务器中安装和配置VirtualBox</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装和配置过程"><span class="nav-number">1.1.</span> <span class="nav-text">安装和配置过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#准备环境"><span class="nav-number">1.1.1.</span> <span class="nav-text">准备环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装Ubuntu"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">安装Ubuntu</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装VirtualBox"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">安装VirtualBox</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设置VirtualBox"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">设置VirtualBox</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用VirtualBox"><span class="nav-number">1.1.2.</span> <span class="nav-text">使用VirtualBox</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#在VirtualBox中安装Ubuntu-Server"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">在VirtualBox中安装Ubuntu Server</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在VirtualBox中安装其他操作系统"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">在VirtualBox中安装其他操作系统</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用命令"><span class="nav-number">1.2.</span> <span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他事项"><span class="nav-number">1.3.</span> <span class="nav-text">其他事项</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实现VirtualBox开机自启动"><span class="nav-number">1.3.1.</span> <span class="nav-text">实现VirtualBox开机自启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置虚拟机的快照"><span class="nav-number">1.3.2.</span> <span class="nav-text">设置虚拟机的快照</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复制虚拟机"><span class="nav-number">1.3.3.</span> <span class="nav-text">复制虚拟机</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chain Qian</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">苏ICP备16052713号-1</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt7Bknuv';
+      var conf = 'prod_ef64fab63ed9004614a7a77b40203358';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

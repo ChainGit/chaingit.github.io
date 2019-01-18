@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="转载,学习,多线程,操作系统,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="操作系统原理之进程和线程管理看到一节讲解操作系统进程和线程管理部分的文章，很不错，在此转载整理一下。 操作系统原理之基础知识操作系统原理之死锁操作系统原理之处理机调度操作系统原理之信号量 进程的概念在单道程序下，作业是一个接着一个进行；而在多道程序环境下，允许多个程序并发执行，程序在一个CPU上通过周期性切换达到同步执行的效果。但是，此时它们将失去封闭性，并具有间断性及不可再现性的特征。为此引入了">
+<meta name="keywords" content="转载,学习,多线程,操作系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="操作系统原理之进程和线程管理">
+<meta property="og:url" content="https://www.leechain.top/2017/08/25-operation-system-multithreads/index.html">
+<meta property="og:site_name" content="天印湖畔映白鹭">
+<meta property="og:description" content="操作系统原理之进程和线程管理看到一节讲解操作系统进程和线程管理部分的文章，很不错，在此转载整理一下。 操作系统原理之基础知识操作系统原理之死锁操作系统原理之处理机调度操作系统原理之信号量 进程的概念在单道程序下，作业是一个接着一个进行；而在多道程序环境下，允许多个程序并发执行，程序在一个CPU上通过周期性切换达到同步执行的效果。但是，此时它们将失去封闭性，并具有间断性及不可再现性的特征。为此引入了">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/1.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/2.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/3.jpg">
+<meta property="og:updated_time" content="2018-11-12T10:04:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="操作系统原理之进程和线程管理">
+<meta name="twitter:description" content="操作系统原理之进程和线程管理看到一节讲解操作系统进程和线程管理部分的文章，很不错，在此转载整理一下。 操作系统原理之基础知识操作系统原理之死锁操作系统原理之处理机调度操作系统原理之信号量 进程的概念在单道程序下，作业是一个接着一个进行；而在多道程序环境下，允许多个程序并发执行，程序在一个CPU上通过周期性切换达到同步执行的效果。但是，此时它们将失去封闭性，并具有间断性及不可再现性的特征。为此引入了">
+<meta name="twitter:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.leechain.top/2017/08/25-operation-system-multithreads/">
+
+
+
+
+
+  <title>操作系统原理之进程和线程管理 | 天印湖畔映白鹭</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天印湖畔映白鹭</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">LEECHAIN | 博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.leechain.top/2017/08/25-operation-system-multithreads/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chain Qian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天印湖畔映白鹭">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">操作系统原理之进程和线程管理</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-25T00:00:00+08:00">
+                2017-08-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/08/25-operation-system-multithreads/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/08/25-operation-system-multithreads/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </span></div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="操作系统原理之进程和线程管理"><a href="#操作系统原理之进程和线程管理" class="headerlink" title="操作系统原理之进程和线程管理"></a>操作系统原理之进程和线程管理</h1><p>看到一节讲解操作系统<a href="http://c.biancheng.net/cpp/u/xitong_2/" target="_blank" rel="noopener">进程和线程管理部分的文章</a>，很不错，在此转载整理一下。</p>
+<p><a href="https://www.leechain.top/blog/2017/07/15-operation-system-basic-knowledge.html">操作系统原理之基础知识</a><br><a href="https://www.leechain.top/blog/2017/08/24-operation-system-deadlock.html">操作系统原理之死锁</a><br><a href="https://www.leechain.top/blog/2017/08/23-operation-system-job-schedule.html">操作系统原理之处理机调度</a><br><a href="https://www.leechain.top/blog/2017/08/22-operation-system-semaphore.html">操作系统原理之信号量</a></p>
+<h2 id="进程的概念"><a href="#进程的概念" class="headerlink" title="进程的概念"></a>进程的概念</h2><p>在单道程序下，作业是一个接着一个进行；而在多道程序环境下，允许多个程序并发执行，程序在一个CPU上通过周期性切换达到同步执行的效果。<br>但是，此时它们将失去封闭性，并具有间断性及不可再现性的特征。<br>为此引入了进程(Process)的概念，以便更好地描述和控制程序的并发执行，实现操作系统的并发性和共享性。</p>
+<p>为了使参与并发执行的程序（含数据）能独立地运行，必须为之配置一个专门的数据结构，称为<strong>进程控制块(Process Control Block, PCB)</strong>。<br>系统利用PCB来描述进程的基本情况和运行状态，进而控制和管理进程。相应地，由程序段、相关数据段和PCB三部分构成了进程映像（进程实体）。<br>所谓创建进程，实质上是创建进程映像中的PCB；而撤销进程，实质上是撤销进程的PCB。<br>值得注意的是，进程映像是静态的，进程则是动态的。</p>
+<blockquote>
+<p>注意：PCB是进程存在的唯一标志！</p>
+</blockquote>
+<p>从不同的角度，进程可以有不同的定义，比较典型的定义有：<br><strong>进程是程序的一次执行过程。</strong><br>进程是一个程序及其数据在处理机上顺序执行时所发生的活动。<br>进程是具有独立功能的程序在一个数据集合上运行的过程，它是系统进行资源分配和调度的一个独立单位。</p>
+<p>在引入进程实体的概念后，我们可以把传统操作系统中的进程定义为：“进程是进程实体的运行过程，是系统进行资源分配和调度的一个独立单位。”</p>
+<h2 id="进程的特征"><a href="#进程的特征" class="headerlink" title="进程的特征"></a>进程的特征</h2><p>进程是由多程序的并发执行而引出的，它和程序是两个截然不同的概念。进程的基本特征是对比单个程序的顺序执行提出的，也是对进程管理提出的基本要求。<br><strong>动态性：</strong>进程是程序的一次执行，它有着创建、活动、暂停、终止等过程，具有一定的生命周期，是动态地产生、变化和消亡的。动态性是进程最基本的特征。<br><strong>并发性：</strong>指多个进程实体，同存于内存中，能在一段时间内同时运行，并发性是进程的重要特征，同时也是操作系统的重要特征。引入进程的目的就是为了使程序能与其他进程的程序并发执行，以提高资源利用率。<br><strong>独立性：</strong>指进程实体是一个能独立运行、独立获得资源和独立接受调度的基本单位。凡未建立PCB的程序都不能作为一个独立的单位参与运行。<br>异步性：由于进程的相互制约，使进程具有执行的间断性，即进程按各自独立的、 不可预知的速度向前推进。异步性会导致执行结果的不可再现性，为此，在操作系统中必须配置相应的进程同步机制。<br><strong>结构性：</strong>每个进程都配置一个PCB对其进行描述。从结构上看，<strong>进程实体是由程序段、数据段和进程控制段三部分组成的。</strong></p>
+<h2 id="进程的状态和转换"><a href="#进程的状态和转换" class="headerlink" title="进程的状态和转换"></a>进程的状态和转换</h2><p>进程在其生命周期内，由于系统中各进程之间的相互制约关系及系统的运行环境的变化，使得进程的状态也在不断地发生变化（一个进程会经历若干种不同状态）。</p>
+<p>通常进程有以下五种状态，前三种是进程的基本状态。<br><strong>1) 运行状态：</strong>进程正在处理机上运行。<strong>在单处理机(一个CPU)环境下，每一时刻最多只有一个进程处于运行状态。</strong><br><strong>2) 就绪状态：</strong>进程已处于准备运行的状态，即进程获得了除处理机之外的一切所需资源，一旦得到处理机即可运行。<br><strong>3) 阻塞状态，又称等待状态：</strong>进程正在等待某一事件而暂停运行，如等待某资源为可用（不包括处理机）或等待输入/输出完成。即使处理机空闲，该进程也不能运行。<br><strong>4) 创建状态：</strong>进程正在被创建，尚未转到就绪状态。创建进程通常需要多个步骤：首先申请一个空白的PCB，并向PCB中填写一些控制和管理进程的信息；然后由系统为该进程分配运行时所必需的资源；最后把该进程转入到就绪状态。<br><strong>5) 结束状态：</strong>进程正从系统中消失，这可能是进程正常结束或其他原因中断退出运行。当进程需要结束运行时，系统首先必须置该进程为结束状态，然后再进一步处理资源释放和回收等工作。</p>
+<blockquote>
+<p>注意区别就绪状态和等待状态：就绪状态是指进程仅缺少处理机，只要获得处理机资源就立即执行；而等待状态是指进程需要其他资源（除了处理机）或等待某一事件。</p>
+</blockquote>
+<p>之所以把处理机和其他资源划分开，是因为在分时系统的时间片轮转机制中，每个进程分到的时间片是若干毫秒。也就是说，进程得到处理机的时间很短且非常频繁，进程在运行过程中实际上是频繁地转换到就绪状态的；而其他资源（如外设）的使用和分配或者某一事件的发生（如I/O操作的完成）对应的时间相对来说很长，进程转换到等待状态的次数也相对较少。这样来看，就绪状态和等待状态是进程生命周期中两个完全不同的状态，很显然需要加以区分。</p>
+<p>下图说明了五种进程状态的转换，而三种基本状态之间的转换如下：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/1.png" alt="image"></p>
+<p><strong>就绪状态 -&gt; 运行状态：</strong>处于就绪状态的进程被调度后，获得处理机资源（分派处理机时间片），于是进程由就绪状态转换为运行状态。<br><strong>运行状态 -&gt; 就绪状态：</strong>处于运行状态的进程在时间片用完后，不得不让出处理机，从而进程由运行状态转换为就绪状态。此外，在可剥夺的操作系统中，当有更高优先级的进程就绪时，调度程度将正执行的进程转换为就绪状态，让更高优先级的进程执行。<br><strong>运行状态 -&gt; 阻塞状态：</strong>当进程请求某一资源（如外设）的使用和分配或等待某一事件的发生（如I/O操作的完成）时，它就从运行状态转换为阻塞状态。进程以系统调用的形式请求操作系统提供服务，这是一种特殊的、由运行用户态程序调用操作系统内核过程的形式。<br><strong>阻塞状态 -&gt; 就绪状态：</strong>当进程等待的事件到来时，如I/O操作结束或中断结束时，中断处理程序必须把相应进程的状态由阻塞状态转换为就绪状态。</p>
+<h2 id="进程的控制"><a href="#进程的控制" class="headerlink" title="进程的控制"></a>进程的控制</h2><blockquote>
+<p>进程控制：创建、终止、阻塞、唤醒和切换</p>
+</blockquote>
+<p>进程控制的主要功能是对系统中的所有进程实施有效的管理，它具有创建新进程、撤销已有进程、实现进程状态转换等功能。<br>在操作系统中，一般把进程控制用的程序段称为原语，<strong>原语的特点是执行期间不允许中断，它是一个不可分割的基本单位。</strong></p>
+<h3 id="进程的创建"><a href="#进程的创建" class="headerlink" title="进程的创建"></a>进程的创建</h3><p>允许一个进程创建另一个进程。此时创建者称为父进程，被创建的进程称为子进程。子进程可以继承父进程所拥有的资源。<br><strong>当子进程被撤销时，应将其从父进程那里获得的资源归还给父进程。此外，在撤销父进程时，也必须同时撤销其所有的子进程。</strong></p>
+<p>在操作系统中，终端用户登录系统、作业调度、系统提供服务、用户程序的应用请求等都会引起进程的创建。</p>
+<p>操作系统创建一个新进程的过程如下（创建原语)：<br>1、为新进程分配一个唯一的进程标识号，并申请一个空白的PCB(PCB是有限的)。若PCB申请失败则创建失败。<br>2、为进程分配资源，为新进程的程序和数据、以及用户栈分配必要的内存空间（在PCB中体现）。<br>    注意：这里如果资源不足（比如内存空间），并不是创建失败，而是处于”等待状态“，或称为“阻塞状态”，等待的是内存这个资源。<br>3、初始化PCB,主要包括初始化标志信息、初始化处理机状态信息和初始化处理机控制信息，以及设置进程的优先级等。<br>4、如果进程就绪队列能够接纳新进程，就将新进程插入到就绪队列，等待被调度运行。</p>
+<h3 id="进程的终止"><a href="#进程的终止" class="headerlink" title="进程的终止"></a>进程的终止</h3><p>引起进程终止的事件主要有：正常结束，异常结束，外界干预。</p>
+<p>正常结束表示进程的任务已经完成和准备退出运行。<br>异常结束是指进程在运行时，发生了某种异常事件，使程序无法继续运行，如存储区越界、保护错、非法指令、特权指令错、I/O故障等。<br>外界干预是指进程应外界的请求而终止运行，如操作员或操作系统干预、父进程请求和父进程终止。</p>
+<p>操作系统终止进程的过程如下（撤销原语）：<br>1、根据被终止进程的标识符，检索PCB，从中读出该进程的状态。<br>2、若被终止进程处于执行状态，立即终止该进程的执行，将处理机资源分配给其他进程。<br>3、若该进程还有子进程，则应将其<strong>所有子进程终止。</strong><br>4、将该进程所拥有的全部资源，或归还给其父进程或归还给操作系统。<br>5、将该PCB从所在队列（链表）中删除。</p>
+<h3 id="进程的阻塞和唤醒"><a href="#进程的阻塞和唤醒" class="headerlink" title="进程的阻塞和唤醒"></a>进程的阻塞和唤醒</h3><p>正在执行的进程，由于期待的某些事件未发生，如请求系统资源失败、等待某种操作的完成、新数据尚未到达或无新工作做等，则由系统自动执行<strong>阻塞</strong>原语(Block)，使自己由运行状态变为阻塞状态。可见，进程的阻塞是进程自身的一种<strong>主动行为</strong>，也因此只有处于运行态的进程（获得CPU），才可能将其转为阻塞状态。</p>
+<p>阻塞原语的执行过程是：<br>1、找到将要被阻塞进程的标识号对应的PCB。<br>2、若该进程为运行状态，则保护其现场，将其状态转为阻塞状态，停止运行。<br>3、把该PCB插入到相应事件的等待队列中去。</p>
+<p>当被阻塞进程所期待的事件出现时，如它所启动的I/O操作已完成或其所期待的数据已到达，则由有关进程（比如，提供数据的进程）调用<strong>唤醒</strong>原语(Wakeup)，将等待该事件的进程唤醒。</p>
+<p>唤醒原语的执行过程是：<br>1、在该事件的等待队列中找到相应进程的PCB。<br>2、将其从等待队列中移出，并置其状态为就绪状态。<br>3、把该PCB插入就绪队列中，等待调度程序调度。</p>
+<p>需要注意的是，Block原语和Wakeup原语是一对作用刚好<strong>相反</strong>的原语，必须成对使用。</p>
+<p>Block原语是由被阻塞进程<strong>自我调用</strong>实现的，而Wakeup原语则是由一个与被唤醒进程相<strong>合作或被其他</strong>相关的进程调用实现的。</p>
+<h3 id="进程切换"><a href="#进程切换" class="headerlink" title="进程切换"></a>进程切换</h3><p>对于通常的进程，其创建、撤销以及要求由系统设备完成的I/O操作都是利用系统调用而进入内核，再由内核中相应处理程序予以完成的。进程切换同样是在内核的支持下实现的，因此可以说，任何进程都是在操作系统内核的支持下运行的，是与内核紧密相关的。</p>
+<p>进程切换是指处理机从一个进程的运行转到另一个进程上运行，这个过程中，进程的运行环境产生了实质性的变化。</p>
+<p>进程切换的过程如下：<br>1、保存处理机上下文，包括程序计数器和其他寄存器。<br>2、更新PCB信息。<br>3、把进程的PCB移入相应的队列，如就绪、在某事件阻塞等队列。<br>4、选择另一个进程执行，并更新其PCB。<br>5、更新内存管理的数据结构。<br>6、恢复处理机上下文。</p>
+<p>注意，进程切换与处理机模式切换是不同的，模式切换时，处理机逻辑上可能还在同一进程中运行。如果进程因中断或异常进入到核心态运行，执行完后又回到用户态刚被中断的程序运行，则操作系统只需恢复进程进入内核时所保存的CPU现场，无需改变当前进程的环境信息。但若要切换进程，当前运行进程改变了，则当前进程的环境信息也需要改变。</p>
+<h2 id="进程的组织"><a href="#进程的组织" class="headerlink" title="进程的组织"></a>进程的组织</h2><p>进程是操作系统的资源分配和独立运行的基本单位。它一般由以下三个部分组成：</p>
+<blockquote>
+<p>进程的组织：控制块、程序段和数据段</p>
+</blockquote>
+<h3 id="进程控制块"><a href="#进程控制块" class="headerlink" title="进程控制块"></a>进程控制块</h3><p>进程创建时，操作系统就新建一个PCB结构，它之后就常驻内存，任一时刻可以存取, 在进程结束时删除。</p>
+<blockquote>
+<p>PCB是进程实体的一部分，是进程存在的唯一标志。</p>
+</blockquote>
+<p>操作系统通过PCB表来管理和控制进程：<br>当创建一个进程时，系统为该进程建立一个PCB；<br>当进程执行时，系统通过其PCB了解进程的现行状态信息，以便对其进行控制和管理；<br>当进程结束时，系统收回其PCB，该进程随之消亡。</p>
+<p>PCB通常包含的内容如下图，该图显示的是一个PCB的实例，PCB主要包括进程描述信息、进程控制和管理信息、资源分配清单和处理机相关信息等。</p>
+<p><img src="/uploads/multithreads-basic-knowledge/2.png" alt="image"></p>
+<p>各部分的主要说明如下：</p>
+<p>1) 进程描述信息<br>进程标识符：标志各个进程，每个进程都有一个并且是<strong>唯一</strong>的标识号。<br>用户标识符：进程归属的用户，用户标识符主要为共享和保护服务。</p>
+<p>2) 进程控制和管理信息<br>进程当前状态：描述进程的状态信息，作为处理机分配调度的依据。<br>进程优先级：描述进程抢占处理机的优先级，优先级高的进程可以优先获得处理机。</p>
+<p>3) 资源分配清单，用于说明有关内存地址空间或虚拟地址空间的状况；所打开文件的列表和所使用的输入/输出设备信息。</p>
+<p>4) 处理机相关信息，主要指处理机中各寄存器值，当进程被切换时，处理机状态信息都必须保存在相应的PCB中，以便在该进程重新执行时，能再从断点继续执行。</p>
+<p>在一个系统中，通常存在着许多进程，有的处于就绪状态，有的处于阻塞状态，而且阻塞的原因各不相同。为了方便进程的调度和管理，需要将各进程的PCB用适当的方法组织起来。目前，常用的组织方式有<strong>链接方式和索引方式</strong>两种。链接方式将同一状态的PCB链接成一个队列，不同状态对应不同的队列，也可以把处于阻塞状态的进程的PCB，根据其阻塞原因的不同，排成多个阻塞队列。索引方式是将同一状态的进程组织在一个索引表中，索引表的表项指向相应的PCB，不同状态对应不同的索引表，如就绪索引表和阻塞索引表等。</p>
+<h3 id="程序段"><a href="#程序段" class="headerlink" title="程序段"></a>程序段</h3><p>程序段就是能被进程调度程序调度到CPU执行的程序代码段。注意，程序可以被多个进程共享，就是说多个进程可以运行同一个程序，由此也出现了常见的并发问题。</p>
+<h3 id="数据段"><a href="#数据段" class="headerlink" title="数据段"></a>数据段</h3><p>一个进程的数据段，可以是进程对应的程序加工处理的原始数据，也可以是程序执行时产生的中间或最终结果，各个进制的内部数据是相对隔离的。</p>
+<h2 id="进程的通信"><a href="#进程的通信" class="headerlink" title="进程的通信"></a>进程的通信</h2><p>进程通信是指进程之间的信息交换。</p>
+<blockquote>
+<p>进程的通信：共享存储、消息传递和管道通信等。</p>
+</blockquote>
+<p>PV操作是低级通信方式，髙级通信方式是指以较高的效率传输大量数据的通信方式。</p>
+<p>高级通信方法主要有以下三个类：</p>
+<h3 id="共享存储"><a href="#共享存储" class="headerlink" title="共享存储"></a>共享存储</h3><p>在通信的进程之间存在一块可直接访问的共享空间，通过对这片共享空间进行写/读操作实现进程之间的信息交换。<br>在对共享空间进行写/读操作时，需要使用同步互斥工具（如 P操作、V操作），对共享空间的写/读进行控制。<br>共享存储又分为两种：低级方式的共享是基于数据结构的共享；高级方式则是基于存储区的共享。<br>操作系统只负责为通信进程提供可共享使用的存储空间和同步互斥工具，而数据交换则由用户自己安排读/写指令完成。</p>
+<p>需要注意的是，用户进程空间一般都是独立的，要想让两个用户进程共享空间必须通过特殊的系统调用实现，但是进程内的线程是自然共享进程空间的。</p>
+<h3 id="消息传递"><a href="#消息传递" class="headerlink" title="消息传递"></a>消息传递</h3><p>在消息传递系统中，进程间的数据交换是以格式化的消息(Message)为单位的。若通信的进程之间不存在可直接访问的共享空间，则必须利用操作系统提供的消息传递方法实现进程通信。进程通过系统提供的发送消息和接收消息两个原语进行数据交换。</p>
+<p>1) 直接通信方式：发送进程直接把消息发送给接收进程，并将它挂在接收进程的消息缓冲队列上，接收进程从消息缓冲队列中取得消息。<br>2) 间接通信方式：发送进程把消息发送到某个中间实体中，接收进程从中间实体中取得消息。这种中间实体一般称为信箱，这种通信方式又称为信箱通信方式。该通信方式广泛应用于计算机网络中，相应的通信系统称为电子邮件系统。</p>
+<h3 id="管道通信"><a href="#管道通信" class="headerlink" title="管道通信"></a>管道通信</h3><p>管道通信是消息传递的一种特殊方式。所谓“管道”，是指用于连接一个读进程和一个写进程以实现它们之间通信的一个共享文件，又名pipe文件。向管道（共享文件）提供输入的发送进程（即写进程），以字符流形式将大量的数据送入（写）管道；而接收管道输出的接收进程（即读进程），则从管道中接收（读）数据。</p>
+<p>为了协调双方的通信，管道机制必须提供以下三方面的协调能力：互斥、同步和确定对方的存在。</p>
+<h2 id="进程和线程"><a href="#进程和线程" class="headerlink" title="进程和线程"></a>进程和线程</h2><h3 id="线程的概念"><a href="#线程的概念" class="headerlink" title="线程的概念"></a>线程的概念</h3><p>引入进程的目的，是为了使多道程序并发执行，以提高资源利用率和系统吞吐量；<br>引入线程，则是为了减小程序在并发执行时所付出的时空开销，提高操作系统的并发性能。</p>
+<p>线程最直接的理解就是<strong>“轻量级进程”</strong>，它是一个基本的CPU执行单元，也是程序执行流的最小单元，由线程ID、程序计数器、寄存器集合和堆栈组成。</p>
+<p>线程是进程中的一个实体，是被系统独立调度和分派的基本单位，线程自己不拥有系统资源，只拥有一点在运行中必不可少的资源，但它可与同属一个进程的其他线程共享进程所拥有的全部资源。</p>
+<p>一个线程可以创建和撤销另一个线程，同一进程中的多个线程之间可以并发执行。由于线程之间的相互制约，致使线程在运行中呈现出间断性。<br>线程也有就绪、阻塞和运行三种基本状态。</p>
+<p>引入线程后，进程的内涵发生了改变，进程只作为除CPU以外系统资源的分配单元，线程则作为处理机的分配单元。</p>
+<h3 id="线程与进程的比较"><a href="#线程与进程的比较" class="headerlink" title="线程与进程的比较"></a>线程与进程的比较</h3><p>1) 调度。在传统的操作系统中，拥有资源和独立调度的基本单位都是进程。在引入线程的操作系统中，线程是独立调度的基本单位，进程是资源拥有的基本单位。在同一进程中，线程的切换不会引起进程切换。在不同进程中进行线程切换,如从一个进程内的线程切换到另一个进程中的线程时，会引起进程切换。</p>
+<p>2) 拥有资源。不论是传统操作系统还是设有线程的操作系统，进程都是拥有资源的基本单位，而线程不拥有系统资源（也有一点必不可少的资源），但线程可以访问其隶属进程的系统资源。</p>
+<p>3) 并发性。在引入线程的操作系统中，不仅进程之间可以并发执行，而且多个线程之间也可以并发执行，从而使操作系统具有更好的并发性，提高了系统的吞吐量。</p>
+<p>4) 系统开销。由于创建或撤销进程时，系统都要为之分配或回收资源，如内存空间、 I/O设备等，因此操作系统所付出的开销远大于创建或撤销线程时的开销。类似地，在进行进程切换时，涉及当前执行进程CPU环境的保存及新调度到进程CPU环境的设置，而线程切换时只需保存和设置少量寄存器内容，开销很小。此外，由于同一进程内的多个线程共享进程的地址空间，因此，这些线程之间的同步与通信非常容易实现，甚至无需操作系统的干预。</p>
+<p>5) 地址空间和其他资源（如打开的文件）：进程的地址空间之间互相独立，同一进程的各线程间共享进程的资源，某进程内的线程对于其他进程不可见。</p>
+<p>6) 通信方面：进程间通信(IPC)需要进程同步和互斥手段的辅助，以保证数据的一致性，而线程间可以直接读/写进程数据段（如全局变量）来进行通信。</p>
+<h3 id="线程的属性"><a href="#线程的属性" class="headerlink" title="线程的属性"></a>线程的属性</h3><p>在多线程操作系统中，把线程作为独立运行（或调度）的基本单位，此时的进程，已不再是一个基本的可执行实体。但进程仍具有与执行相关的状态，所谓进程处于“执行”状态，实际上是指该进程中某线程正在执行。</p>
+<p>线程的主要属性如下：<br>1、线程是一个轻型实体，它不拥有系统资源，但每个线程都应有一个唯一的标识符和一个线程控制块，线程控制块记录了线程执行的寄存器和栈等现场状态。<br>2、不同的线程可以执行相同的程序，即同一个服务程序被不同的用户调用时，操作系统为它们创建成不同的线程。<br>3、同一进程中的各个线程共享该进程所拥有的资源。</p>
+<p>线程是处理机的独立调度单位，多个线程是可以并发执行的。在单CPU的计算机系统中，各线程可交替地占用CPU；在多CPU的计算机系统中，各线程可同时占用不同的CPU，若各个CPU同时为一个进程内的各线程服务则可缩短进程的处理时间。</p>
+<p>一个线程被创建后便开始了它的生命周期，直至终止，线程在生命周期内会经历阻塞态、就绪态和运行态等各种状态变化。</p>
+<h3 id="线程的实现方式"><a href="#线程的实现方式" class="headerlink" title="线程的实现方式"></a>线程的实现方式</h3><p>线程的实现可以分为两类：用户级线程(User-LevelThread, ULT)和内核级线程(Kemel-LevelThread,  KLT)。内核级线程又称为内核支持的线程。</p>
+<p><img src="/uploads/multithreads-basic-knowledge/3.jpg" alt="image"></p>
+<p>在用户级线程中，有关线程管理的所有工作都由应用程序完成，内核意识不到线程的存在。应用程序可以通过使用线程库设计成多线程程序。通常，应用程序从单线程起始，在该线程中开始运行，在其运行的任何时刻，可以通过调用线程库中的派生例程创建一个在相同进程中运行的新线程。上图(a)说明了用户级线程的实现方式。</p>
+<p>在内核级线程中，线程管理的所有工作由内核完成，应用程序没有进行线程管理的代码，只有一个到内核级线程的编程接口。内核为进程及其内部的每个线程维护上下文信息，调度也是在内核基于线程架构的基础上完成。上图(b)说明了内核级线程的实现方式。</p>
+<p>在一些系统中，使用组合方式的多线程实现。线程创建完全在用户空间中完成，线程的调度和同步也在应用程序中进行。一个应用程序中的多个用户级线程被映射到一些（小于或等于用户级线程的数目）内核级线程上。上图(c)说明了用户级与内核级的组合实现方式。</p>
+<h3 id="多线程模型"><a href="#多线程模型" class="headerlink" title="多线程模型"></a>多线程模型</h3><p>有些系统同时支持用户线程和内核线程由此产生了不同的多线程模型，即实现用户级线程和内核级线程的连接方式。</p>
+<p>1) 多对一模型<br>将多个用户级线程映射到一个内核级线程，线程管理在用户空间完成。<br>此模式中，用户级线程对操作系统不可见（即透明）。<br>优点：线程管理是在用户空间进行的，因而效率比较高。<br>缺点：当一个线程在使用内核服务时被阻塞，那么整个进程都会被阻塞；多个线程不能并行地运行在多处理机上。</p>
+<p>2) 一对一模型<br>将每个用户级线程映射到一个内核级线程。<br>优点：当一个线程被阻塞后，允许另一个线程继续执行，所以并发能力较强。<br>缺点：每创建一个用户级线程都需要创建一个内核级线程与其对应，这样创建线程的开销比较大，会影响到应用程序的性能。</p>
+<p>3) 多对多模型<br>将 n 个用户级线程映射到 m 个内核级线程上，要求 m &lt;= n。<br>特点：在多对一模型和一对一模型中取了个折中，克服了多对一模型的并发度不高的缺点，又克服了一对一模型的一个用户进程占用太多内核级线程，开销太大的缺点。又拥有多对一模型和一对一模型各自的优点，可谓集两者之所长。</p>
+<h2 id="处理机调度"><a href="#处理机调度" class="headerlink" title="处理机调度"></a>处理机调度</h2><p><a href="https://www.leechain.top/blog/2017/08/23-operation-system-job-schedule.html">操作系统原理之处理机调度</a></p>
+<h2 id="同步与互斥"><a href="#同步与互斥" class="headerlink" title="同步与互斥"></a>同步与互斥</h2><p>在多道程序环境下，进程是并发执行的，不同进程之间存在着不同的相互制约关系。为了协调进程之间的相互制约关系，引入了进程同步的概念。</p>
+<h3 id="临界资源"><a href="#临界资源" class="headerlink" title="临界资源"></a>临界资源</h3><p>虽然多个进程可以共享系统中的各种资源，但其中<strong>许多资源一次只能为一个进程所使用</strong>，我们把一次仅允许一个进程使用的资源称为临界资源。<br>许多物理设备都属于临界资源，如打印机等。此外，还有许多变量、数据等都可以被若干进程共享，也属于临界资源。</p>
+<p>对临界资源的访问，必须互斥地进行，在每个进程中，访问临界资源的那段代码称为<strong>临界区</strong>。</p>
+<p>为了保证临界资源的正确使用，可以把临界资源的访问过程分成四个部分：<br>1、进入区。为了进入临界区使用临界资源，在进入区要检查可否进入临界区，如果可以进入临界区，则应设置正在访问临界区的标志，以阻止其他进程同时进入临界区。<br>2、临界区。进程中访问临界资源的那段代码，又称临界段。<br>3、退出区。将正在访问临界区的标志清除。<br>4、剩余区。代码中的其余部分。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">do</span> &#123;</span><br><span class="line">    entry section;  <span class="comment">//进入区</span></span><br><span class="line">    critical section;  <span class="comment">//临界区</span></span><br><span class="line">    exit section;  <span class="comment">//退出区</span></span><br><span class="line">    remainder section;  <span class="comment">//剩余区</span></span><br><span class="line">&#125; <span class="keyword">while</span> (<span class="keyword">true</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h3><p>同步亦称直接制约关系，它是指为完成某种任务而建立的两个或多个进程，这些进程因为需要在某些位置上<strong>协调它们的工作次序</strong>而等待、传递信息所产生的制约关系。<br>进程间的直接制约关系就是源于它们之间的<strong>相互合作</strong>。</p>
+<p>例如，输入进程A通过单缓冲向进程B提供数据。当该缓冲区空时，进程B不能获得所需数据而阻塞，一旦进程A将数据送入缓冲区，进程B被唤醒。反之，当缓冲区满时，进程A被阻塞，仅当进程B取走缓冲数据时，才唤醒进程A。</p>
+<h3 id="互斥"><a href="#互斥" class="headerlink" title="互斥"></a>互斥</h3><p>互斥亦称间接制约关系。当一个进程进入临界区使用临界资源时，另一个进程必须等待, 当占用临界资源的进程退出临界区后，另一进程才允许去访问此临界资源。</p>
+<p>例如，在仅有一台打印机的系统中，有两个进程A和进程B，如果进程A需要打印时, 系统已将打印机分配给进程B,则进程A必须阻塞。一旦进程B将打印机释放，系统便将进程A唤醒，并将其由阻塞状态变为就绪状态。</p>
+<p>为禁止两个进程同时进入临界区，同步机制应遵循以下准则：<br>1、空闲让进。临界区空闲时，可以允许一个请求进入临界区的进程立即进入临界区。<br>2、忙则等待。当已有进程进入临界区时，其他试图进入临界区的进程必须等待。<br>3、有限等待。对请求访问的进程，应保证能在有限时间内进入临界区。<br>4、让权等待。当进程不能进入临界区时，应立即释放处理器，防止进程忙等待。</p>
+<h3 id="实现临界区互斥的基本方法和信号量"><a href="#实现临界区互斥的基本方法和信号量" class="headerlink" title="实现临界区互斥的基本方法和信号量"></a>实现临界区互斥的基本方法和信号量</h3><p><a href="https://www.leechain.top/blog/2017/08/22-operation-system-semaphore.html">操作系统原理之信号量</a></p>
+<h2 id="什么是管程"><a href="#什么是管程" class="headerlink" title="什么是管程"></a>什么是管程</h2><h3 id="管程的定义"><a href="#管程的定义" class="headerlink" title="管程的定义"></a>管程的定义</h3><p>系统中的各种硬件资源和软件资源，均可用数据结构<strong>抽象地</strong>描述其资源特性，即用少量信息和对资源所执行的操作来表征该资源，而忽略了它们的内部结构和实现细节。<br>管程是由一组数据以及定义在这组数据之上的对这组数据的操作组成的软件模块，这组操作能初始化并改变管程中的数据和同步进程。</p>
+<h3 id="管程的组成"><a href="#管程的组成" class="headerlink" title="管程的组成"></a>管程的组成</h3><p>1) 局部于管程的共享结构数据说明。<br>2) 对该数据结构进行操作的一组过程。<br>3) 对局部于管程的共享数据设置初始值的语句。</p>
+<h3 id="管程的基本特性"><a href="#管程的基本特性" class="headerlink" title="管程的基本特性"></a>管程的基本特性</h3><p>1) 局部于管程的数据只能被局部于管程内的过程所访问。<br>2) 一个进程只有通过调用管程内的过程才能进入管程访问共享数据。<br>3) 每次仅允许一个进程在管程内执行某个内部过程。</p>
+<p>由于管程是一个语言成分，所以管程的互斥访问完全由编译程序在<strong>编译时自动添加</strong>，无需程序员关注，而且保证正确。</p>
+<h2 id="进程的死锁"><a href="#进程的死锁" class="headerlink" title="进程的死锁"></a>进程的死锁</h2><p><a href="https://www.leechain.top/blog/2017/08/24-operation-system-deadlock.html">操作系统原理之死锁</a></p>
+<h2 id="补充和总结"><a href="#补充和总结" class="headerlink" title="补充和总结"></a>补充和总结</h2><h3 id="程序与进程"><a href="#程序与进程" class="headerlink" title="程序与进程"></a>程序与进程</h3><p>1) 进程是程序及其数据在计算机上的一次运行活动，是一个动态的概念。而程序是一组有序的指令集合，是一种静态的概念。<br>2) 进程是程序的一次执行过程，它是动态地创建和消亡的，具有一定的生命周期，是暂时存在的；而程序则是一组代码的集合，它是永久存在的，可长期保存。<br>3) 一个进程可以执行一个或几个程序，一个程序也可以构成多个进程。进程可创建进程，而程序不可能形成新的程序。<br>4) 进程与程序的组成不同。进程的组成包括程序、数据和PCB。进程的运行实体是程序，离开程序的进程没有存在的意义。</p>
+<h3 id="作业与进程"><a href="#作业与进程" class="headerlink" title="作业与进程"></a>作业与进程</h3><p>进程是系统资源的使用者，系统的资源大部分都是以进程为单位分配的。<br>而用户使用计算机是为了实现一串相关的任务，通常把用户要求计算机完成的这一串任务称为作业。</p>
+<p>进程是作业的执行（计算机完成任务）的表现。</p>
+<h3 id="死锁与饥饿"><a href="#死锁与饥饿" class="headerlink" title="死锁与饥饿"></a>死锁与饥饿</h3><p>具有等待队列的信号量的实现可能导致这样的情况：两个或多个进程无限地等待一个事件，而该事件只能由这些等待进程之一来产生。这里的事件是V操作的执行（即释放资源）。当出现这样的状态时，这些进程称为死锁(Deadlocked)。</p>
+<p>说一组进程处于死锁状态是指：组内的每个进程都等待一个事件，而该事件只可能由组内的另一个进程产生。这里所关心的主要是事件是资源的获取和释放。</p>
+<p>与死锁相关的另一个问题是无限期阻塞(Indefinite Blocking)或“饥饿” (Starvation)，即进程在信号量内无穷等待的情况。</p>
+<p>产生饥饿的主要原因是：在一个动态系统中，对于每类系统资源，操作系统需要确定一个分配策略，当多个进程同时申请某类资源时，由分配策略确定资源分配给进程的次序。有时资源分配策略可能是不公平的，即不能保证等待时间上界的存在。在这种情况下，即使系统没有发生死锁，某些进程也可能会长时间等待。当等待时间给进程推进和响应带来明显影响时，称发生了进程“饥饿”，当“饥饿”到一定程度的进程所赋予的任务即使完成也不再具有实际意义时称该进程被“饿死”。</p>
+<p>“饥饿”并不表示系统一定死锁，但至少有一个进程的执行被无限期推迟。</p>
+<p>例如，当有多个进程需要打印文件时，如果系统分配打印机的策略是最短文件优先，那么长文件的打印任务将由于短文件的源源不断到来而被无限期推迟，导致最终的“饥饿”甚至“饿死”。</p>
+<p>“饥饿”与“死锁”的主要差别有：<br>1、进入“饥饿”状态的进程可以只有一个，而由于循环等待条件而进入死锁状态的进程却必须大于或等于两个。<br>2、处于“饥饿”状态的进程可以是一个就绪进程，如静态优先权调度算法时的低优先权进程，而处于死锁状态的进程则必定是阻塞进程。</p>
+<h3 id="同步与互斥-1"><a href="#同步与互斥-1" class="headerlink" title="同步与互斥"></a>同步与互斥</h3><p>并发进程的执行会产生相互制约的关系：<br>1、一种是进程之间竞争使用临界资源，只能让它们逐个使用，这种现象称为互斥，是一种竞争关系；<br>2、另一种是进程之间协同完成任务，在关键点上等待另一个进程发来的消息，以便协同一致，是一种协作关系。</p>
+<h3 id="银行家算法"><a href="#银行家算法" class="headerlink" title="银行家算法"></a>银行家算法</h3><p>银行家算法的主要思想是避免系统进入不安全状态。在每次进行资源分配时，它首先检查系统是否有足够的资源满足要求，如果有，则先进行分配，并对分配后的新状态进行安全性检查。如果新状态安全，则正式分配上述资源，否则就拒绝分配上述资源。这样，它保证系统始终处于安全状态，从而避免死锁现象的发生。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Chain Qian
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.leechain.top/2017/08/25-operation-system-multithreads/" title="操作系统原理之进程和线程管理">https://www.leechain.top/2017/08/25-operation-system-multithreads/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/转载/" rel="tag"># 转载</a>
+          
+            <a href="/tags/学习/" rel="tag"># 学习</a>
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+            <a href="/tags/操作系统/" rel="tag"># 操作系统</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/24-operation-system-deadlock/" rel="next" title="操作系统原理之死锁">
+                <i class="fa fa-chevron-left"></i> 操作系统原理之死锁
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/27-java-multithreads-producer-and-consumer-learn/" rel="prev" title="Java多线程之生产者和消费者模式">
+                Java多线程之生产者和消费者模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Chain Qian">
+            
+              <p class="site-author-name" itemprop="name">Chain Qian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ChainGit" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:chainz@foxmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#操作系统原理之进程和线程管理"><span class="nav-number">1.</span> <span class="nav-text">操作系统原理之进程和线程管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#进程的概念"><span class="nav-number">1.1.</span> <span class="nav-text">进程的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程的特征"><span class="nav-number">1.2.</span> <span class="nav-text">进程的特征</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程的状态和转换"><span class="nav-number">1.3.</span> <span class="nav-text">进程的状态和转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程的控制"><span class="nav-number">1.4.</span> <span class="nav-text">进程的控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#进程的创建"><span class="nav-number">1.4.1.</span> <span class="nav-text">进程的创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程的终止"><span class="nav-number">1.4.2.</span> <span class="nav-text">进程的终止</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程的阻塞和唤醒"><span class="nav-number">1.4.3.</span> <span class="nav-text">进程的阻塞和唤醒</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程切换"><span class="nav-number">1.4.4.</span> <span class="nav-text">进程切换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程的组织"><span class="nav-number">1.5.</span> <span class="nav-text">进程的组织</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#进程控制块"><span class="nav-number">1.5.1.</span> <span class="nav-text">进程控制块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#程序段"><span class="nav-number">1.5.2.</span> <span class="nav-text">程序段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据段"><span class="nav-number">1.5.3.</span> <span class="nav-text">数据段</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程的通信"><span class="nav-number">1.6.</span> <span class="nav-text">进程的通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#共享存储"><span class="nav-number">1.6.1.</span> <span class="nav-text">共享存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息传递"><span class="nav-number">1.6.2.</span> <span class="nav-text">消息传递</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#管道通信"><span class="nav-number">1.6.3.</span> <span class="nav-text">管道通信</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程和线程"><span class="nav-number">1.7.</span> <span class="nav-text">进程和线程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#线程的概念"><span class="nav-number">1.7.1.</span> <span class="nav-text">线程的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程与进程的比较"><span class="nav-number">1.7.2.</span> <span class="nav-text">线程与进程的比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程的属性"><span class="nav-number">1.7.3.</span> <span class="nav-text">线程的属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程的实现方式"><span class="nav-number">1.7.4.</span> <span class="nav-text">线程的实现方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多线程模型"><span class="nav-number">1.7.5.</span> <span class="nav-text">多线程模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理机调度"><span class="nav-number">1.8.</span> <span class="nav-text">处理机调度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同步与互斥"><span class="nav-number">1.9.</span> <span class="nav-text">同步与互斥</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#临界资源"><span class="nav-number">1.9.1.</span> <span class="nav-text">临界资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同步"><span class="nav-number">1.9.2.</span> <span class="nav-text">同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#互斥"><span class="nav-number">1.9.3.</span> <span class="nav-text">互斥</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现临界区互斥的基本方法和信号量"><span class="nav-number">1.9.4.</span> <span class="nav-text">实现临界区互斥的基本方法和信号量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是管程"><span class="nav-number">1.10.</span> <span class="nav-text">什么是管程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#管程的定义"><span class="nav-number">1.10.1.</span> <span class="nav-text">管程的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#管程的组成"><span class="nav-number">1.10.2.</span> <span class="nav-text">管程的组成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#管程的基本特性"><span class="nav-number">1.10.3.</span> <span class="nav-text">管程的基本特性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程的死锁"><span class="nav-number">1.11.</span> <span class="nav-text">进程的死锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#补充和总结"><span class="nav-number">1.12.</span> <span class="nav-text">补充和总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#程序与进程"><span class="nav-number">1.12.1.</span> <span class="nav-text">程序与进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作业与进程"><span class="nav-number">1.12.2.</span> <span class="nav-text">作业与进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#死锁与饥饿"><span class="nav-number">1.12.3.</span> <span class="nav-text">死锁与饥饿</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同步与互斥-1"><span class="nav-number">1.12.4.</span> <span class="nav-text">同步与互斥</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#银行家算法"><span class="nav-number">1.12.5.</span> <span class="nav-text">银行家算法</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chain Qian</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">苏ICP备16052713号-1</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt7Bknuv';
+      var conf = 'prod_ef64fab63ed9004614a7a77b40203358';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

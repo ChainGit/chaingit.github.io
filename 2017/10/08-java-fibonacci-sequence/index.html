@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,算法,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="斐波那契数列放完国庆假期，自己也该投入学习中了。先温故学习一下斐波那契数列，又称黄金分割数列，它是算法题经典中的经典，斐波那契数列在数学和生活以及自然界中都非常有用，具体的编程求解方法也有很多。这里整理一下，做个记录。 起源定义参考知乎。 斐波那契数列最早被提出是印度数学家Gopala，他在研究箱子包装物件长度恰好为1和2时的方法数时首先描述了这个数列。 也就是这个问题：  有n个台阶，你每次只能">
+<meta name="keywords" content="Java,算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="斐波那契数列">
+<meta property="og:url" content="https://www.leechain.top/2017/10/08-java-fibonacci-sequence/index.html">
+<meta property="og:site_name" content="天印湖畔映白鹭">
+<meta property="og:description" content="斐波那契数列放完国庆假期，自己也该投入学习中了。先温故学习一下斐波那契数列，又称黄金分割数列，它是算法题经典中的经典，斐波那契数列在数学和生活以及自然界中都非常有用，具体的编程求解方法也有很多。这里整理一下，做个记录。 起源定义参考知乎。 斐波那契数列最早被提出是印度数学家Gopala，他在研究箱子包装物件长度恰好为1和2时的方法数时首先描述了这个数列。 也就是这个问题：  有n个台阶，你每次只能">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://www.leechain.top/uploads/java-fibonacci-sequence/1.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/java-fibonacci-sequence/2.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/java-fibonacci-sequence/1.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/java-fibonacci-sequence/9.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/java-fibonacci-sequence/3.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/java-fibonacci-sequence/4.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/java-fibonacci-sequence/5.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/java-fibonacci-sequence/6.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/java-fibonacci-sequence/7.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/java-fibonacci-sequence/8.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/java-fibonacci-sequence/10.jpg">
+<meta property="og:updated_time" content="2018-11-12T10:04:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="斐波那契数列">
+<meta name="twitter:description" content="斐波那契数列放完国庆假期，自己也该投入学习中了。先温故学习一下斐波那契数列，又称黄金分割数列，它是算法题经典中的经典，斐波那契数列在数学和生活以及自然界中都非常有用，具体的编程求解方法也有很多。这里整理一下，做个记录。 起源定义参考知乎。 斐波那契数列最早被提出是印度数学家Gopala，他在研究箱子包装物件长度恰好为1和2时的方法数时首先描述了这个数列。 也就是这个问题：  有n个台阶，你每次只能">
+<meta name="twitter:image" content="https://www.leechain.top/uploads/java-fibonacci-sequence/1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.leechain.top/2017/10/08-java-fibonacci-sequence/">
+
+
+
+
+
+  <title>斐波那契数列 | 天印湖畔映白鹭</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天印湖畔映白鹭</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">LEECHAIN | 博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.leechain.top/2017/10/08-java-fibonacci-sequence/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chain Qian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天印湖畔映白鹭">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">斐波那契数列</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-08T00:00:00+08:00">
+                2017-10-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/10/08-java-fibonacci-sequence/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/10/08-java-fibonacci-sequence/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </span></div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="斐波那契数列"><a href="#斐波那契数列" class="headerlink" title="斐波那契数列"></a>斐波那契数列</h1><p>放完国庆假期，自己也该投入学习中了。先温故学习一下斐波那契数列，又称黄金分割数列，它是算法题经典中的经典，斐波那契数列在数学和生活以及自然界中都非常有用，具体的编程求解方法也有很多。这里整理一下，做个记录。</p>
+<h2 id="起源定义"><a href="#起源定义" class="headerlink" title="起源定义"></a>起源定义</h2><p>参考<a href="https://www.zhihu.com/question/28062458" target="_blank" rel="noopener">知乎</a>。</p>
+<p>斐波那契数列最早被提出是印度数学家Gopala，他在研究箱子包装物件长度恰好为1和2时的方法数时首先描述了这个数列。</p>
+<p>也就是这个问题：</p>
+<blockquote>
+<p>有n个台阶，你每次只能跨一阶或两阶，上楼有几种方法？</p>
+</blockquote>
+<p>而最早研究这个数列的当然就是斐波那契（Leonardo Fibonacci）了，他当时是为了描述如下情况的<strong>兔子生长</strong>数目：</p>
+<blockquote>
+<p>第一个月初有一对刚诞生的兔子<br>第二个月之后（第三个月初）它们可以生育<br>每月每对可生育的兔子会诞生下一对新兔子<br>兔子永不死去</p>
+</blockquote>
+<p><img src="/uploads/java-fibonacci-sequence/1.jpg" alt="image"></p>
+<p>这个数列出自他赫赫有名的大作《计算之书》，后来就被广泛的应用于各种场合了。</p>
+<p>这个数列是这么定义的：</p>
+<p><img src="/uploads/java-fibonacci-sequence/2.jpg" alt="image"></p>
+<p>（注意，并非满足第三条的都是斐波那契数列，卢卡斯数列（A000032 - OEIS）也满足这一特点，但初始项定义不同）</p>
+<h2 id="求解方法"><a href="#求解方法" class="headerlink" title="求解方法"></a>求解方法</h2><p>目前整理了斐波那契数列的4种解法。</p>
+<p>斐波那契数列：</p>
+<p>Fib(0) = 0<br>Fib(1) = 1<br>Fib(n) = Fib(n-1) + Fib(n-2)<br>F() = 0, 1, 1, 2, 3, 5, 8, 13, 21, 34 …</p>
+<p>在生活中，斐波那契数列有如下的自然现象：</p>
+<p><img src="/uploads/java-fibonacci-sequence/1.jpg" alt="image"></p>
+<p>诸如此类的还有向日葵、蜂巢、蜻蜓翅膀、海螺、人类耳朵轮廓等等。</p>
+<h3 id="递归做法"><a href="#递归做法" class="headerlink" title="递归做法"></a>递归做法</h3><p>递归还是挺好理解的，斐波那契数列也是递归原理讲解的经典题目。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 递归做法，递归图是一个树形结构</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * 时间复杂度：O(2^n)</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> n</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">recursion</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt; <span class="number">2</span>)</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    <span class="keyword">return</span> recursion(n - <span class="number">1</span>) + recursion(n - <span class="number">2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由于每一次调用recursion方法都会再调用recursion两次，就像树节点下的两个子节点。斐波那契数列树因此而来。</p>
+<p>比如求解f(5)，有以下的树结构：</p>
+<p><img src="/uploads/java-fibonacci-sequence/9.jpg" alt="image"></p>
+<p>递归调用的时间复杂度是很恐怖的，O(n)=2^n。如果计算超过100，计算速度就很慢了，而且可能会造成栈溢出异常。</p>
+<h3 id="循环做法"><a href="#循环做法" class="headerlink" title="循环做法"></a>循环做法</h3><p>循环做法可以借助一个数组，来存储中间的计算过程，便于查询和计算。</p>
+<p>比如算n=50后，再计算n=6可以直接在数组中取即可，无需再计算。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 循环做法(借助数组，可以用于打印前n个元素)</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * 时间复杂度：O(n)</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> n</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">circle</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt; <span class="number">2</span>)</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span>[] f = <span class="keyword">new</span> <span class="keyword">int</span>[n + <span class="number">1</span>];</span><br><span class="line">    f[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++)</span><br><span class="line">        f[i] = f[i - <span class="number">1</span>] + f[i - <span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> f[n];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然，也可以直接计算，减少存储空间的浪费。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 循环做法(无数组，直接计算，无需记忆)</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * 时间复杂度：O(n)</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> n</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">circleWithoutArray</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt; <span class="number">2</span>)</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> f0 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> f1 = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> f2 = f0 + f1;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        f2 = f0 + f1;</span><br><span class="line">        f0 = f1;</span><br><span class="line">        f1 = f2;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> f2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>循环做法在时间复杂度上肯定是优于递归做法的。</p>
+<h3 id="矩阵做法"><a href="#矩阵做法" class="headerlink" title="矩阵做法"></a>矩阵做法</h3><p>参考<a href="http://www.cnblogs.com/xudong-bupt/archive/2013/03/19/2966954.html" target="_blank" rel="noopener">博客</a>。</p>
+<p>矩阵做法需要一定的线性代数的知识，主要是<strong>矩阵的相乘，矩阵的基本性质，单位矩阵</strong>。</p>
+<p>矩阵的基本性质回顾：</p>
+<blockquote>
+<p>乘法结合律：(AB)C=A(BC)．<br>乘法左分配律：(A+B)C=AC+BC<br>乘法右分配律：C(A+B)=CA+CB<br>对数乘的结合性：k(AB=(kA)B=A(kB)<br>转置：(AB)T=BTAT<br>矩阵乘法一般不满足交换律。</p>
+</blockquote>
+<p>首先是矩阵的相乘：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 两个二阶矩阵相乘</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * 注意：只有第一个矩阵的列的个数等于第二个矩阵的行的个数，这样的两个矩阵才能相乘。</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> m1</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> m2</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">int</span>[][] multiply(<span class="keyword">int</span>[][] m1, <span class="keyword">int</span>[][] m2) &#123;</span><br><span class="line">    <span class="comment">// m1c == m2r</span></span><br><span class="line">    <span class="keyword">int</span> m1r = m1.length;</span><br><span class="line">    <span class="keyword">int</span> m2r = m2.length;</span><br><span class="line">    <span class="keyword">int</span> m1c = m1[<span class="number">0</span>].length;</span><br><span class="line">    <span class="keyword">int</span> m2c = m2[<span class="number">0</span>].length;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// m*p x p*n = m*n</span></span><br><span class="line">    <span class="keyword">int</span>[][] m3 = <span class="keyword">new</span> <span class="keyword">int</span>[m1r][m2c];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m1r; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; m2c; j++) &#123;</span><br><span class="line">            <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; m1c; k++) &#123;</span><br><span class="line">                sum += m1[i][k] * m2[k][j];</span><br><span class="line">            &#125;</span><br><span class="line">            m3[i][j] = sum;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> m3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后是一个矩阵的n次幂，矩阵的幂就是矩阵的连乘：</p>
+<p>比如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">16</span>=<span class="number">2</span>*<span class="number">2</span>*<span class="number">2</span>*<span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>类比于</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A^<span class="number">9</span>=A*((A^<span class="number">2</span>)^<span class="number">2</span>)^<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<p>代码的话可以这样编写：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 某一个二阶矩阵的n次快速幂</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * 例：&lt;br&gt;</span></span><br><span class="line"><span class="comment">    * 1）A^9 = A*((A^2)^2)^2) &lt;br&gt;</span></span><br><span class="line"><span class="comment">    * 2）A^15 = ((A^2)^2)^2)*((A^2)^2)*(A^2)*A</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * 二分分治思想，将其由线性的转为对数的</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> m</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> n</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">int</span>[][] pow(<span class="keyword">int</span>[][] m, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">int</span> e = m.length;</span><br><span class="line">    <span class="keyword">int</span>[][] r = <span class="keyword">new</span> <span class="keyword">int</span>[e][e];</span><br><span class="line">    <span class="comment">// 构建单位矩阵</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; e; i++)</span><br><span class="line">        r[i][i] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (n &gt; <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span>[][] s = m;</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> t = i &lt;&lt; <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (t &gt; n)</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            s = multiply(s, s);</span><br><span class="line">            i = t;</span><br><span class="line">        &#125;</span><br><span class="line">        n -= i;</span><br><span class="line">        r = multiply(r, s);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">1</span>)</span><br><span class="line">        r = multiply(r, m);</span><br><span class="line">    <span class="keyword">return</span> r;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来就是斐波那契数列递推公式的推导过程了：</p>
+<p>数列的递推公式为：f(1)=1，f(2)=2，f(n)=f(n-1)+f(n-2) (n&gt;=3)</p>
+<p>用矩阵表示为：</p>
+<p><img src="/uploads/java-fibonacci-sequence/3.png" alt="image"></p>
+<p>进一步，可以得出直接推导公式：</p>
+<p><img src="/uploads/java-fibonacci-sequence/4.png" alt="image"></p>
+<p>由于矩阵乘法满足结合律，在程序中可以事先给定矩阵的64，32，16，8，4，2，1次方，加快程序的执行时间。<br>给定的矩阵次幂，与二进制有关是因为，如下的公式存在解，满足Xi={0或1}：</p>
+<p><img src="/uploads/java-fibonacci-sequence/5.png" alt="image"></p>
+<p>为了保证解满足 Xi={0或1}，对上述公式的求解从右向左，即求解顺序为Xn,Xn-1,Xn-2,….,X1,X0。</p>
+<p>公式做个概括就是如下：</p>
+<p><img src="/uploads/java-fibonacci-sequence/6.png" alt="image"></p>
+<p><img src="/uploads/java-fibonacci-sequence/7.png" alt="image"></p>
+<p>有了公式，再结合上面的矩阵运算的方法，可以很轻松的写出代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 矩阵做法，根据矩阵运算公式即可，计算无误差。</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * 时间复杂度：O(logn)</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> n</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">matrix</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt; <span class="number">2</span>)</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span>[][] m = &#123; &#123; <span class="number">1</span>, <span class="number">1</span> &#125;, &#123; <span class="number">1</span>, <span class="number">0</span> &#125; &#125;;</span><br><span class="line">    <span class="keyword">int</span>[][] f = &#123; &#123; <span class="number">1</span> &#125;, &#123; <span class="number">0</span> &#125; &#125;;</span><br><span class="line">    <span class="keyword">int</span>[][] r = multiply(pow(m, n - <span class="number">1</span>), f);</span><br><span class="line">    <span class="keyword">return</span> r[<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用矩阵的n次快速幂，可以使得计算由线性而升高一个纬度，转为对数计算，计算时间大大减少。</p>
+<p>算法的时间复杂度为O(n)=logn。</p>
+<h3 id="公式做法"><a href="#公式做法" class="headerlink" title="公式做法"></a>公式做法</h3><p>公式的推导过程可以参考<a href="https://baike.baidu.com/item/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0%E5%88%97/99145?fr=aladdin" target="_blank" rel="noopener">百度百科</a>，目前有三种证明方法，分别是初等代数下的利用待定系数法构造等比数列的两种方法和利用线性代数中矩阵特征方程求解。</p>
+<p><img src="/uploads/java-fibonacci-sequence/8.jpg" alt="image"></p>
+<p>值得注意的是公式本身是正确的，而在于计算机在计算根号和除法时可能会有误差。</p>
+<p>这里粘上特征方程证明法：</p>
+<p><img src="/uploads/java-fibonacci-sequence/10.jpg" alt="image"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 公式做法，通项公式，推导可以参考百度百科；&lt;br&gt;</span></span><br><span class="line"><span class="comment">    * 注意：公式本身没有误差，但是计算会有一定的误差。</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * 时间复杂度：O(1)</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> n</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">formula</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt; <span class="number">2</span>)</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">double</span> sqrt5 = Math.sqrt(<span class="number">5</span>);</span><br><span class="line">    <span class="keyword">double</span> phi = (<span class="number">1</span> + sqrt5) / <span class="number">2.0</span>;</span><br><span class="line">    Double fn = (Math.pow(phi, n) - Math.pow(<span class="number">1</span> - phi, n)) / sqrt5;</span><br><span class="line">    <span class="keyword">return</span> fn.intValue();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h2><p>先贴上完整代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 求解斐波那契数列，仅为算法演示，不考虑溢出和其他特殊情况</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Chain</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Fibonacci</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 递归做法，递归图是一个树形结构</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * 时间复杂度：O(2^n)</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> n</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">recursion</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (n &lt; <span class="number">2</span>)</span><br><span class="line">			<span class="keyword">return</span> n;</span><br><span class="line">		<span class="keyword">return</span> recursion(n - <span class="number">1</span>) + recursion(n - <span class="number">2</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 循环做法(借助数组，可以用于打印前n个元素)</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * 时间复杂度：O(n)</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> n</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">circle</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (n &lt; <span class="number">2</span>)</span><br><span class="line">			<span class="keyword">return</span> n;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">int</span>[] f = <span class="keyword">new</span> <span class="keyword">int</span>[n + <span class="number">1</span>];</span><br><span class="line">		f[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++)</span><br><span class="line">			f[i] = f[i - <span class="number">1</span>] + f[i - <span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> f[n];</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 循环做法(无数组，直接计算，无需记忆)</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * 时间复杂度：O(n)</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> n</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">circleWithoutArray</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (n &lt; <span class="number">2</span>)</span><br><span class="line">			<span class="keyword">return</span> n;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">int</span> f0 = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span> f1 = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">int</span> f2 = f0 + f1;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++) &#123;</span><br><span class="line">			f2 = f0 + f1;</span><br><span class="line">			f0 = f1;</span><br><span class="line">			f1 = f2;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> f2;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 公式做法，通项公式，推导可以参考百度百科；&lt;br&gt;</span></span><br><span class="line"><span class="comment">	 * 注意：公式本身没有误差，但是计算会有一定的误差。</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * 时间复杂度：O(1)</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> n</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">formula</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (n &lt; <span class="number">2</span>)</span><br><span class="line">			<span class="keyword">return</span> n;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">double</span> sqrt5 = Math.sqrt(<span class="number">5</span>);</span><br><span class="line">		<span class="keyword">double</span> phi = (<span class="number">1</span> + sqrt5) / <span class="number">2.0</span>;</span><br><span class="line">		Double fn = (Math.pow(phi, n) - Math.pow(<span class="number">1</span> - phi, n)) / sqrt5;</span><br><span class="line">		<span class="keyword">return</span> fn.intValue();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 矩阵做法，根据矩阵运算公式即可，计算无误差。</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * 时间复杂度：O(logn)</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> n</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">matrix</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (n &lt; <span class="number">2</span>)</span><br><span class="line">			<span class="keyword">return</span> n;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">int</span>[][] m = &#123; &#123; <span class="number">1</span>, <span class="number">1</span> &#125;, &#123; <span class="number">1</span>, <span class="number">0</span> &#125; &#125;;</span><br><span class="line">		<span class="keyword">int</span>[][] f = &#123; &#123; <span class="number">1</span> &#125;, &#123; <span class="number">0</span> &#125; &#125;;</span><br><span class="line">		<span class="keyword">int</span>[][] r = multiply(pow(m, n - <span class="number">1</span>), f);</span><br><span class="line">		<span class="keyword">return</span> r[<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 两个二阶矩阵相乘</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * 注意：只有第一个矩阵的列的个数等于第二个矩阵的行的个数，这样的两个矩阵才能相乘。</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> m1</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> m2</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span>[][] multiply(<span class="keyword">int</span>[][] m1, <span class="keyword">int</span>[][] m2) &#123;</span><br><span class="line">		<span class="comment">// m1c == m2r</span></span><br><span class="line">		<span class="keyword">int</span> m1r = m1.length;</span><br><span class="line">		<span class="keyword">int</span> m2r = m2.length;</span><br><span class="line">		<span class="keyword">int</span> m1c = m1[<span class="number">0</span>].length;</span><br><span class="line">		<span class="keyword">int</span> m2c = m2[<span class="number">0</span>].length;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// m*p x p*n = m*n</span></span><br><span class="line">		<span class="keyword">int</span>[][] m3 = <span class="keyword">new</span> <span class="keyword">int</span>[m1r][m2c];</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m1r; i++) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; m2c; j++) &#123;</span><br><span class="line">				<span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">				<span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; m1c; k++) &#123;</span><br><span class="line">					sum += m1[i][k] * m2[k][j];</span><br><span class="line">				&#125;</span><br><span class="line">				m3[i][j] = sum;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> m3;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 某一个二阶矩阵的n次快速幂</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * 例：&lt;br&gt;</span></span><br><span class="line"><span class="comment">	 * 1）A^9 = A*((A^2)^2)^2) &lt;br&gt;</span></span><br><span class="line"><span class="comment">	 * 2）A^15 = ((A^2)^2)^2)*((A^2)^2)*(A^2)*A</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * 二分分治思想，将其由线性的转为对数的</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> m</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> n</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span>[][] pow(<span class="keyword">int</span>[][] m, <span class="keyword">int</span> n) &#123;</span><br><span class="line">		<span class="keyword">int</span> e = m.length;</span><br><span class="line">		<span class="keyword">int</span>[][] r = <span class="keyword">new</span> <span class="keyword">int</span>[e][e];</span><br><span class="line">		<span class="comment">// 构建单位矩阵</span></span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; e; i++)</span><br><span class="line">			r[i][i] = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">while</span> (n &gt; <span class="number">1</span>) &#123;</span><br><span class="line">			<span class="keyword">int</span> i = <span class="number">1</span>;</span><br><span class="line">			<span class="keyword">int</span>[][] s = m;</span><br><span class="line">			<span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">				<span class="keyword">int</span> t = i &lt;&lt; <span class="number">1</span>;</span><br><span class="line">				<span class="keyword">if</span> (t &gt; n)</span><br><span class="line">					<span class="keyword">break</span>;</span><br><span class="line">				s = multiply(s, s);</span><br><span class="line">				i = t;</span><br><span class="line">			&#125;</span><br><span class="line">			n -= i;</span><br><span class="line">			r = multiply(r, s);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (n == <span class="number">1</span>)</span><br><span class="line">			r = multiply(r, m);</span><br><span class="line">		<span class="keyword">return</span> r;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 打印二维数组</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">int</span>[][] m)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> r = m.length;</span><br><span class="line">		<span class="keyword">int</span> c = m[<span class="number">0</span>].length;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; r; i++) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; c; j++) &#123;</span><br><span class="line">				System.out.print(m[i][j] + <span class="string">" "</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			System.out.println();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Fibonacci f = <span class="keyword">new</span> Fibonacci();</span><br><span class="line">		<span class="keyword">int</span>[][] m1 = &#123; &#123; <span class="number">3</span>, <span class="number">4</span>, <span class="number">2</span> &#125;, &#123; <span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span> &#125; &#125;;</span><br><span class="line">		<span class="keyword">int</span>[][] m2 = &#123; &#123; <span class="number">5</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">8</span> &#125;, &#123; <span class="number">4</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">9</span> &#125;, &#123; <span class="number">5</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">6</span> &#125; &#125;;</span><br><span class="line">		<span class="keyword">int</span>[][] m3 = f.multiply(m1, m2);</span><br><span class="line">		<span class="keyword">int</span>[][] m4 = &#123; &#123; <span class="number">1</span>, <span class="number">1</span> &#125;, &#123; <span class="number">1</span>, <span class="number">0</span> &#125; &#125;;</span><br><span class="line">		<span class="keyword">int</span>[][] m5 = f.pow(m4, <span class="number">3</span>);</span><br><span class="line">		f.print(m3);</span><br><span class="line">		f.print(m5);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再贴上测试代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FibonacciTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> Fibonacci fibonacci = <span class="keyword">new</span> Fibonacci();</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Random rand = <span class="keyword">new</span> Random();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">int</span> n = rand.nextInt(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">		n = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">		System.out.println(<span class="string">"n is "</span> + n);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">long</span> start = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">		test1(n);</span><br><span class="line">		<span class="keyword">long</span> step1 = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">		test2(n);</span><br><span class="line">		<span class="keyword">long</span> step2 = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">		test3(n);</span><br><span class="line">		<span class="keyword">long</span> step3 = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">		test4(n);</span><br><span class="line">		<span class="keyword">long</span> step4 = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">		test5(n);</span><br><span class="line">		<span class="keyword">long</span> step5 = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">		System.out.println(<span class="string">"test1 is "</span> + (step1 - start));</span><br><span class="line">		System.out.println(<span class="string">"test2 is "</span> + (step2 - step1));</span><br><span class="line">		System.out.println(<span class="string">"test3 is "</span> + (step3 - step2));</span><br><span class="line">		System.out.println(<span class="string">"test4 is "</span> + (step4 - step3));</span><br><span class="line">		System.out.println(<span class="string">"test5 is "</span> + (step5 - step4));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> r = fibonacci.recursion(n);</span><br><span class="line">		System.out.println(<span class="string">"recursion："</span> + r);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">test2</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> r = fibonacci.circle(n);</span><br><span class="line">		System.out.println(<span class="string">"circle："</span> + r);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">test3</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> r = fibonacci.circleWithoutArray(n);</span><br><span class="line">		System.out.println(<span class="string">"circleWithoutArray："</span> + r);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">test4</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> r = fibonacci.matrix(n);</span><br><span class="line">		System.out.println(<span class="string">"matrix："</span> + r);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">test5</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> r = fibonacci.formula(n);</span><br><span class="line">		System.out.println(<span class="string">"formula："</span> + r);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试结果：</p>
+<p>分别测试在n比较小情况下，和n比较大的情况下的测试结果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">当n=<span class="number">10</span>时：</span><br><span class="line">n is <span class="number">10</span></span><br><span class="line">recursion：<span class="number">55</span></span><br><span class="line">circle：<span class="number">55</span></span><br><span class="line">circleWithoutArray：<span class="number">55</span></span><br><span class="line">matrix：<span class="number">55</span></span><br><span class="line">formula：<span class="number">55</span></span><br><span class="line">test1 is <span class="number">0</span></span><br><span class="line">test2 is <span class="number">0</span></span><br><span class="line">test3 is <span class="number">0</span></span><br><span class="line">test4 is <span class="number">0</span></span><br><span class="line">test5 is <span class="number">0</span></span><br><span class="line"></span><br><span class="line">当n较大时，递归几乎无法计算。</span><br></pre></td></tr></table></figure>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>斐波那契数列经典但也时编程的基本功题目。同时，它也能体现很多编程的技巧和算法的思想，比如理解递归，包含动态规划和分治的思想。</p>
+<p>具体的经典变形比如：跳台阶，矩形覆盖（参见《剑指Offer》）。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Chain Qian
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.leechain.top/2017/10/08-java-fibonacci-sequence/" title="斐波那契数列">https://www.leechain.top/2017/10/08-java-fibonacci-sequence/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/27-kugou-school-test1/" rel="next" title="酷狗校招-买橙子">
+                <i class="fa fa-chevron-left"></i> 酷狗校招-买橙子
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/09-sort-integer-array-extra/" rel="prev" title="常见的数组排序算法（补充）">
+                常见的数组排序算法（补充） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Chain Qian">
+            
+              <p class="site-author-name" itemprop="name">Chain Qian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ChainGit" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:chainz@foxmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#斐波那契数列"><span class="nav-number">1.</span> <span class="nav-text">斐波那契数列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#起源定义"><span class="nav-number">1.1.</span> <span class="nav-text">起源定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#求解方法"><span class="nav-number">1.2.</span> <span class="nav-text">求解方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#递归做法"><span class="nav-number">1.2.1.</span> <span class="nav-text">递归做法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#循环做法"><span class="nav-number">1.2.2.</span> <span class="nav-text">循环做法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#矩阵做法"><span class="nav-number">1.2.3.</span> <span class="nav-text">矩阵做法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#公式做法"><span class="nav-number">1.2.4.</span> <span class="nav-text">公式做法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试结果"><span class="nav-number">1.3.</span> <span class="nav-text">测试结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文末总结"><span class="nav-number">1.4.</span> <span class="nav-text">文末总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chain Qian</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">苏ICP备16052713号-1</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt7Bknuv';
+      var conf = 'prod_ef64fab63ed9004614a7a77b40203358';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

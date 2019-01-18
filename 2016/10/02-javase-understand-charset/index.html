@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,学习,知识点,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="理解字符集和编码以及Java中的乱码解决回顾复习一下字符集和编码，以及如何解决Java中乱码的问题，也查阅整理了Java中char的含义。 基本概念1、字符、字节、字 字符：人类使用的记号，抽象意义上的一个符号。比如阿拉伯数字“1”，英文字母“A”，中文汉字“中”。 字节：计算机中的一个存储单位，8个比特为一个字节。  在C语言中，用char来表示一个字节，如果用于存储字符的话则对应的为ASCII">
+<meta name="keywords" content="Java,学习,知识点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解字符集和编码以及Java中的乱码解决">
+<meta property="og:url" content="https://www.leechain.top/2016/10/02-javase-understand-charset/index.html">
+<meta property="og:site_name" content="天印湖畔映白鹭">
+<meta property="og:description" content="理解字符集和编码以及Java中的乱码解决回顾复习一下字符集和编码，以及如何解决Java中乱码的问题，也查阅整理了Java中char的含义。 基本概念1、字符、字节、字 字符：人类使用的记号，抽象意义上的一个符号。比如阿拉伯数字“1”，英文字母“A”，中文汉字“中”。 字节：计算机中的一个存储单位，8个比特为一个字节。  在C语言中，用char来表示一个字节，如果用于存储字符的话则对应的为ASCII">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-12T10:04:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="理解字符集和编码以及Java中的乱码解决">
+<meta name="twitter:description" content="理解字符集和编码以及Java中的乱码解决回顾复习一下字符集和编码，以及如何解决Java中乱码的问题，也查阅整理了Java中char的含义。 基本概念1、字符、字节、字 字符：人类使用的记号，抽象意义上的一个符号。比如阿拉伯数字“1”，英文字母“A”，中文汉字“中”。 字节：计算机中的一个存储单位，8个比特为一个字节。  在C语言中，用char来表示一个字节，如果用于存储字符的话则对应的为ASCII">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.leechain.top/2016/10/02-javase-understand-charset/">
+
+
+
+
+
+  <title>理解字符集和编码以及Java中的乱码解决 | 天印湖畔映白鹭</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天印湖畔映白鹭</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">LEECHAIN | 博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.leechain.top/2016/10/02-javase-understand-charset/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chain Qian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天印湖畔映白鹭">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">理解字符集和编码以及Java中的乱码解决</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-02T00:00:00+08:00">
+                2016-10-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2016/10/02-javase-understand-charset/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2016/10/02-javase-understand-charset/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </span></div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="理解字符集和编码以及Java中的乱码解决"><a href="#理解字符集和编码以及Java中的乱码解决" class="headerlink" title="理解字符集和编码以及Java中的乱码解决"></a>理解字符集和编码以及Java中的乱码解决</h1><p>回顾复习一下字符集和编码，以及如何解决Java中乱码的问题，也查阅整理了Java中char的含义。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>1、字符、字节、字</p>
+<p><strong>字符</strong>：人类使用的记号，抽象意义上的一个符号。比如阿拉伯数字“1”，英文字母“A”，中文汉字“中”。</p>
+<p><strong>字节</strong>：计算机中的一个存储单位，8个比特为一个字节。</p>
+<blockquote>
+<p>在C语言中，用char来表示一个字节，如果用于存储字符的话则对应的为ASCII字符集编码表，而Java中byte表示一个字节，而char表示的是Unicode字符集，UTF-16BE(Big Edition)编码表。</p>
+</blockquote>
+<p><strong>字</strong>：这个也是一个计算机中的存储单位，英文为WORD，表示两个字节。对应的还有DWORD,QWORD。</p>
+<blockquote>
+<p>Java中WORD-short(两个字节),DWORD-int(四个字节),QWORD-long(八个字节)。</p>
+</blockquote>
+<p>注：有些教科书中讲“一个汉字占两个字节”是不全面的，准确的说“在有些汉字编码（比如GB2312）中，一个汉字占两个字节，而再其他编码中，汉字不一定占两个字节，比如UTF系列”。</p>
+<p>2、字符集、编码</p>
+<p><strong>字符集</strong>：首先是一个集合，集合内包含了一些被选择的字符。是一种<strong>规范</strong>。</p>
+<blockquote>
+<p>比如GBK包含了GB2312的字符，但是GB2312内没有GBK的一些字符。</p>
+</blockquote>
+<p><strong>编码</strong>：字符如何在计算机中存储，每个字符用一个字节还是多个字节，以及存储的具体格式。是一种<strong>方式</strong>，用于传播和存储。</p>
+<blockquote>
+<p>比如ASCII均用一个字节来存储字符，而GB2312中一个字节且序号低于127的表示原来ASCII内的字符，两个字节且每个字节序号都高于127的表示汉字等，也是GB2312与ASCII兼容的由来；在GBK中，高字节序号低于127表示源来的ASCII内的字符，高字节序号高于127则连同低字节一起两个字节表示汉字等。（高字节可以理解为第一个字节，低字节为第二个字节）</p>
+</blockquote>
+<p>注：不少编码和字符集是同时制定的，如GB2312既表示字符集也表示编码。而Unicode则表示字符集，UTF-8，UTF-16等表示编码。</p>
+<p>3、ASCII、ANSI、Unicode</p>
+<p>这三者其实是字符集发展的历史历程。ASCII -&gt; ANSI -&gt; Unicode</p>
+<p><strong>ASCII</strong>：American Standard Code for Information Interchange。这个是最早在DOS系统中使用,包括一些控制字符，数字，英文字母大小写，特殊字符，对于英文环境足够使用。字符集中的字符序号和实际编码格式是一样的。</p>
+<p><strong>ANSI</strong>：American National Standards Institute。美国国家标准协会。这不是一个编码，而是一种标准。比如在简体中文的Windows操作系统中ANSI指的是GB2312，在繁体中文的Windows操作系统中ANSI指的是BIG5，在日文操作系统中ANSI指的是JIS。其实这个很蛋疼，比如日本的网友发了一个ANSI标准(JIS编码)的文本，中国伙伴也以ANSI(GB2312)打开，却是乱码。</p>
+<p><strong>Unicode</strong>：万国码。主要是将全世界的字符放到一个字符集合中，解决跨平台和跨语言的问题。Unicode有很多编码方案，常用的是UTF-8，还有UTF-16,UTF-32等。UTF( UCS Transformation Format)是Unicode的具体编码实现方式。</p>
+<p>补充：<br>1、ANSI转其他编码比如Unicode是人为规定的，而Unicode转其他编码是可以算出来的。<br>2、ISO-8859-1是最简单的单字节编码。<br>3、这里再介绍一下UTF-8：</p>
+<p>UTF-8是变长编码，编码长度和Unicode编码有关，UTF-8（一到四个字节）兼容ASCII，UTF-16（两个或四个字节）不兼容ASCII。</p>
+<table>
+<thead>
+<tr>
+<th>Unicode序号(十六进制)</th>
+<th>UTF-8 字节流(二进制)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>000000-00007F</td>
+<td>0xxxxxxx</td>
+</tr>
+<tr>
+<td>000080-0007FF</td>
+<td>110xxxxx 10xxxxxx</td>
+</tr>
+<tr>
+<td>000800-00FFFF</td>
+<td>1110xxxx 10xxxxxx 10xxxxxx</td>
+</tr>
+<tr>
+<td>010000-1FFFFF</td>
+<td>11110xxx 10xxxxxx 10xxxxxx 10xxxxxx</td>
+</tr>
+</tbody>
+</table>
+<p>摘自百度的例子：“汉”这个字的Unicode编码是0x6C49。0x6C49在0x0800-0xFFFF之间，使用<strong>三字节</strong>模板：1110xxxx 10xxxxxx 10xxxxxx。将0x6C49写成二进制是：0110 1100 0100 1001， 用这个比特流依次代替模板中的x，得到：11100110 10110001 10001001，即E6 B1 89。汉字在UTF-8中范围是[0x4e00,0x9fbb]，三字节编码。</p>
+<p><strong>注意</strong>：在编程中，源文件的编码格式也很重要，一个项目中的源文件编码应当统一，一般使用UTF-8。否则，会出现字符显示异常，甚至莫名其妙的编译问题。</p>
+<h2 id="常见现象"><a href="#常见现象" class="headerlink" title="常见现象"></a>常见现象</h2><p>1、存储的数据是对的，打开文档时选错编码格式。<br>现象：以GBK编码写了一篇文档，打开时的软件却错误的选择了UTF-8的编码，从而导致中文显示乱码，英文和数字正常。<br>分析：GBK和UTF-8都是兼容ASCII的，所以英文和数字正常。而中文在GBK和UTF-8这两个编码方式中是不一样的，换句话说，存储的数据是不一样的。<br>解决：这个时候只要设置打开文本的软件编码格式为GBK，再重新打开文本就行，此时千万不要修改和保存文档。一般以什么编码保存，就以什么编码再打开最好。</p>
+<p>2、将文本进行转码<br>解决：如果原先文本是以GBK编码存储，想转为UTF-8，则将原文本以GBK格式先打开，然后复制文本的内容到剪贴板，删除原文本文件内的所有内容，更改文本的存储编码为UTF-8，再粘贴刚才复制的内容保存即可。</p>
+<p>3、打开文本发现乱码后，又修改了文本，并保存。<br>解决：这个解决起来很麻烦，而且恢复成功率不高，取决于文本编辑器如何对文本进行保存。</p>
+<h2 id="Java中的char"><a href="#Java中的char" class="headerlink" title="Java中的char"></a>Java中的char</h2><p>前面已经说到，Java中的char是采用Unicode字符集，UTF-16BE的编码。UTF-16使用两个或四个字节表示一个字符，Unicode编号范围在65536以内的占两个字节，超出范围的占四个字节。<br>BE (Big Endian)的意思大端，即是先输出高位字节，再输出低位字节，这与整数的在内存中的表示是一样的。<br>换句话说<strong>char只能表示编号在65536以内的字符，超过部分需要用两个char凑四个字节表示</strong>。</p>
+<p>Java的源文件如果是GBK编码，那么打开这个源文件也需要用GBK编码。如果IDE不支持GBK，比如使用英文操作系统，那么就会默认以其他如UTF-8编码打开，这样就会显示乱码。因此，最好统一项目源码为UTF-8编码。</p>
+<p>在C语言中,char是一个字节，只能表示256个字符，而Java中的char就可表示的字符大了不少。在Java中，用一个char就可以表示汉字。另外，也可以直接赋数值，或者赋Unicode编码序号值。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> c1 = <span class="string">'汉'</span>;</span><br><span class="line"><span class="keyword">char</span> c2 = <span class="string">'\u6c49'</span>;</span><br><span class="line"><span class="keyword">int</span> i3 = c1;<span class="comment">// 27721</span></span><br><span class="line"><span class="keyword">char</span> c3 = (<span class="keyword">char</span>) i3;</span><br><span class="line"><span class="keyword">char</span> c4 = <span class="number">0x6c49</span>;</span><br><span class="line">System.out.println(c1);</span><br><span class="line">System.out.println(c2);</span><br><span class="line">System.out.println(i3);</span><br><span class="line">System.out.println(c3);</span><br><span class="line">System.out.println(c4);</span><br><span class="line">System.out.println(Integer.toBinaryString(c1));</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ((c1 &gt;= <span class="number">0x4e00</span>) &amp;&amp; (c1 &lt;= <span class="number">0x9fbb</span>)) &#123;</span><br><span class="line">    System.out.println(<span class="string">"中文"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<blockquote>
+<p>汉<br>汉<br>27721<br>汉<br>汉<br>110110001001001<br>中文</p>
+</blockquote>
+<p>char本质上也是数值，它和short一样是占两个字节，只不是它是无符号数，范围和short不一样，char可以参与数值运算、位运算，但是作为数值赋值和运算时会自动转型为int。</p>
+<p>char的运算主要运用在判断某个字符是否是[0-9A-Za-z]，转换字母大小写，这点和学C语言时char的作用是类似的。</p>
+<h2 id="Java中的转码"><a href="#Java中的转码" class="headerlink" title="Java中的转码"></a>Java中的转码</h2><p>在WEB项目中，字符编码的问题一直很头疼，很容易就遇到乱码的问题。</p>
+<p>先说一下历史背景：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">RFC 1738规定：只有字母和数字[0-9a-zA-Z]，一些特殊符号如</span><br><span class="line">$  (美元)、</span><br><span class="line">-  (负号，减号)、</span><br><span class="line">_  (下划线)、</span><br><span class="line">.  (点)、</span><br><span class="line">+  (加号)、</span><br><span class="line">!  (英文感叹号)、</span><br><span class="line">*  (星号)、</span><br><span class="line">&apos;  (英文单引号)、</span><br><span class="line">(  (英文左括弧)、</span><br><span class="line">)  (英文右括弧)、</span><br><span class="line">,  (英文逗号)，</span><br><span class="line">以及某些保留字，才可以不经过编码直接用于URL</span><br></pre></td></tr></table></figure></p>
+<p>也就是说，除规定之外的其他字符不能出现在URL中。这个规定是好的，但是RFC 1738没有规定具体的编码方法，而是交给各个浏览器厂家自行制定方案。<br>这也就是如今令人头疼的乱码问题的由来，不同的操作系统、不同的浏览器、不同的字符集，将导致完全不同的编码结果。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">URL格式：schema://host[:port#]/path/.../[;url-params][?query-string][#anchor]</span><br></pre></td></tr></table></figure>
+<p>那么有没有什么比较好的办法解决这个问题呢？<br>解决：本文写于2016年，现在的字符编码问题已经好了很多。主流的Chrome浏览器默认对URL的query部分和URL的path中的非RFC 1738的字符采用UTF-8编码，而有些老浏览器编码则是与操作系统甚至页面有关。<br>如果需要兼容这一部分老浏览器，最好的做法是在前端使用JS中encodeURL方法对URL__进行UTF-8编码__。也就是说页面中的超链接href，URL中的参数，AJAX.GET中的url，最好都使用encodeURL方法来屏蔽差异。<br>界面的显示字符编码可以在meta中注明使用的charset。</p>
+<p>GET：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1、GET /JavaWeb-Test/charSet?req=123你好abc HTTP/1.1</span><br><span class="line">Host: localhost:8080</span><br><span class="line">Cache-Control: no-cache</span><br><span class="line">Postman-Token: 82b3c5f8-8463-be94-f1ff-b81b9ef5400d</span><br><span class="line"></span><br><span class="line">2、GET /JavaWeb-Test/charSet?req=123%E4%BD%A0%E5%A5%BDabc HTTP/1.1</span><br><span class="line">Host: localhost:8080</span><br><span class="line">Cache-Control: no-cache</span><br><span class="line">Postman-Token: bec648b3-3733-2b4f-7b85-edd226708e91</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">    request.setCharacterEncoding(<span class="string">"UTF-8"</span>);</span><br><span class="line">    response.setCharacterEncoding(<span class="string">"UTF-8"</span>);</span><br><span class="line">    response.setContentType(<span class="string">"text/html;charset=utf-8"</span>);</span><br><span class="line"></span><br><span class="line">    PrintWriter pw = response.getWriter();</span><br><span class="line">    String req = request.getParameter(<span class="string">"req"</span>);</span><br><span class="line">    System.out.println(req);</span><br><span class="line">    pw.println(req);</span><br><span class="line">    pw.println(<span class="string">"&lt;br/&gt;"</span>);</span><br><span class="line">    <span class="keyword">byte</span>[] bytes = req.getBytes(<span class="string">"ISO-8859-1"</span>);</span><br><span class="line">    String tras = <span class="keyword">new</span> String(bytes, <span class="string">"UTF-8"</span>);</span><br><span class="line">    System.out.println(tras);</span><br><span class="line">    pw.println(tras);</span><br><span class="line">    pw.println(<span class="string">"&lt;br/&gt;"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//tras为最终的正确参数</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>POST：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">1、POST /JavaWeb-Test/charSet HTTP/1.1</span><br><span class="line">Host: localhost:8080</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Cache-Control: no-cache</span><br><span class="line">Postman-Token: 54d9777a-e4c3-305a-9385-0c0941875e09</span><br><span class="line"></span><br><span class="line">req=123%E4%BD%A0%E5%A5%BDabc</span><br><span class="line"></span><br><span class="line">2、POST /JavaWeb-Test/charSet HTTP/1.1</span><br><span class="line">Host: localhost:8080</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Cache-Control: no-cache</span><br><span class="line">Postman-Token: cc92d9c9-d864-8b39-4b05-8ec9828b74dd</span><br><span class="line"></span><br><span class="line">req=123你好ABC</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">    request.setCharacterEncoding(<span class="string">"UTF-8"</span>);</span><br><span class="line">    response.setCharacterEncoding(<span class="string">"UTF-8"</span>);</span><br><span class="line">    response.setContentType(<span class="string">"text/html;charset=utf-8"</span>);</span><br><span class="line"></span><br><span class="line">    PrintWriter pw = response.getWriter();</span><br><span class="line">    String req = request.getParameter(<span class="string">"req"</span>);</span><br><span class="line">    System.out.println(req);</span><br><span class="line">    pw.println(req);</span><br><span class="line">    pw.println(<span class="string">"&lt;br/&gt;"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//req为最终的正确参数</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>补充：在项目中到底使用UTF-8还是GBK:<br>现在项目最好使用UTF-8，特别是面向多终端，不同的操作系统，不同的国家。因为有些英文操作系统并不默认携带有GBK的编码，而UTF-8被广泛的支持。<br>如果仅仅是中文的网站，可以使用GBK，因为GBK每个字符只占两个字节，UTF-8中汉字占三个字节，是变长编码，使用GBK节省空间。<br>当然，无论是GBK还是UTF-8，对英文和数字支持都是没有问题的。</p>
+<h2 id="其他知识点"><a href="#其他知识点" class="headerlink" title="其他知识点"></a>其他知识点</h2><p>整理自<a href="http://polaris.blog.51cto.com/1146394/377468" target="_blank" rel="noopener">这里</a></p>
+<h3 id="UTF字节序和BOM"><a href="#UTF字节序和BOM" class="headerlink" title="UTF字节序和BOM"></a>UTF字节序和BOM</h3><p><strong>字节序（大小端）</strong>：</p>
+<p>UTF-8以字节为编码单元，没有字节序的问题。<br>UTF-16以两个字节为编码单元，在解释一个UTF-16文本前，首先要弄清楚每个编码单元的字节序。</p>
+<p>问题：例如收到一个“奎”的Unicode编码是594E，“乙”的Unicode编码是4E59。如果我们收到UTF-16字节流“594E”，那么这是“奎”还是“乙”？<br>解决：在UCS编码中有一个叫做”ZERO WIDTH NO-BREAK SPACE”的字符，它的编码是FEFF。而FFFE在UCS中是不存在的字符，所以不应该出现在实际传输中。UCS规范建议我们在传输字节流前，先传输字符”ZERO WIDTH NO-BREAK SPACE”。这样如果接收者收到FEFF，就表明这个字节流是Big-Endian的；如果收到FFFE，就表明这个字节流是Little-Endian的。因此字符”ZERO WIDTH NO-BREAK SPACE”又被称作BOM。</p>
+<p><strong>BOM</strong>：</p>
+<p>UTF-8没有字节序的问题，所以不需要BOM来表明字节顺序。但是可以用BOM来表明编码方式。字符”ZERO WIDTH NO-BREAK SPACE”的UTF-8编码是EF BB BF（读者可以用我们前面介绍的编码方法验证一下）。所以如果接收者收到以EF BB BF开头的字节流，就知道这是UTF-8编码了。</p>
+<p><strong>BOM与XML</strong>:</p>
+<p>XML解析读取XML文档时，W3C定义了3条规则：</p>
+<p>①如果文档中有BOM，就定义了文件编码；</p>
+<blockquote>
+<p>如果是FF FE则为UTF-16LE<br>如果是FE FF则为UTF-16BE<br>如果是EF BB BF则为UTF-8</p>
+</blockquote>
+<p>②如果文档中没有BOM，就查看XML声明中的编码属性；<br>比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br></pre></td></tr></table></figure></p>
+<p>③如果上述两者都没有，就假定XML文档采用UTF-8编码。</p>
+<h3 id="Windows记事本支持的编码"><a href="#Windows记事本支持的编码" class="headerlink" title="Windows记事本支持的编码"></a>Windows记事本支持的编码</h3><p>（1）ANSI编码<br>记事本默认保存的编码格式是：ANSI，即本地操作系统默认的内码，简体中文操作系统一般为GB2312。<br>这个怎么验证呢？用记事本保存后，使用EmEditor、EditPlus和UltraEdit之类的文本编辑器打开。打开后，在右下角会显示编码：GB2312。</p>
+<p>（2）Unicode编码<br>用记事本另存为时，编码选择“Unicode”，用EmEditor打开该文件，发现编码格式是：UTF-16LE+BOM（有签名）。<br>用十六进制方式查看，发现开头两字节为：FF FE。这就是BOM。</p>
+<p>（3）Unicode big endian<br>用记事本另存为时，编码选择“Unicode”，用EmEditor打开该文件，发现编码格式是：UTF-16BE+BOM（有签名）。<br>用十六进制方式查看，发现开头两字节为：FE FF。这就是BOM。</p>
+<p>（4）UTF-8<br>用记事本另存为时，编码选择“UTF-8”，用EmEditor打开该文件，发现编码格式是：UTF-8（有签名）。<br>用十六进制方式查看，发现开头三个字节为：EF BB BF。这就是BOM。</p>
+<h3 id="编辑软件自动判断文件的编码方式"><a href="#编辑软件自动判断文件的编码方式" class="headerlink" title="编辑软件自动判断文件的编码方式"></a>编辑软件自动判断文件的编码方式</h3><blockquote>
+<p>首先说一个奇特的例子：<br>在简体中文Windows环境下，新建记事本文档为test.txt,写入”联通”两个字，默认ANSI编码保存并关闭，再打开test.txt文本文件后后发现变成一个方块黑点（Win10中为两个菱形）。</p>
+</blockquote>
+<p>软件通常有三种途径来决定文本的字符集和编码。</p>
+<p>（1）对于Unicode文本最标准的途径是检测文本最开头的几个字节。如：</p>
+<table>
+<thead>
+<tr>
+<th>开头字节</th>
+<th>Charset/encoding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EF BB BF</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>FE FF</td>
+<td>UTF-16/UCS-2, little endian(UTF-16LE)</td>
+</tr>
+<tr>
+<td>FF FE</td>
+<td>UTF-16/UCS-2, big endian(UTF-16BE)</td>
+</tr>
+<tr>
+<td>FF FE 00 00</td>
+<td>UTF-32/UCS-4, little endian</td>
+</tr>
+<tr>
+<td>00 00 FE FF</td>
+<td>UTF-32/UCS-4, big-endian</td>
+</tr>
+</tbody>
+</table>
+<p>（2）采取一种比较安全的方式来决定字符集及其编码，那就是弹出一个对话框来询问用户。</p>
+<p>然而MBCS文本（ANSI）没有这些位于开头的字符集标记，现在很多软件保存文本为Unicode时，可以选择是否保存这些位于开头的字符集标记。<br>因此，软件不应该依赖于这种途径。这时，软件可以采取一种比较安全的方式来决定字符集及其编码，那就是弹出一个对话框来询问用户。</p>
+<p>（3）采取自己“猜”的方法。</p>
+<p>如果软件不想麻烦用户，或者它不方便向用户请示，那它只能采取自己“猜”的方法，软件可以根据整个文本的特征来猜测它可能属于哪个CharSet，这就很可能不准了。</p>
+<blockquote>
+<p>现在再来解释一下之前的奇特的例子：<br>使用UltraEdit打开那个test.txt,可以看到十六进制下为C1 AA CD A8，二进制则为‭11000001 10101010 11001101 10101000，观察前文的UTF-8编码，‬符合<strong>模板二</strong>，因而记事本会认为这是UTF-8编码存储的，打开后自然是乱码了。可以设置UltraEdit右下角打开的编码为GB2312或GBK，就可以正常显示。</p>
+</blockquote>
+<h3 id="谈谈“烫烫烫”和“棍斤拷”"><a href="#谈谈“烫烫烫”和“棍斤拷”" class="headerlink" title="谈谈“烫烫烫”和“棍斤拷”"></a>谈谈“烫烫烫”和“棍斤拷”</h3><p><a href="https://zhuanlan.zhihu.com/p/27253604" target="_blank" rel="noopener">参考1</a> <a href="http://blog.csdn.net/mig_davidli/article/details/37507731" target="_blank" rel="noopener">参考2</a></p>
+<p>在学习C/C++语言时，调试状态下有时会出现“烫烫烫”和“屯屯屯”。而在学习Java时，在CMD调试或者WEB项目时，会碰到“浣犲ソ”、“涓 浗”和“钝斤拷”，前端则会遇到“锘锘锘”和“锘匡豢”。</p>
+<p>前者主要原因是C语言调试器会默认将栈内的未初始化数据初始化为”0xcc”，堆内的未初始化数据初始化为”0xcd”。0xcc对应的是中断向量表中的3号中断（INT 3)。 微软的调试器之所以会写入一些特定的字符，主要是为了便于检查出程序在调试过程中发生错误的原因，就像flag一样。因此一定要注意数组的初始化、数组的越界检查，字符串末尾的0，出现了“烫烫烫”总比程序崩溃要好很多。</p>
+<p>中者主要是字符编码和转码的问题。Unicode尽管被成为万国码，但是和其他编码转化时仍然会有一些字符是用Unicode没法表示的，Unicode转为其他编码可以算出来，而其他编码转为Unicode只能人工写一个转换表，因此Unicode使用了一个占位符来表示这些没有被收编的字符，这就是：U+FFFD REPLACEMENT CHARACTER。另一方面，U+FFFD使用UTF-8编码结果是0xef 0xbf 0xbd。如果这个0xef 0xbf 0xbd被重复多次，例如 0xef 0xbf 0xbd 0xef 0xbf 0xbd，然后放到GBK环境中显示的话，一个汉字占2个字节，那么最终的显示就变成了“锟斤拷”。因此在涉及到转码的时候要格外注意转码。</p>
+<p>后者主要是前文讲的BOM问题。BOM在UTF-8表示为EF BB BF。两个EF BB BF就总共是六个字节，在GBK编码中刚好是三个汉字，也就是“锘匡豢”。因此在编写HTML等页面时不使用BOM，而在页面中注明charset=utf-8，页面本身以UTF-8编码保存即可。</p>
+<p>下面在简体中文操作系统中复现这些现象：</p>
+<p>1、“烫烫烫”和“屯屯屯”<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">//栈：烫烫烫</span></span><br><span class="line">    <span class="keyword">char</span> a[<span class="number">10</span>];</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%s\n"</span>,a);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//堆：屯屯屯</span></span><br><span class="line">    <span class="keyword">int</span>* b = (<span class="keyword">int</span>* )<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>)*<span class="number">10</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%s\n"</span>,b);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">free</span>(b);</span><br><span class="line">    b = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>2、“浣犲ソ”和“钝斤拷”<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test6</span><span class="params">()</span> <span class="keyword">throws</span> UnsupportedEncodingException </span>&#123;</span><br><span class="line">    <span class="comment">/* 错误的转码 */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 浣犲ソ</span></span><br><span class="line">    String str = <span class="string">"你好"</span>;</span><br><span class="line">    <span class="keyword">byte</span>[] bytes = str.getBytes(<span class="string">"UTF-8"</span>);</span><br><span class="line">    String s = <span class="keyword">new</span> String(bytes, <span class="string">"GBK"</span>);</span><br><span class="line">    System.out.println(s);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 涓 浗</span></span><br><span class="line">    String str2 = <span class="string">"中国"</span>;</span><br><span class="line">    <span class="keyword">byte</span>[] bytes2 = str2.getBytes(<span class="string">"UTF-8"</span>);</span><br><span class="line">    String s2 = <span class="keyword">new</span> String(bytes2, <span class="string">"GBK"</span>);</span><br><span class="line">    System.out.println(s2);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 锟斤拷</span></span><br><span class="line">    String str3 = <span class="string">"联通"</span>;</span><br><span class="line">    <span class="keyword">byte</span>[] bytes3 = str3.getBytes(<span class="string">"UTF-8"</span>);</span><br><span class="line">    String s3 = <span class="keyword">new</span> String(bytes3, <span class="string">"GBK"</span>);</span><br><span class="line">    <span class="comment">// System.out.println(s3);</span></span><br><span class="line">    <span class="keyword">byte</span>[] bytes4 = s3.getBytes(<span class="string">"UTF-8"</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">byte</span> b : bytes4)</span><br><span class="line">        System.out.print(Integer.toHexString(b) + <span class="string">" "</span>);</span><br><span class="line">    System.out.println();</span><br><span class="line">    String s4 = <span class="keyword">new</span> String(bytes4, <span class="string">"GBK"</span>);</span><br><span class="line">    System.out.println(s4);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>3、“锘锘锘”和“锘匡豢”<br>现在基本遇不到了。</p>
+<p>4、使用Java汇总模拟<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test5</span><span class="params">()</span> <span class="keyword">throws</span> UnsupportedEncodingException </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">100</span>];</span><br><span class="line">    <span class="comment">// 烫烫烫</span></span><br><span class="line">    bytes[<span class="number">0</span>] = (<span class="keyword">byte</span>) <span class="number">0xcc</span>;</span><br><span class="line">    bytes[<span class="number">1</span>] = (<span class="keyword">byte</span>) <span class="number">0xcc</span>;</span><br><span class="line">    bytes[<span class="number">2</span>] = (<span class="keyword">byte</span>) <span class="number">0xcc</span>;</span><br><span class="line">    bytes[<span class="number">3</span>] = (<span class="keyword">byte</span>) <span class="number">0xcc</span>;</span><br><span class="line">    bytes[<span class="number">4</span>] = (<span class="keyword">byte</span>) <span class="number">0xcc</span>;</span><br><span class="line">    bytes[<span class="number">5</span>] = (<span class="keyword">byte</span>) <span class="number">0xcc</span>;</span><br><span class="line">    <span class="comment">// 屯屯屯</span></span><br><span class="line">    bytes[<span class="number">6</span>] = (<span class="keyword">byte</span>) <span class="number">0xcd</span>;</span><br><span class="line">    bytes[<span class="number">7</span>] = (<span class="keyword">byte</span>) <span class="number">0xcd</span>;</span><br><span class="line">    bytes[<span class="number">8</span>] = (<span class="keyword">byte</span>) <span class="number">0xcd</span>;</span><br><span class="line">    bytes[<span class="number">9</span>] = (<span class="keyword">byte</span>) <span class="number">0xcd</span>;</span><br><span class="line">    bytes[<span class="number">10</span>] = (<span class="keyword">byte</span>) <span class="number">0xcd</span>;</span><br><span class="line">    bytes[<span class="number">11</span>] = (<span class="keyword">byte</span>) <span class="number">0xcd</span>;</span><br><span class="line">    <span class="comment">// 锘匡豢</span></span><br><span class="line">    bytes[<span class="number">12</span>] = (<span class="keyword">byte</span>) <span class="number">0xef</span>;</span><br><span class="line">    bytes[<span class="number">13</span>] = (<span class="keyword">byte</span>) <span class="number">0xbb</span>;</span><br><span class="line">    bytes[<span class="number">14</span>] = (<span class="keyword">byte</span>) <span class="number">0xbf</span>;</span><br><span class="line">    bytes[<span class="number">15</span>] = (<span class="keyword">byte</span>) <span class="number">0xef</span>;</span><br><span class="line">    bytes[<span class="number">16</span>] = (<span class="keyword">byte</span>) <span class="number">0xbb</span>;</span><br><span class="line">    bytes[<span class="number">17</span>] = (<span class="keyword">byte</span>) <span class="number">0xbf</span>;</span><br><span class="line"></span><br><span class="line">    System.out.println(<span class="keyword">new</span> String(bytes, <span class="string">"GBK"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>最后附上一首诗：<br>手持两把锟斤拷, (GBK与UTF-8)<br>口中疾呼烫烫烫。(VC++)<br>脚踏千朵屯屯屯, (VC++)<br>笑看万物锘锘锘。(HTML)</p>
+<blockquote>
+<p>完</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Chain Qian
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.leechain.top/2016/10/02-javase-understand-charset/" title="理解字符集和编码以及Java中的乱码解决">https://www.leechain.top/2016/10/02-javase-understand-charset/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/学习/" rel="tag"># 学习</a>
+          
+            <a href="/tags/知识点/" rel="tag"># 知识点</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/12-javase-note-reflection/" rel="next" title="Java反射和ReflectionUtils">
+                <i class="fa fa-chevron-left"></i> Java反射和ReflectionUtils
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/28-why-negative-integer-save-to-fanma-plusone/" rel="prev" title="为什么计算机存储负整数为反码+1">
+                为什么计算机存储负整数为反码+1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Chain Qian">
+            
+              <p class="site-author-name" itemprop="name">Chain Qian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ChainGit" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:chainz@foxmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#理解字符集和编码以及Java中的乱码解决"><span class="nav-number">1.</span> <span class="nav-text">理解字符集和编码以及Java中的乱码解决</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">1.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见现象"><span class="nav-number">1.2.</span> <span class="nav-text">常见现象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java中的char"><span class="nav-number">1.3.</span> <span class="nav-text">Java中的char</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java中的转码"><span class="nav-number">1.4.</span> <span class="nav-text">Java中的转码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他知识点"><span class="nav-number">1.5.</span> <span class="nav-text">其他知识点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#UTF字节序和BOM"><span class="nav-number">1.5.1.</span> <span class="nav-text">UTF字节序和BOM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Windows记事本支持的编码"><span class="nav-number">1.5.2.</span> <span class="nav-text">Windows记事本支持的编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编辑软件自动判断文件的编码方式"><span class="nav-number">1.5.3.</span> <span class="nav-text">编辑软件自动判断文件的编码方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#谈谈“烫烫烫”和“棍斤拷”"><span class="nav-number">1.5.4.</span> <span class="nav-text">谈谈“烫烫烫”和“棍斤拷”</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chain Qian</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">苏ICP备16052713号-1</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt7Bknuv';
+      var conf = 'prod_ef64fab63ed9004614a7a77b40203358';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

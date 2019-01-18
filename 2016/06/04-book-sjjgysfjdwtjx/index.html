@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="阅读,算法,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="数据结构与算法经典问题解析图书馆最近在上新书，看到了这本书，就借回去看了。虽然书中也有少许错误，但是讲解还是通俗易懂的。 每章小结第一章 绪论变量，数据类型，数据结构（data structure，线性与非线性），抽象数据类型（ADT）。什么是算法：解决问题的方法与步骤，不需要严格的证明。算法分析：确定在时间和空间上比较有效的算法。增长率：近似，忽略微不足道的。分析算法：最好（下界），平均时间，最">
+<meta name="keywords" content="阅读,算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构与算法经典问题解析">
+<meta property="og:url" content="https://www.leechain.top/2016/06/04-book-sjjgysfjdwtjx/index.html">
+<meta property="og:site_name" content="天印湖畔映白鹭">
+<meta property="og:description" content="数据结构与算法经典问题解析图书馆最近在上新书，看到了这本书，就借回去看了。虽然书中也有少许错误，但是讲解还是通俗易懂的。 每章小结第一章 绪论变量，数据类型，数据结构（data structure，线性与非线性），抽象数据类型（ADT）。什么是算法：解决问题的方法与步骤，不需要严格的证明。算法分析：确定在时间和空间上比较有效的算法。增长率：近似，忽略微不足道的。分析算法：最好（下界），平均时间，最">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-12T10:04:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据结构与算法经典问题解析">
+<meta name="twitter:description" content="数据结构与算法经典问题解析图书馆最近在上新书，看到了这本书，就借回去看了。虽然书中也有少许错误，但是讲解还是通俗易懂的。 每章小结第一章 绪论变量，数据类型，数据结构（data structure，线性与非线性），抽象数据类型（ADT）。什么是算法：解决问题的方法与步骤，不需要严格的证明。算法分析：确定在时间和空间上比较有效的算法。增长率：近似，忽略微不足道的。分析算法：最好（下界），平均时间，最">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.leechain.top/2016/06/04-book-sjjgysfjdwtjx/">
+
+
+
+
+
+  <title>数据结构与算法经典问题解析 | 天印湖畔映白鹭</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天印湖畔映白鹭</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">LEECHAIN | 博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.leechain.top/2016/06/04-book-sjjgysfjdwtjx/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chain Qian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天印湖畔映白鹭">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">数据结构与算法经典问题解析</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-06-04T00:00:00+08:00">
+                2016-06-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/阅读/" itemprop="url" rel="index">
+                    <span itemprop="name">阅读</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2016/06/04-book-sjjgysfjdwtjx/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2016/06/04-book-sjjgysfjdwtjx/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </span></div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="数据结构与算法经典问题解析"><a href="#数据结构与算法经典问题解析" class="headerlink" title="数据结构与算法经典问题解析"></a>数据结构与算法经典问题解析</h2><p>图书馆最近在上新书，看到了这本书，就借回去看了。虽然书中也有少许错误，但是讲解还是通俗易懂的。</p>
+<h2 id="每章小结"><a href="#每章小结" class="headerlink" title="每章小结"></a>每章小结</h2><h3 id="第一章-绪论"><a href="#第一章-绪论" class="headerlink" title="第一章 绪论"></a>第一章 绪论</h3><p>变量，数据类型，数据结构（data structure，线性与非线性），抽象数据类型（ADT）。<br>什么是算法：解决问题的方法与步骤，不需要严格的证明。<br>算法分析：确定在时间和空间上比较有效的算法。<br>增长率：近似，忽略微不足道的。<br>分析算法：最好（下界），平均时间，最差（上界）<br>大O表示法（上界），大Ω表示法（下界），大Θ表示法（平均）。<br>渐近分析（循环，嵌套循环，循环执行时间，if-then-else语句，级数时间复杂度），性质，常见公式。<br>分治法主定理：T(n)=mT(n/p)+O(n)。<br>算法分析经典例题。<br>递归，数组，动态数组，链表，栈，队列，树，图，排序，查找，选择，散列，字符串</p>
+<h3 id="第二章-递归和回溯"><a href="#第二章-递归和回溯" class="headerlink" title="第二章 递归和回溯"></a>第二章 递归和回溯</h3><p>递归：任何调用自身的函数称为递归。递归算法必然需要是收敛的。递归比迭代代码更加简洁，而且在编译或者解释时，循环灰转化为递归函数。所以，递归往往使得处理更加简单高效。比如，排序，搜索，遍历。<br>函数不再递归时为基本情形（base case），调用时称为递归情形（recursive case）。<br>范例：阶乘。<br>递归在内存里的情况：递归函数每次的再调用会产生副本（准确讲只是一些返回变量），函数均结束时会逐个返回。<br>记住递归不能出现无穷递归，递归基于栈操作。<br>迭代和递归。<br>递归算法经典用例：<br>斐波那契数列、阶乘<br>归并排序，快速排序<br>二分查找<br>树的遍历：比如中序遍历，前序遍历，后序遍历<br>图的遍历：深度优先搜索，广度优先搜索<br>动态规划例子<br>分治算法<br>汉诺塔<br>回溯算法</p>
+<p>回溯是一种采用分治策略进行穷举搜索的方法。<br>最笨但最有效的方法是：尝试所有的可能性<br>回溯算法经典用例：<br>二进制串：产生所有的二进制串<br>生成k进制串<br>背包问题<br>广义字符串<br>哈密顿回路<br>图着色问题</p>
+<p>递归算法和回溯具体的实现不一定要想的特别明白，只要思路能用递归实现就好，比如想简单的情况，一般是n=2-3，再计算他的特性。</p>
+<p>测试中可以把数据设为char，然后表示top,front,rear等“指针”可以表示成下一位空的元素，也可以表示成当前元素，哪个方便用哪一种。</p>
+<h3 id="第三章-链表"><a href="#第三章-链表" class="headerlink" title="第三章 链表"></a>第三章 链表</h3><p>链表：相邻之间指针相连，最后一个元素的后续指针值为NULL，链表长度可增可减比较方便（注意不能无穷无尽，避免内存耗尽），空间浪费较少。<br>链表的主要操作：插入，删除。计数，查找，清空链表。<br>数组：在一整个连续内存块中，访问时基于首地址的偏移量以及数组元素的大小。<br>数组简单易用，访问元素在常数时间上较快。但是数组大小分配后即固定，基于数组的插入操作比较复杂。<br>动态数组：大小自动调整的线性数据结构。固定化一个数组初始大小，而后一旦满了就扩展两倍于原始数组大小的新数组，若元素个数不足数组大小的一般，则数组大小减少一半。<br>数组的再次更改大小其实是重新划分一个数组，再将元素全部复制过去，这样速度较慢，不如链表方便。链表的缺点主要在于访问单个元素的时间开销问题，数组可以随机读取，而链表顺序读取。时间开销在O(1)~O(n)。链表的增加删除工作也比较麻烦，也需要额外的内存空间来存储指针。</p>
+<p>单向链表：每个结点有指向后一个元素的next指针。<br>链表基本操作：遍历，插入，删除<br>链表的遍历：头结点开始，依次遍历，当next指针的值为null时结束遍历。<br>单向链表的插入：在表头插入，在表尾插入，中间位置随机插入<br>单向链表的删除：删除表头，删除表尾，删除中间的结点<br>单向链表的清空：从头结点开始逐个删除，利用临时变量（对象），auxilaryNode</p>
+<p>双向链表：首尾均可访问整个链表。缺点是需要再增加一个指针。结点插入或删除会更耗时。<br>双向链表操作要比单向链表多一个previous“指针”变量</p>
+<p>循环链表：尾结点指向头结点。此时不能通过null判断是否是尾结点或者头结点。<br>循环链表可以用于管理计算机的计算资源，可以用于实现循环缓冲区，栈，队列。</p>
+<p>改进的存储高效的双向链表：<br>1 ptrdiff=后继结点的地址 异或 前驱结点的地址<br>2 松散链表，链表的查找O比数组大，可以将链表分组。比如4个是一个小链表的串联。</p>
+<p>练习：<br>链表实现栈<br>倒数找链表<br>散列表<br>判断是循环链表还是单向链表<br>求整数的无穷级数的中位数<br>交换链表的相邻结点<br>判断回文数<br>二叉树转双向链表<br>删除链表中重复的字符</p>
+<h3 id="第四章-栈"><a href="#第四章-栈" class="headerlink" title="第四章 栈"></a>第四章 栈</h3><p>可以把栈（stack）比喻成餐馆里叠着的盘子，需要时从顶端取（入栈），洗干净后再放在顶端（出栈）。<br>栈是一个有序线性表，栈顶（top）执行插入和删除操作。后入先出（LIFO）或者先入后出（FILO）。<br>入栈（push）和出栈（pop）。空栈执行出栈为下溢（underflow），满栈执行入栈为溢出（overflow）。通常，将下溢和溢出认为错误异常。<br>栈在计算机程序中做执行其他任务时的保存现场的执行地址的功能。<br>栈的主要操作：压栈，出栈，栈长，为空，为满<br>栈的应用：<br>符号匹配<br>中缀表达式转化为后缀表达式<br>计算后缀表达式<br>实现函数调用（包括递归调用）<br>求范围误差（极差）<br>网页浏览中的浏览记录<br>文本编辑器中的撤销功能<br>HTML和XML文件中的标签匹配<br>数的遍历算法等</p>
+<p>栈的实现方式比较多，常用的方法：<br>基于（动态）数组的简单实现（数组倍增技术，执行n次push操作约需logn次倍增操作，倍增太多可能导致内存溢出）<br>基于链表的实现（headNode）</p>
+<p>栈的练习<br>匹配括号等对称符号<br>中缀表达式转化为后缀表达式<br>判断回文<br>逆置栈的内容<br>栈实现队列<br>123456通过出入栈得到特定的内容<br>对栈中元素进行排序<br>删除栈中重复的字符</p>
+<h3 id="第五章-队列"><a href="#第五章-队列" class="headerlink" title="第五章 队列"></a>第五章 队列</h3><p>队列好比排队买票，排队打饭等等<br>队列只能在一端插入，另一端删除的有序线性表<br>队列是先入先出（FIFO）或后入后出(LILO)<br>入队（EnQueue），出队（DeQueue）<br>空队列执行出列操作会导致下溢（underflow），对满队列执行入队会导致溢出（overflow）</p>
+<p>队列的常用操作：<br>入队enQueue，出队deQueue，返回队首的元素front，返回队尾的元素rear，队列元素个数，容量大小，是否为空</p>
+<p>队列的应用<br>模拟系统的任务调度<br>模拟现实生活中的购票行为<br>多道程序设计<br>异步数据传输<br>客户等待</p>
+<p>队列的实现：<br>（动态）循环数组，链表</p>
+<p>队列的相关问题<br>逆置队列元素<br>两个栈实现队列<br>两个队列实现栈<br>反向输出元素</p>
+<h3 id="第六章-树"><a href="#第六章-树" class="headerlink" title="第六章 树"></a>第六章 树</h3><p>树是一种类似链表的结构，不同的是树的一个结点可以指向多个子结点<br>树是一种典型的非线性结构，具有层次特性的图结构的一种方法。</p>
+<p>相关术语：<br>根节点：根节点是一个没有双亲结点的结点，树中最多只有一个根节点<br>边：双亲结点到孩子结点的连接<br>叶子结点：没有孩子结点的结点<br>兄弟结点：拥有相同双亲结点的所有孩子结点<br>祖先结点：从根节点出发，一条路径到某结点，则这条路径上经过的结点<br>结点的大小：子孙结点的个数，包括自身<br>树的层：相同深度所有结点的集合为树的层，根节点为0层<br>结点的深度：根节点到该结点的路径长度<br>结点的高度：该结点到最深子孙结点的路径长度<br>树的高度：所有结点高度的最大值。对于一棵树而言，它的高度和深度一样，但对一个结点而言，深度      和高度不一定一样<br>斜树：除叶子结点为，每个结点都只有一个孩子结点，全只有右孩子结点叫右斜树，全只有左孩子结点叫左斜树</p>
+<p>二叉树：<br>如果每个结点最多有两个孩子结点，则称为二叉树<br>严格二叉树：每个结点2个或0个孩子结点<br>满二叉树：每个结点有2个孩子结点，且所有叶子结点都在同一层<br>完全二叉树：二叉树本身的高度h，所有叶子结点的深度为h或h-1</p>
+<p>满二叉树的结点个数：2^(h+1)-1<br>完全二叉树的结点个数：2^h~2^(h+1)-1<br>满二叉树的叶子结点个数:2^h<br>n个结点的完全二叉树，空指针的个数：n+1</p>
+<p>二叉树的操作<br>插入，删除，查找，遍历<br>获取树的大小，树的高度，其和最大的层，找出最近的公共祖先结点</p>
+<p>二叉树的应用<br>编译器表达式树<br>数据压缩算法中的赫夫曼编码树<br>优先队列</p>
+<p>二叉树的遍历<br>前序遍历（DLR），中序遍历（LDR），后续遍历（LRD），层次遍历</p>
+<p>递归与非递归遍历<br>递归是利用系统栈<br>非递归是自己自定义栈</p>
+<p>层次遍历：利用队列实现</p>
+<p>二叉树问题：<br>找出最大元素（递归、非递归）<br>找出某个元素（递归、非递归）<br>插入一个元素<br>获取二叉树结点的个数<br>删除一个元素<br>查找最深结点<br>比较二叉树结构<br>列出二叉树的根结点到某结点路径<br>镜像二叉树<br>已知中序遍历和前序遍历求树或后序遍历<br>…</p>
+<p>通用树（N叉树）</p>
+<p>线索二叉树（无需栈或队列的遍历）<br>leftp ltag data rtag rightp<br>如果ltag==0 指向中序序列的左结点<br>如果ltag==1 指向左孩子的左结点<br>如果rtag==0 指向中序序列的右结点<br>如果rtag==1 指向右孩子的右结点</p>
+<p>表达式树<br>用来组合表达式的树，计算机根据优先级处理表达式的过程</p>
+<p>异或树，二叉搜索树，平衡搜索二叉树，AVL树</p>
+<p>红黑树，伸展树，增强树，替罪羊树，区间树等</p>
+<h3 id="第七章-优先队列和堆"><a href="#第七章-优先队列和堆" class="headerlink" title="第七章 优先队列和堆"></a>第七章 优先队列和堆</h3><p>优先队列ADT也是队列，但是不是按先到先服务，而是按照优先级高低处理。<br>常用于计算机的作业调度</p>
+<p>优先队列的操作：<br>优先队列是元素的容器，每个元素有一个相关的键值<br>insert(key,data)<br>deleteMin/Max()<br>getMin/Max()<br>队列的大小，堆的排序</p>
+<p>优先队列的应用：<br>数据压缩，最短路径算法（Dijkstra），最小生成树算法（Prim），顾客排队算法，查找第k个最小元素</p>
+<p>优先队列的实现：<br>无序链表，无序数组，有序数组，有序链表，二叉平衡树，平衡二叉搜索树的实现，二叉堆<br>这几种实现的优缺点</p>
+<p>堆：堆是具有特定性质的二叉树，是一个完全二叉树，且结点的值必须均大于等于其孩子结点的值（或均小于等于孩子结点的值）</p>
+<p>二叉堆</p>
+<h3 id="第八章-并查集ADT"><a href="#第八章-并查集ADT" class="headerlink" title="第八章 并查集ADT"></a>第八章 并查集ADT</h3><p>集合，无需考虑顺序</p>
+<h3 id="第九章-图"><a href="#第九章-图" class="headerlink" title="第九章 图"></a>第九章 图</h3><p>两个对象之间的路径问题<br>从一个城市到另一个城市的路径多样</p>
+<p>图可以表示为（V，E），v是结点的集合，称为顶点，e是顶点对的集合，称为边<br>顶点和边代表位置和存储元素</p>
+<p>有向边：有序顶点对&lt;u,v&gt;，u-&gt;v，单向道（单行道）<br>无向边：无序顶点对(u,v)，u<->v，双向道（火车线）</-></p>
+<p>有向图：所有的边都是有向边（路由网络）<br>无向图：所有的边都是无向边（飞行航班）</p>
+<p>无环图：树的变形<br>自环：自身指向自身<br>平行边：连接相同顶点对的边</p>
+<p>顶点的度：关联该顶点的边的数量<br>子图：图的子集<br>简单路径：不包含重复顶点的路径<br>环路：简单路径基础上的收尾相同结点</p>
+<p>连通图：每对顶点都有路径可达<br>有向无环图：不包含环的有向图</p>
+<p>有权图：每条边有一个整数表示的权重来代表距离或者花费<br>完全图：包含所有边的图<br>稀疏图，稠密图<br>有向有权图：网络</p>
+<p>图的应用：<br>电子线路之间的组件关系<br>交通网络<br>计算机网络<br>数据库</p>
+<p>图的表示：<br>边的列表，邻接矩阵，邻接表，邻接集</p>
+<p>图的遍历：<br>深度优先搜索（DFS）：类似树的前序遍历，使用栈实现，一个顶点开始走遍所有的路径，遍历所有的其他顶点。访问中有是否访问标记。<br>广（宽）度优先搜索（BFS）：类似树的层次遍历，使用队列实现，从一个顶点出发，逐层遍历一遍。访问中有是否访问标记。</p>
+<p>拓扑排序：无环图中对顶点的排序<br>入度，出度<br>解决课程选修的先决条件，检测死锁，计算作业的流水线，检查符号的链接环，解析电子表格中的公式</p>
+<p>最短路径算法：<br>无权图，有权图，带负边的有权图中的最短路径<br>应用：找出一个地方到另一个地方的最快最短路径<br>Dijkstra算法，Bellman-Ford算法等</p>
+<p>最小生成树：图生成树 Prim算法，Kruscal算法</p>
+<p>图算法相关问题：<br>n顶点的无向简单图具有的最大边数<br>n个顶点和e条边的图有多少不同的邻接矩阵，邻接表，判断是否有孤立点<br>判断指定两个顶点是否路径可达<br>DFS应用<br>四着色问题<br>反转图<br>哈密顿环</p>
+<h3 id="第十章-排序"><a href="#第十章-排序" class="headerlink" title="第十章 排序"></a>第十章 排序</h3><p>排序是按某种顺序进行排列元素的一种算法<br>排序是计算机中重要算法，可以显著降低问题的复杂度</p>
+<p>排序的分类：<br>比较的次数<br>交换的次数<br>内存的使用<br>递归<br>稳定性<br>适应性</p>
+<p>内部排序，外部排序</p>
+<p>冒泡排序(bubble sort)<br>算法：迭代的对输入序列中的第一个元素到最后的元素按两两交换方法。逐渐将键值较小的元素如同气泡一样浮在序列的顶端。<br>冒泡排序时间复杂度高O(n^2)，算法实现简单。<br>冒泡排序可用来检测是否已经是排序的<br>改进版：增加一个附加标记，判断是否已经排序好，时间复杂度最好O(n)，最差O(n^2)</p>
+<p>选择排序(selection sort)<br>算法：寻找序列中的最小值，用当前位置实现最小值，重复过程，分区（partition）操作。<br>时间复杂度最坏O(n^2)，最好O(n)</p>
+<p>插入排序(insertion sort)<br>算法：每次从输入数据拿出一个元素，插入到另一个已经排好序的序列正确位置<br>时间复杂度O(n^2)</p>
+<p>希尔排序(shell sort)<br>泛化的插入排序，适合序列已经几乎有序的情况</p>
+<p>归并排序(merge sort)<br>将序列分成两部分并递归处理每一部分，之后将子问题解合并</p>
+<p>堆排序(heap sort)<br>基于比较的算法，也是选择排序</p>
+<p>快速排序(quick sort)<br>分治算法技术的实例，分区交换排序，基于比较排序的著名算法</p>
+<p>树排序<br>二叉搜索树</p>
+<p>算法比较：</p>
+<p>线性排序算法：<br>计数排序，桶排序，基数排序</p>
+<p>拓扑排序</p>
+<p>外部排序</p>
+<h3 id="第十一章-查找"><a href="#第十一章-查找" class="headerlink" title="第十一章 查找"></a>第十一章 查找</h3><p>查找是一个从项目的集合中寻找某个具有特定属性的项目的过程。<br>项目可以是数据库的记录，数组中简单数据元素，文件中的文本，树中的结点，图中的边和顶点等。<br>查找是计算机中的核心算法。</p>
+<p>查找的类型：<br>无序的线性查找<br>排序/有序线性查找<br>二分查找<br>符号表和散列<br>字符串查找算法：键值，三叉搜索树，后缀树</p>
+<h3 id="第十二章-选择算法（中位数）"><a href="#第十二章-选择算法（中位数）" class="headerlink" title="第十二章 选择算法（中位数）"></a>第十二章 选择算法（中位数）</h3><p>选择算法是指在某个列表中寻找第k个最小/最大的数字。包括最小值，最大值，中位数。<br>基于排序的选择算法<br>基于划分的选择算法<br>中位数算法</p>
+<h3 id="第十三章-符号表"><a href="#第十三章-符号表" class="headerlink" title="第十三章 符号表"></a>第十三章 符号表</h3><p>字典，关键字与键值的一种数据结构<br>应用：<br>拼写检查工具<br>数据库应用的数据字典<br>加载器(loader)，汇编器(assembler)，编译器(complier)产生的符号表<br>路由器（DNS查找）</p>
+<h3 id="第十四章-散列"><a href="#第十四章-散列" class="headerlink" title="第十四章 散列"></a>第十四章 散列</h3><p>散列是一种用以实现信息存储和快速检索的技术<br>执行优化搜索和符号表的实现</p>
+<p>平衡二叉树的插入删除检索的操作时间复杂度是O(logn)<br>但实际应用中，这些操作仍然太慢<br>散列可以提供平均时间复杂度为O(1)，最坏情况为O(n)的操作</p>
+<p>散列表ADT:<br>CreateHashTable<br>HashSearch<br>HashInsert<br>HashDelete<br>DeleteAll</p>
+<p>散列的例子：<br>给定字符串，查找是否存在重复的符号，比传统的线性扫描要快的多</p>
+<p>散列的组成：<br>散列表：数组的一种推广，关键字分配数组中的位置<br>散列函数：将关键字转为索引<br>负载因子：散列函数是否将关键字均匀分布<br>冲突：两个记录的存储位置相同<br>冲突解决算法：直接连接法（分离链接法），开放地址法（线性探测法，二次探测法，双重散列法）</p>
+<p>散列达到O(1)的时间复杂度</p>
+<p>静态散列、动态散列</p>
+<p>布鲁姆过滤器（Bloom filter）</p>
+<h3 id="第十五章-字符串算法"><a href="#第十五章-字符串算法" class="headerlink" title="第十五章 字符串算法"></a>第十五章 字符串算法</h3><p>自动完成，字符串匹配<br>蛮力法，Robin-Karp算法，基于有限自动机的字符串匹配算法，KMP算法，Boyce-Moore算法，后缀树等</p>
+<h3 id="第十六章-算法设计技术"><a href="#第十六章-算法设计技术" class="headerlink" title="第十六章 算法设计技术"></a>第十六章 算法设计技术</h3><p>待解决问题与已解决问题的相似<br>递归或迭代<br>过程式（C,PHP,PERL）或声明式(SQL)<br>串行或并行或分布式<br>确定性和不确定性<br>精确或相似</p>
+<p>贪婪法：问题化为多个阶段，每个阶段找出最佳方案，不考虑后续决策的影响<br>分治法：原问题分成多个子问题，子问题与原问题类型相同规模较小，再分别递归求解，最终合理整合<br>动态规划法（DP）：备忘录技术<br>线性规划法：不等式约束下，最大化（或最小化）输入变量的线性函数<br>归约（转化求解）：复杂问题转化为一个已解决问题</p>
+<p>复杂度，随机算法，分支定界、枚举、回溯等</p>
+<h3 id="第十七章-贪婪算法"><a href="#第十七章-贪婪算法" class="headerlink" title="第十七章 贪婪算法"></a>第十七章 贪婪算法</h3><h3 id="第十八章-分治算法"><a href="#第十八章-分治算法" class="headerlink" title="第十八章 分治算法"></a>第十八章 分治算法</h3><h3 id="第十九章-动态规划算法"><a href="#第十九章-动态规划算法" class="headerlink" title="第十九章 动态规划算法"></a>第十九章 动态规划算法</h3><h3 id="第二十章-复杂度类型"><a href="#第二十章-复杂度类型" class="headerlink" title="第二十章 复杂度类型"></a>第二十章 复杂度类型</h3><p>随着问题规模大变化，其复杂度的增长速率<br>简单问题，难问题<br>用计算机解决问题</p>
+<blockquote>
+<p>（终）</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Chain Qian
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.leechain.top/2016/06/04-book-sjjgysfjdwtjx/" title="数据结构与算法经典问题解析">https://www.leechain.top/2016/06/04-book-sjjgysfjdwtjx/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/阅读/" rel="tag"># 阅读</a>
+          
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/06-book-cxyxlzd/" rel="next" title="程序员修炼之道——专业程序员必知的33个技巧">
+                <i class="fa fa-chevron-left"></i> 程序员修炼之道——专业程序员必知的33个技巧
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/06/22-book-javahxjs1/" rel="prev" title="Java核心技术--卷I">
+                Java核心技术--卷I <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Chain Qian">
+            
+              <p class="site-author-name" itemprop="name">Chain Qian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ChainGit" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:chainz@foxmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据结构与算法经典问题解析"><span class="nav-number">1.</span> <span class="nav-text">数据结构与算法经典问题解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#每章小结"><span class="nav-number">2.</span> <span class="nav-text">每章小结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一章-绪论"><span class="nav-number">2.1.</span> <span class="nav-text">第一章 绪论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二章-递归和回溯"><span class="nav-number">2.2.</span> <span class="nav-text">第二章 递归和回溯</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三章-链表"><span class="nav-number">2.3.</span> <span class="nav-text">第三章 链表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四章-栈"><span class="nav-number">2.4.</span> <span class="nav-text">第四章 栈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第五章-队列"><span class="nav-number">2.5.</span> <span class="nav-text">第五章 队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第六章-树"><span class="nav-number">2.6.</span> <span class="nav-text">第六章 树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第七章-优先队列和堆"><span class="nav-number">2.7.</span> <span class="nav-text">第七章 优先队列和堆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第八章-并查集ADT"><span class="nav-number">2.8.</span> <span class="nav-text">第八章 并查集ADT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第九章-图"><span class="nav-number">2.9.</span> <span class="nav-text">第九章 图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第十章-排序"><span class="nav-number">2.10.</span> <span class="nav-text">第十章 排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第十一章-查找"><span class="nav-number">2.11.</span> <span class="nav-text">第十一章 查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第十二章-选择算法（中位数）"><span class="nav-number">2.12.</span> <span class="nav-text">第十二章 选择算法（中位数）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第十三章-符号表"><span class="nav-number">2.13.</span> <span class="nav-text">第十三章 符号表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第十四章-散列"><span class="nav-number">2.14.</span> <span class="nav-text">第十四章 散列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第十五章-字符串算法"><span class="nav-number">2.15.</span> <span class="nav-text">第十五章 字符串算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第十六章-算法设计技术"><span class="nav-number">2.16.</span> <span class="nav-text">第十六章 算法设计技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第十七章-贪婪算法"><span class="nav-number">2.17.</span> <span class="nav-text">第十七章 贪婪算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第十八章-分治算法"><span class="nav-number">2.18.</span> <span class="nav-text">第十八章 分治算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第十九章-动态规划算法"><span class="nav-number">2.19.</span> <span class="nav-text">第十九章 动态规划算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二十章-复杂度类型"><span class="nav-number">2.20.</span> <span class="nav-text">第二十章 复杂度类型</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chain Qian</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">苏ICP备16052713号-1</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt7Bknuv';
+      var conf = 'prod_ef64fab63ed9004614a7a77b40203358';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

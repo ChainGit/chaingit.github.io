@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="算法,转载,学习,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="算法的时间和空间复杂度算法分析是很重要的过程，一个算法的好坏由很多因素可以判断。算法也是应用的精髓，比如导航中的算法等等。 算法分析为什么要进行算法分析预测算法所需的资源：  计算时间（CPU 消耗）内存空间（RAM 消耗）通信时间（带宽消耗）  预测算法的运行时间：  在给定输入规模时，所执行的基本操作数量。或者称为算法复杂度（Algorithm Complexity）。  如何衡量算法复杂度内">
+<meta name="keywords" content="算法,转载,学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法的时间和空间复杂度">
+<meta property="og:url" content="https://www.leechain.top/2017/02/19-algorithm-time-complex/index.html">
+<meta property="og:site_name" content="天印湖畔映白鹭">
+<meta property="og:description" content="算法的时间和空间复杂度算法分析是很重要的过程，一个算法的好坏由很多因素可以判断。算法也是应用的精髓，比如导航中的算法等等。 算法分析为什么要进行算法分析预测算法所需的资源：  计算时间（CPU 消耗）内存空间（RAM 消耗）通信时间（带宽消耗）  预测算法的运行时间：  在给定输入规模时，所执行的基本操作数量。或者称为算法复杂度（Algorithm Complexity）。  如何衡量算法复杂度内">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://www.leechain.top/uploads/algorithm-time-complex/1.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/algorithm-time-complex/2.png">
+<meta property="og:updated_time" content="2018-11-12T10:04:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="算法的时间和空间复杂度">
+<meta name="twitter:description" content="算法的时间和空间复杂度算法分析是很重要的过程，一个算法的好坏由很多因素可以判断。算法也是应用的精髓，比如导航中的算法等等。 算法分析为什么要进行算法分析预测算法所需的资源：  计算时间（CPU 消耗）内存空间（RAM 消耗）通信时间（带宽消耗）  预测算法的运行时间：  在给定输入规模时，所执行的基本操作数量。或者称为算法复杂度（Algorithm Complexity）。  如何衡量算法复杂度内">
+<meta name="twitter:image" content="https://www.leechain.top/uploads/algorithm-time-complex/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.leechain.top/2017/02/19-algorithm-time-complex/">
+
+
+
+
+
+  <title>算法的时间和空间复杂度 | 天印湖畔映白鹭</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天印湖畔映白鹭</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">LEECHAIN | 博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.leechain.top/2017/02/19-algorithm-time-complex/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chain Qian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天印湖畔映白鹭">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">算法的时间和空间复杂度</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-19T00:00:00+08:00">
+                2017-02-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/02/19-algorithm-time-complex/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/02/19-algorithm-time-complex/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </span></div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="算法的时间和空间复杂度"><a href="#算法的时间和空间复杂度" class="headerlink" title="算法的时间和空间复杂度"></a>算法的时间和空间复杂度</h1><p>算法分析是很重要的过程，一个算法的好坏由很多因素可以判断。算法也是应用的精髓，比如导航中的算法等等。</p>
+<h2 id="算法分析"><a href="#算法分析" class="headerlink" title="算法分析"></a>算法分析</h2><h3 id="为什么要进行算法分析"><a href="#为什么要进行算法分析" class="headerlink" title="为什么要进行算法分析"></a>为什么要进行算法分析</h3><p>预测算法所需的资源：</p>
+<blockquote>
+<p>计算时间（CPU 消耗）<br>内存空间（RAM 消耗）<br>通信时间（带宽消耗）</p>
+</blockquote>
+<p>预测算法的运行时间：</p>
+<blockquote>
+<p>在给定输入规模时，所执行的基本操作数量。或者称为算法复杂度（Algorithm Complexity）。</p>
+</blockquote>
+<h3 id="如何衡量算法复杂度"><a href="#如何衡量算法复杂度" class="headerlink" title="如何衡量算法复杂度"></a>如何衡量算法复杂度</h3><p>内存（Memory）<br>时间（Time）<br>指令的数量（Number of Steps）<br>特定操作的数量<br>磁盘访问数量<br>网络包数量</p>
+<p>渐进复杂度（Asymptotic Complexity）</p>
+<h3 id="算法的运行时间与什么相关"><a href="#算法的运行时间与什么相关" class="headerlink" title="算法的运行时间与什么相关"></a>算法的运行时间与什么相关</h3><p>取决于输入的数据。（例如：如果数据已经是排好序的，时间消耗可能会减少。）<br>取决于输入数据的规模。（例如：6 和 6 * 109）<br>取决于运行时间的上限。（因为运行时间的上限是对使用者的承诺。）</p>
+<h3 id="算法分析的种类"><a href="#算法分析的种类" class="headerlink" title="算法分析的种类"></a>算法分析的种类</h3><p><strong>最坏情况（Worst Case）：</strong>任意输入规模的最大运行时间。（Usually）<br><strong>平均情况（Average Case）：</strong>任意输入规模的期待运行时间。（Sometimes）<br><strong>最佳情况（Best Case）：</strong>通常最佳情况不会出现。（Bogus）</p>
+<p>例如，在一个长度为 n 的列表中顺序搜索指定的值，则<br>最坏情况：n 次比较<br>平均情况：n/2 次比较<br>最佳情况：1 次比较</p>
+<p>而实际中，我们一般仅考量算法在最坏情况下的运行情况，也就是对于规模为 n 的任何输入，算法的最长运行时间。<br>这样做的理由是：<br>一个算法的最坏情况运行时间是在任何输入下运行时间的一个上界（Upper Bound）。<br>对于某些算法，最坏情况出现的较为频繁。<br>大体上看，平均情况通常与最坏情况一样差。</p>
+<p>算法分析要保持大局观（Big Idea），其基本思路：<br>忽略掉那些依赖于机器的常量。<br>关注运行时间的增长趋势。</p>
+<p>比如：T(n) = 73n3 + 29n3 + 8888 的趋势就相当于 T(n) = Θ(n3)。</p>
+<p><strong>渐近记号（Asymptotic Notation）通常有 O、 Θ 和 Ω 记号法。</strong></p>
+<blockquote>
+<p>Θ 记号渐进地给出了一个函数的上界和下界，当只有渐近上界时使用 O 记号，当只有渐近下界时使用 Ω 记号。</p>
+</blockquote>
+<p>尽管技术上 Θ 记号较为准确，但通常仍然使用 O 记号表示。</p>
+<p>使用 O 记号法（Big O Notation）表示最坏运行情况的<strong>上界</strong>。</p>
+<p>例如：<br>线性复杂度 O(n) 表示每个元素都要被处理一次。<br>平方复杂度 O(n2) 表示每个元素都要被处理 n 次。</p>
+<p>例如：<br>T(n) = O(n3) 等同于 T(n) ∈ O(n3)<br>T(n) = Θ(n3) 等同于 T(n) ∈ Θ(n3).<br>相当于:<br>T(n) 的渐近增长不快于 n3。<br>T(n) 的渐近增长与 n3 一样快。</p>
+<p><strong>注1：</strong>logab = y 其实就是 ay = b。所以，log24 = 2，因为 22 = 4。同样 log28 = 3，因为 23 = 8。我们说，log2n 的增长速度要慢于 n，因为当 n = 8 时，log2n = 3。<br><strong>注2：</strong>通常将以 10 为底的对数叫做常用对数。为了简便，N 的常用对数 log10 N 简写做 lg N，例如 log10 5 记做 lg 5。<br><strong>注3：</strong>通常将以无理数 e 为底的对数叫做自然对数。为了方便，N 的自然对数 loge N 简写做 ln N，例如 loge 3 记做 ln 3。<br><strong>注4：</strong>在算法导论中，采用记号 lg n = log2 n ，也就是以 2 为底的对数。改变一个对数的底只是把对数的值改变了一个常数倍，所以当不在意这些常数因子时，我们将经常采用 “lg n”记号，就像使用 O 记号一样。计算机工作者常常认为对数的底取 2 最自然，因为很多算法和数据结构都涉及到对问题进行二分。</p>
+<p><strong>计算代码块的渐进运行时间的方法有如下步骤：</strong><br>确定决定算法运行时间的组成步骤。<br>找到执行该步骤的代码，标记为 1。<br>查看标记为 1 的代码的下一行代码。如果下一行代码是一个循环，则将标记 1 修改为 1 倍于循环的次数 1 x n。<br>如果包含多个嵌套的循环，则将继续计算倍数，例如 1 x n x m。<br>找到标记到的最大的值，就是运行时间的最大值，即算法复杂度描述的<strong>上界</strong>。</p>
+<p>下面是一些常见的算法复杂度的直观函数图：</p>
+<p><img src="/uploads/algorithm-time-complex/1.png" alt="image"></p>
+<p>一些常见的排序算法的时间和空间复杂度，以及算法是否稳定：</p>
+<p><img src="/uploads/algorithm-time-complex/2.png" alt="image"></p>
+<h2 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h2><h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>时间复杂度是<strong>总运算次数表达式中受n的变化影响最大的那一项(不含系数)</strong>。</p>
+<p>比如：一般总运算次数表达式类似于这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a*<span class="number">2</span>n+b*n3+c*n2+d*n*lg(n)+e*n+f</span><br></pre></td></tr></table></figure>
+<p>当a!=0时，时间复杂度就是 O(2n);<br>当a=0,b&lt;&gt;0，时间复杂度就是 O(n3);<br>当a,b=0,c&lt;&gt;0，时间复杂度就是 O(n2);<br>依此类推。</p>
+<p>例子:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">1</span>) <span class="comment">// 循环了n*n次，当然是O(n2)</span></span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">        <span class="keyword">for</span>(j=<span class="number">1</span>;j&lt;=n;j++)</span><br><span class="line">            s++;</span><br><span class="line">(<span class="number">2</span>) <span class="comment">// 循环了(n+n-1+n-2+...+1)≈(n2)/2，因为时间复杂度是不考虑系数的，所以也是O(n2)</span></span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">        <span class="keyword">for</span>(j=i;j&lt;=n;j++)</span><br><span class="line">            s++;</span><br><span class="line">(<span class="number">3</span>) <span class="comment">// 循环了(1+2+3+...+n)≈(n^2)/2,当然也是O(n2)</span></span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">        <span class="keyword">for</span>(j=<span class="number">1</span>;j&lt;=i;j++)</span><br><span class="line">            s++;</span><br><span class="line">(<span class="number">4</span>) <span class="comment">// 循环了n-1≈n次，所以是O(n)</span></span><br><span class="line">    i=<span class="number">1</span>;k=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(i&lt;=n-<span class="number">1</span>) &#123;</span><br><span class="line">        k+=<span class="number">10</span>*i;</span><br><span class="line">        i++;</span><br><span class="line">    &#125;</span><br><span class="line">(<span class="number">5</span>) <span class="comment">// 循环了(12+22+32+...+n2)=n(n+1)(2n+1)/6(这个公式要记住哦)≈(n3)/3，不考虑系数，自然是O(n3)</span></span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">        <span class="keyword">for</span>(j=<span class="number">1</span>;j&lt;=i;j++)</span><br><span class="line">            <span class="keyword">for</span>(k=<span class="number">1</span>;k&lt;=j;k++)</span><br><span class="line">                x=x+<span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p>另外，在时间复杂度中，log2n与lg(n)(同lg10(n))是等价的，因为对数换底公式：<br>logab=logcb/logca<br>所以，log2n=log210 * lg(n),忽略掉系数，二者当然是等价的。</p>
+<h3 id="计算"><a href="#计算" class="headerlink" title="计算"></a>计算</h3><p>1.一个算法执行所耗费的时间，从理论上是不能算出来的，必须上机运行测试才能知道。<br>但我们不可能也没有必要对每个算法都上机测试，只需知道哪个算法花费的时间多，哪个算法花费的时间少就可以了。<br>并且一个算法花费的时间与算法中语句的执行次数成正比例，哪个算法中语句执行次数多，它花费时间就多。</p>
+<p>一个算法中的语句执行次数称为语句频度或时间频度。记为T(n)。</p>
+<p>2.一般情况下，算法的基本操作重复执行的次数是模块n的某一个函数f（n），<br>因此，算法的时间复杂度记做：T（n）=O（f（n））。随着模块n的增大，算法执行的时间的增长率和f（n）的增长率成正比，<br>所以f（n）越小，算法的时间复杂度越低，算法的效率越高。</p>
+<p>在计算时间复杂度的时候，先找出算法的基本操作，然后根据相应的各语句确定它的执行次数，<br>再找出T（n）的同数量级（它的同数量级有以下：1，Log2n ，n ，nLog2n ，n的平方，n的三次方，2的n次方，n!），<br>找出后，f（n）=该数量级，若T(n)/f(n)求极限可得到一常数c，则时间复杂度T（n）=O（f（n））。</p>
+<p>3.常见的时间复杂度<br>按数量级递增排列，常见的时间复杂度有：</p>
+<blockquote>
+<p>常数阶O(1),  对数阶O(log2n),  线性阶O(n),  线性对数阶O(nlog2n),  平方阶O(n2)，立方阶O(n3)，…，k次方阶O(nk), 指数阶O(2n) 。</p>
+</blockquote>
+<p>其中，<br>1）O(n)，O(n2)， 立方阶O(n3),…， k次方阶O(nk) 为多项式阶时间复杂度，分别称为一阶时间复杂度，二阶时间复杂度，依此类推。<br>2）O(2n)，指数阶时间复杂度，该种不实用<br>3）对数阶O(log2n)，线性对数阶O(nlog2n)，除了常数阶以外，该种效率最高。</p>
+<p>例：<br>算法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;=n;++i) &#123;</span><br><span class="line">    <span class="keyword">for</span>(j=<span class="number">1</span>;j&lt;=n;++j) &#123;</span><br><span class="line">        <span class="comment">// 该步骤属于基本操作 执行次数：n2</span></span><br><span class="line">        c[i][j]=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(k=<span class="number">1</span>;k&lt;=n;++k) &#123;</span><br><span class="line">            <span class="comment">//该步骤属于基本操作 执行次数：n3</span></span><br><span class="line">            c[i][j]+=a[i][k]*b[k][j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>则有 T（n）= n2+n3，根据上面括号里的同数量级，我们可以确定 n3为T（n）的同数量级<br>则有f（n）= n3，然后根据T（n）/f（n）求极限可得到常数c<br>则该算法的 时间复杂度：T（n）=O（n3)</p>
+<h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>如果一个问题的规模是n，解这一问题的某一算法所需要的时间为T(n)，它是n的某一函数 T(n)称为这一算法的<strong>“时间复杂性”</strong>。</p>
+<p>当输入量n逐渐加大时，时间复杂性的极限情形称为算法的“渐近时间复杂性”。</p>
+<p>我们常用大O表示法表示时间复杂性，注意它是某一个算法的时间复杂性。<br>大O表示只是说有上界，由定义如果f(n)=O(n)，那显然成立f(n)=O(n^2)，它给你一个上界，但并不是上确界，但人们在表示的时候一般都习惯表示前者。</p>
+<p>此外，一个问题本身也有它的复杂性，如果某个算法的复杂性到达了这个问题复杂性的下界，那就称这样的算法是最佳算法。</p>
+<p><strong>“大O记法”：</strong>在这种描述中使用的基本参数是 n，即问题实例的规模，把复杂性或运行时间表达为n的函数。<br>这里的“O”表示量级 (order)，比如说“二分检索是 O(logn)的”,也就是说它需要“通过logn量级的步骤去检索一个规模为n的数组”。</p>
+<p>记法 O(f(n)) 表示当n增大时，运行时间至多将以正比于 f(n)的速度增长。</p>
+<p>这种渐进估计对算法的理论分析和大致比较是非常有价值的，但在实践中细节也可能造成差异。</p>
+<p>例如，一个低附加代价的O(n2)算法在n较小的情况下可能比一个高附加代价的 O(nlogn)算法运行得更快。<br>当然，随着n足够大以后，具有较慢上升函数的算法必然工作得更快。</p>
+<p><strong>O(1)</strong></p>
+<p>交换i和j的内容</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">temp=i;i=j;j=temp;</span><br><span class="line"></span><br><span class="line">解：以上三条单个语句的频度均为<span class="number">1</span>，该程序段的执行时间是一个与问题规模n无关的常数。</span><br><span class="line">算法的时间复杂度为常数阶，记作T(n)=O(<span class="number">1</span>)。</span><br></pre></td></tr></table></figure>
+<p>如果算法的执行时间不随着问题规模n的增加而增长，即使算法中有上千条语句，其执行时间也不过是一个较大的常数。此类算法的时间复杂度是O(1)。</p>
+<p><strong>O(n2)</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sum=<span class="number">0</span>；                 （<span class="number">1</span>次）</span><br><span class="line"><span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;=n;i++)       （n次）</span><br><span class="line"><span class="keyword">for</span>(j=<span class="number">1</span>;j&lt;=n;j++)       （n2次）</span><br><span class="line">sum++；                 （n2次）</span><br><span class="line"></span><br><span class="line">解：T(n)=<span class="number">2</span>n^<span class="number">2</span>+n+<span class="number">1</span>=O(n^<span class="number">2</span>) 该程序的时间复杂度T(n)=O(n2)。</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (i=<span class="number">1</span>;i&lt;n;i++) &#123;</span><br><span class="line">    <span class="comment">// 频度是n-1</span></span><br><span class="line">    y=y+<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (j=<span class="number">0</span>;j&lt;=(<span class="number">2</span>*n);j++) &#123;</span><br><span class="line">        <span class="comment">//频度是(n-1)*(2n+1)=2n2-n-1 </span></span><br><span class="line">        x++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">解：f(n)=<span class="number">2</span>n2-n-<span class="number">1</span>+(n-<span class="number">1</span>)=<span class="number">2</span>n2-<span class="number">2</span> 该程序的时间复杂度T(n)=O(n2)。</span><br></pre></td></tr></table></figure>
+<p><strong>O(n)</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 频度:2</span></span><br><span class="line">a=<span class="number">0</span>;b=<span class="number">1</span>;</span><br><span class="line"><span class="comment">// 频度:n</span></span><br><span class="line"><span class="keyword">for</span> (i=<span class="number">1</span>;i&lt;=n;i++) &#123;</span><br><span class="line">    s=a+b;　　　　<span class="comment">// 频度:n-1</span></span><br><span class="line">    b=a;　　　　　<span class="comment">// 频度:n-1</span></span><br><span class="line">    a=s;　　　　　<span class="comment">// 频度:n-1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">解：T(n)=<span class="number">2</span>+n+<span class="number">3</span>(n-<span class="number">1</span>)=<span class="number">4</span>n-<span class="number">1</span>=O(n)。该程序的时间复杂度T(n)=O(n)。</span><br></pre></td></tr></table></figure>
+<p><strong>O(log2n)</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">i=<span class="number">1</span>;             <span class="comment">// 频度是1</span></span><br><span class="line"><span class="keyword">while</span> (i&lt;=n) &#123;</span><br><span class="line">    i=i*<span class="number">2</span>;       <span class="comment">// 频度是f(n)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">解：<span class="number">2</span>^f(n)&lt;=n 即 f(n)&lt;=log2n。该程序的时间复杂度T(n)，取最大值f(n)=log2n，T(n)=O(log2n)。</span><br></pre></td></tr></table></figure>
+<p><strong>O(n3)</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;n;i++) &#123;</span><br><span class="line">    <span class="keyword">for</span>(j=<span class="number">0</span>;j&lt;i;j++) &#123;</span><br><span class="line">        <span class="keyword">for</span>(k=<span class="number">0</span>;k&lt;j;k++) &#123;</span><br><span class="line">            x=x+<span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">解：</span><br><span class="line">当 i=m,j=k 时, 内层循环的次数为 k。</span><br><span class="line">当 i=m 时, j可以取 <span class="number">0</span>,<span class="number">1</span>,...,m-<span class="number">1</span>。</span><br><span class="line">所以这里最内循环共进行了 <span class="number">0</span>+<span class="number">1</span>+...+m-<span class="number">1</span>=(m-<span class="number">1</span>)m/<span class="number">2</span>次。</span><br><span class="line">进而,i从<span class="number">0</span>取到n, 则循环共进行了: <span class="number">0</span>+(<span class="number">1</span>-<span class="number">1</span>)*<span class="number">1</span>/<span class="number">2</span>+...+(n-<span class="number">1</span>)n/<span class="number">2</span>=n(n+<span class="number">1</span>)(n-<span class="number">1</span>)/<span class="number">6</span>。</span><br><span class="line">进而得出时间复杂度为 O(n3)。</span><br></pre></td></tr></table></figure>
+<p>我们还应该区分算法的最坏情况的行为和期望行为。</p>
+<p>如快速排序的最坏情况运行时间是 O(n2)，但期望时间是 O(nlogn)。</p>
+<p>通过每次都仔细地选择基准值，我们有可能把平方情况 (即O(n2)情况)的概率减小到几乎等于 0。</p>
+<p>在实际中，精心实现的快速排序一般都能以 (O(nlogn)时间运行。</p>
+<p><strong>下面是一些常用的记法（技巧）：</strong></p>
+<p>访问数组中的元素是常数时间操作，或说O(1)操作。</p>
+<p>一个算法如果能在每个步骤去掉一半数据元素，如二分检索，通常它就取 O(logn)时间。</p>
+<p>用strcmp比较两个具有n个字符的串需要O(n)时间。</p>
+<p>常规的矩阵乘算法是O(n3)，因为算出每个元素都需要将n对元素相乘并加到一起，所有元素的个数是n2。</p>
+<p>指数时间算法通常来源于需要求出所有可能结果。例如，n个元素的集合共有2n个子集,所以要求出所有子集的算法将是O(2n)的。<br>指数算法一般说来是太复杂了，除非n的值非常小，因为，在这个问题中增加一个元素就导致运行时间加倍。</p>
+<p>不幸的是，确实有许多问题 (如著名的“巡回售货员问题” )，到目前为止找到的算法都是指数的。<br>如果我们真的遇到这种情况，通常应该用寻找近似最佳结果的算法替代之。</p>
+<h2 id="空间复杂度"><a href="#空间复杂度" class="headerlink" title="空间复杂度"></a>空间复杂度</h2><p>空间复杂度(Space Complexity)是<strong>对一个算法在运行过程中临时占用存储空间大小的量度。</strong></p>
+<p>一个算法在计算机存储器上所占用的存储空间，包括<strong>程序代码所占用的空间，输入数据所占用的空间和辅助变量所占用的空间</strong>这三个方面。</p>
+<p>算法的输入输出数据所占用的存储空间是由要解决的问题决定的，是通过参数表由调用函数传递而来的，它不随本算法的不同而改变。</p>
+<p>存储算法本身所占用的存储空间与算法书写的长短成正比，要压缩这方面的存储空间，就必须编写出较短的算法。<br>算法在运行过程中临时占用的存储空间随算法的不同而异，有的算法只需要占用少量的临时工作单元，而且不随问题规模的大小而改变，我们称这种算法是“就地”进行的，是节省存储的算法，如这些介绍过的几个算法都是如此；</p>
+<p>有的算法需要占用的临时工作单元数与解决问题的规模n有关，它随着n的增大而增大，当n较大时，将占用较多的存储单元，例如将在第九章介绍的快速排序和归并排序算法就属于这种情况。</p>
+<p>分析一个算法所占用的存储空间要从各方面综合考虑。</p>
+<p>如对于递归算法来说，一般都比较简短，算法本身所占用的存储空间较少，但运行时需要一个附加堆栈，从而占用较多的临时工作单元；<br>若写成非递归算法，一般可能比较长，算法本身占用的存储空间较多，但运行时将可能需要较少的存储单元。</p>
+<p>一个算法的空间复杂度只考虑在运行过程中为局部变量分配的存储空间的大小，它包括为参数表中形参变量分配的存储空间和为在函数体中定义的局部变量分配的存储空间两个部分。</p>
+<p>若一个算法为递归算法，其空间复杂度为递归所使用的堆栈空间的大小，它等于一次调用所分配的临时存储空间的大小乘以被调用的次数(即为递归调用的次数加1，这个1表不开始进行的一次非递归调用)。</p>
+<p>算法的空间复杂度一般也以数量级的形式给出。</p>
+<p>如当一个算法的空间复杂度为一个常量，即不随被处理数据量n的大小而改变时，可表示为O(1)；<br>当一个算法的空间复杂度与以2为底的n的对数成正比时，可表示为0(log2n)；<br>当一个算法的空间复杂度与n成线性比例关系时，可表示为0(n)。</p>
+<p>若形参为数组，则只需要为它分配一个存储由实参传送来的一个地址指针的空间，即一个机器字长空间；<br>若形参为引用方式，则也只需要为其分配存储一个地址的空间，用它来存储对应实参变量的地址，以便由系统自动引用实参变量。</p>
+<p>对于一个算法，其时间复杂度和空间复杂度往往是相互影响的。</p>
+<p>当追求一个较好的时间复杂度时，可能会使空间复杂度的性能变差，即可能导致占用较多的存储空间；<br>反之，当追求一个较好的空间复杂度时，可能会使时间复杂度的性能变差，即可能导致占用较长的运行时间。</p>
+<p>另外，算法的所有性能之间都存在着或多或少的相互影响。</p>
+<p>因此，当设计一个算法(特别是大型算法)时，要综合考虑算法的各项性能，算法的使用频率，算法处理的数据量的大小，算法描述语言的特性，算法运行的机器系统环境等各方面因素，才能够设计出比较好的算法。</p>
+<p>空间复杂度是程序运行所以需要的额外消耗存储空间,也用O()来表示。</p>
+<p>比如插入排序的时间复杂度是O(n2),空间复杂度是O(1)。<br>而一般的递归算法就要有O(n)的空间复杂度了,因为每次递归都要存储返回信息。</p>
+<p>一个算法的优劣主要从算法的执行时间和所需要占用的存储空间两个方面衡量。</p>
+<p>算法执行时间的度量不是采用算法执行的绝对时间来计算的，因为一个算法在不同的机器上执行所花的时间不一样，在不同时刻也会由于计算机资源占用情况的不同，使得算法在同一台计算机上执行的时间也不一样，所以对于算法的时间复杂性，采用算法执行过程中其基本操作的执行次数，称为计算量来度量。</p>
+<p>算法中基本操作的执行次数一般是与问题规模有关的，对于结点个数为n的数据处理问题，用T(n)表示算法基本操作的执行次数。</p>
+<p>在评价算法的时间复杂性时，不考虑两算法执行次数之间的细小区别，而只关心算法的本质差别:</p>
+<p>为此，引入一个所谓的O()记号，则T1(n)=2n=O(n),T2(n)=n+1=O(n)。</p>
+<p>一个函数f(n)是O(g(n))的，则一定存在正常数c和m，使对所有的n&gt;m，都满足f(n)&lt;c*g(n)。</p>
+<h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><p><strong>示例代码（1）：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">decimal <span class="title">Factorial</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> n * Factorial(n - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>阶乘（factorial），给定规模 n，算法基本步骤执行的数量为 n，所以算法复杂度为 O(n)。</p>
+<p><strong>示例代码（2）：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">FindMaxElement</span><span class="params">(<span class="keyword">int</span>[] array)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> max = array[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; array.Length; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (array[i] &gt; max) &#123;</span><br><span class="line">            max = array[i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里，n 为数组 array 的大小，则最坏情况下需要比较 n 次以得到最大值，所以算法复杂度为 O(n)。</p>
+<p><strong>示例代码（3）：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">FindInversions</span><span class="params">(<span class="keyword">int</span>[] array)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> inversions = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; array.Length; i++)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; array.Length; j++)</span><br><span class="line">            <span class="keyword">if</span> (array[i] &gt; array[j])</span><br><span class="line">                inversions++;</span><br><span class="line">    <span class="keyword">return</span> inversions;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里，n 为数组 array 的大小，则基本步骤的执行数量约为 n*(n-1)/2，所以算法复杂度为 O(n2)。</p>
+<p><strong>示例代码（4）：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">SumMN</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> x = <span class="number">0</span>; x &lt; n; x++)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> y = <span class="number">0</span>; y &lt; m; y++)</span><br><span class="line">            sum += x * y;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>给定规模 n 和 m，则基本步骤的执行数量为 n*m，所以算法复杂度为 O(n2)。</p>
+<p><strong>示例代码（5）：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">decimal <span class="title">Sum3</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    decimal sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> a = <span class="number">0</span>; a &lt; n; a++)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> b = <span class="number">0</span>; b &lt; n; b++)</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> c = <span class="number">0</span>; c &lt; n; c++)</span><br><span class="line">                sum += a * b * c;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里，给定规模 n，则基本步骤的执行数量约为 n<em>n</em>n ，所以算法复杂度为 O(n3)。</p>
+<p><strong>示例代码（6）：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">decimal <span class="title">Calculation</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    decimal result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; (<span class="number">1</span> &lt;&lt; n); i++)</span><br><span class="line">        result += i;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里，给定规模 n，则基本步骤的执行数量为 2n，所以算法复杂度为 O(2n)。</p>
+<p><strong>示例代码（7）：</strong></p>
+<p>斐波那契数列：</p>
+<p>Fib(0) = 0<br>Fib(1) = 1<br>Fib(n) = Fib(n-1) + Fib(n-2)<br>F() = 0, 1, 1, 2, 3, 5, 8, 13, 21, 34 …</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Fibonacci</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> Fibonacci(n - <span class="number">1</span>) + Fibonacci(n - <span class="number">2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里，给定规模 n，计算 Fib(n) 所需的时间为计算 Fib(n-1) 的时间和计算 Fib(n-2) 的时间的和。</p>
+<p>T(n&lt;=1) = O(1)</p>
+<p>T(n) = T(n-1) + T(n-2) + O(1)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">                 fib(<span class="number">5</span>)</span><br><span class="line">             /             \</span><br><span class="line">       fib(<span class="number">4</span>)                fib(<span class="number">3</span>)</span><br><span class="line">     /      \                /     \</span><br><span class="line"> fib(<span class="number">3</span>)      fib(<span class="number">2</span>)         fib(<span class="number">2</span>)    fib(<span class="number">1</span>)</span><br><span class="line">/     \        /    \       /    \</span><br></pre></td></tr></table></figure>
+<p>通过使用递归树的结构描述可知算法复杂度为 O(2^n)。</p>
+<p><strong>示例代码（8）：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Fibonacci</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span>[] f = <span class="keyword">new</span> <span class="keyword">int</span>[n + <span class="number">1</span>];</span><br><span class="line">        f[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">        f[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++) &#123;</span><br><span class="line">            f[i] = f[i - <span class="number">1</span>] + f[i - <span class="number">2</span>];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> f[n];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样是斐波那契数列，我们使用数组 f 来存储计算结果，这样算法复杂度优化为 O(n)。</p>
+<p><strong>示例代码（9）：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Fibonacci</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> iter1 = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> iter2 = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> f = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++) &#123;</span><br><span class="line">            f = iter1 + iter2;</span><br><span class="line">            iter1 = iter2;</span><br><span class="line">            iter2 = f;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> f;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样是斐波那契数列，由于实际只有前两个计算结果有用，我们可以使用中间变量来存储，这样就不用创建数组以节省空间。同样算法复杂度优化为 O(n)。</p>
+<p><strong>示例代码（10）：</strong></p>
+<p>通过使用矩阵乘方的算法来优化斐波那契数列算法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">Fibonacci</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span>[,] f = &#123; &#123; <span class="number">1</span>, <span class="number">1</span> &#125;, &#123; <span class="number">1</span>, <span class="number">0</span> &#125; &#125;;</span><br><span class="line">    Power(f, n - <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> f[<span class="number">0</span>, <span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Power</span><span class="params">(<span class="keyword">int</span>[,] f, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span>[,] m = &#123; &#123; <span class="number">1</span>, <span class="number">1</span> &#125;, &#123; <span class="number">1</span>, <span class="number">0</span> &#125; &#125;;</span><br><span class="line"></span><br><span class="line">    Power(f, n / <span class="number">2</span>);</span><br><span class="line">    Multiply(f, f);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (n % <span class="number">2</span> != <span class="number">0</span>)</span><br><span class="line">    Multiply(f, m);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Multiply</span><span class="params">(<span class="keyword">int</span>[,] f, <span class="keyword">int</span>[,] m)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = f[<span class="number">0</span>, <span class="number">0</span>] * m[<span class="number">0</span>, <span class="number">0</span>] + f[<span class="number">0</span>, <span class="number">1</span>] * m[<span class="number">1</span>, <span class="number">0</span>];</span><br><span class="line">    <span class="keyword">int</span> y = f[<span class="number">0</span>, <span class="number">0</span>] * m[<span class="number">0</span>, <span class="number">1</span>] + f[<span class="number">0</span>, <span class="number">1</span>] * m[<span class="number">1</span>, <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">int</span> z = f[<span class="number">1</span>, <span class="number">0</span>] * m[<span class="number">0</span>, <span class="number">0</span>] + f[<span class="number">1</span>, <span class="number">1</span>] * m[<span class="number">1</span>, <span class="number">0</span>];</span><br><span class="line">    <span class="keyword">int</span> w = f[<span class="number">1</span>, <span class="number">0</span>] * m[<span class="number">0</span>, <span class="number">1</span>] + f[<span class="number">1</span>, <span class="number">1</span>] * m[<span class="number">1</span>, <span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">    f[<span class="number">0</span>, <span class="number">0</span>] = x;</span><br><span class="line">    f[<span class="number">0</span>, <span class="number">1</span>] = y;</span><br><span class="line">    f[<span class="number">1</span>, <span class="number">0</span>] = z;</span><br><span class="line">    f[<span class="number">1</span>, <span class="number">1</span>] = w;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>优化之后算法复杂度为O(log2n)。</p>
+<p><strong>示例代码（11）：</strong></p>
+<p>在 C# 中使用公式法，得到更简洁的代码如下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">double</span> <span class="title">Fibonacci</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">double</span> sqrt5 = Math.Sqrt(<span class="number">5</span>);</span><br><span class="line">    <span class="keyword">double</span> phi = (<span class="number">1</span> + sqrt5) / <span class="number">2.0</span>;</span><br><span class="line">    <span class="keyword">double</span> fn = (Math.Pow(phi, n) - Math.Pow(<span class="number">1</span> - phi, n)) / sqrt5;</span><br><span class="line">    <span class="keyword">return</span> fn;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>示例代码（12）：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">InsertionSortInPlace</span><span class="params">(<span class="keyword">int</span>[] unsorted)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; unsorted.Length; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (unsorted[i - <span class="number">1</span>] &gt; unsorted[i]) &#123;</span><br><span class="line">            <span class="keyword">int</span> key = unsorted[i];</span><br><span class="line">            <span class="keyword">int</span> j = i;</span><br><span class="line">            <span class="keyword">while</span> (j &gt; <span class="number">0</span> &amp;&amp; unsorted[j - <span class="number">1</span>] &gt; key) &#123;</span><br><span class="line">                unsorted[j] = unsorted[j - <span class="number">1</span>];</span><br><span class="line">                j--;</span><br><span class="line">            &#125;</span><br><span class="line">            unsorted[j] = key;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>插入排序的基本操作就是将一个数据插入到已经排好序的有序数据中，从而得到一个新的有序数据。算法适用于少量数据的排序，时间复杂度为 O(n2)。</p>
+<h2 id="推导案例"><a href="#推导案例" class="headerlink" title="推导案例"></a>推导案例</h2><p>摘自软考书。</p>
+<blockquote>
+<p>已知递推关系式T(n)=2T(n/2)+n，求时间复杂度。</p>
+</blockquote>
+<p>这个递推关系式其实是在给n个元素进行快速排序时最好情况（每次分割都恰好将记录分为两个长度相等的子序列）下的时间递推关系式，其中T(n/2)是一个子表需要的处理时间，n 为当次分割需要的时间。</p>
+<p>注意，这里实际上是用比较次数（数组的比较）来度量表示所需时间。</p>
+<p>可以对此表达式进行变形得：<br>T(n)/n-T(n/2)/(n/2)=1</p>
+<p>用n/2代替上式中的n可得：<br>T(n/2)/(n/2)-T(n/4)/(n/4)=1</p>
+<p>继续用n/2代替上式中的n可得：<br>T(n/4)/(n/4)-T(n/8)/(n/8)=1<br>…<br>T(2)/2-T(1)/1=1</p>
+<p>算法共需要进行[lbn]+1次分割(n个元素的序列的对半分割树的高度跟具有n个结的完全二叉树高度相等，软设级别的只需知道即可，不必深究)。</p>
+<p>将上述[lbn]+1个式子相加，删除<strong>相互抵消</strong>的部分得：<br>T(n)/n-T(1)/1=[lbn]+1</p>
+<p>而T(1)=1，那么上式可转化为：<br>T(n)=n[lbn]+2n</p>
+<p>而在求时间复杂度时关注“大头”，注意到O(n)&lt;O(nlbn)而且对数的底可省略或为任意常数值，那么：</p>
+<p>T(n)=O(nlogn)=O(nlgn)</p>
+<p>数学上，一般将底为10的对数简略为lg，底为2的对数简略为lb，底为e的对数简略为ln。</p>
+<h2 id="参考博文"><a href="#参考博文" class="headerlink" title="参考博文"></a>参考博文</h2><p><a href="http://www.cnblogs.com/gaochundong/p/complexity_of_algorithms.html" target="_blank" rel="noopener">1</a><br><a href="http://blog.csdn.net/yangwei282367751/article/details/52426911" target="_blank" rel="noopener">2</a><br><a href="http://www.cnblogs.com/zakers/archive/2015/09/14/4808821.html" target="_blank" rel="noopener">3</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Chain Qian
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.leechain.top/2017/02/19-algorithm-time-complex/" title="算法的时间和空间复杂度">https://www.leechain.top/2017/02/19-algorithm-time-complex/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+            <a href="/tags/转载/" rel="tag"># 转载</a>
+          
+            <a href="/tags/学习/" rel="tag"># 学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/28-number-scale-convert-utils/" rel="next" title="Java中的进制转换和ScaleConvertUtils">
+                <i class="fa fa-chevron-left"></i> Java中的进制转换和ScaleConvertUtils
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/04-javase-exception/" rel="prev" title="Java的异常分类和处理原则">
+                Java的异常分类和处理原则 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Chain Qian">
+            
+              <p class="site-author-name" itemprop="name">Chain Qian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ChainGit" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:chainz@foxmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#算法的时间和空间复杂度"><span class="nav-number">1.</span> <span class="nav-text">算法的时间和空间复杂度</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#算法分析"><span class="nav-number">1.1.</span> <span class="nav-text">算法分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要进行算法分析"><span class="nav-number">1.1.1.</span> <span class="nav-text">为什么要进行算法分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何衡量算法复杂度"><span class="nav-number">1.1.2.</span> <span class="nav-text">如何衡量算法复杂度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法的运行时间与什么相关"><span class="nav-number">1.1.3.</span> <span class="nav-text">算法的运行时间与什么相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法分析的种类"><span class="nav-number">1.1.4.</span> <span class="nav-text">算法分析的种类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#时间复杂度"><span class="nav-number">1.2.</span> <span class="nav-text">时间复杂度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概念"><span class="nav-number">1.2.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#计算"><span class="nav-number">1.2.2.</span> <span class="nav-text">计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定义"><span class="nav-number">1.2.3.</span> <span class="nav-text">定义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#空间复杂度"><span class="nav-number">1.3.</span> <span class="nav-text">空间复杂度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#示例代码"><span class="nav-number">1.4.</span> <span class="nav-text">示例代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推导案例"><span class="nav-number">1.5.</span> <span class="nav-text">推导案例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考博文"><span class="nav-number">1.6.</span> <span class="nav-text">参考博文</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chain Qian</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">苏ICP备16052713号-1</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt7Bknuv';
+      var conf = 'prod_ef64fab63ed9004614a7a77b40203358';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

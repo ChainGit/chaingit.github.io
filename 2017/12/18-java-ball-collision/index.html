@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,游戏,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Java实现模拟小球二维完全弹性斜碰QQ的桌球游戏初中那会很流行，当时就想着是怎么做到的呢？游戏开发其中也有很多门道，很多方面。这里我也不懂，只是做了一个桌球游戏的简单实现，实现的过程可能并不完美，不过还是尽量图文并茂、易于理解的写出来。如果有不正确的地方欢迎指正。 功能简述1、桌面是二维光滑平面，带有边缘（墙壁），没有阻力。2、球与球之间能实现完全弹性斜碰，即实现真正的物理上桌球的击球效果。 软">
+<meta name="keywords" content="Java,游戏">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java实现模拟小球二维完全弹性斜碰">
+<meta property="og:url" content="https://www.leechain.top/2017/12/18-java-ball-collision/index.html">
+<meta property="og:site_name" content="天印湖畔映白鹭">
+<meta property="og:description" content="Java实现模拟小球二维完全弹性斜碰QQ的桌球游戏初中那会很流行，当时就想着是怎么做到的呢？游戏开发其中也有很多门道，很多方面。这里我也不懂，只是做了一个桌球游戏的简单实现，实现的过程可能并不完美，不过还是尽量图文并茂、易于理解的写出来。如果有不正确的地方欢迎指正。 功能简述1、桌面是二维光滑平面，带有边缘（墙壁），没有阻力。2、球与球之间能实现完全弹性斜碰，即实现真正的物理上桌球的击球效果。 软">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/4.svg">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/5.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/6.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/7.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/8.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/9.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/10.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/15.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/11.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/12.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/13.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/14.jpg">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/2.gif">
+<meta property="og:image" content="https://www.leechain.top/uploads/0-common-images/1.jpg">
+<meta property="og:updated_time" content="2018-11-12T10:04:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java实现模拟小球二维完全弹性斜碰">
+<meta name="twitter:description" content="Java实现模拟小球二维完全弹性斜碰QQ的桌球游戏初中那会很流行，当时就想着是怎么做到的呢？游戏开发其中也有很多门道，很多方面。这里我也不懂，只是做了一个桌球游戏的简单实现，实现的过程可能并不完美，不过还是尽量图文并茂、易于理解的写出来。如果有不正确的地方欢迎指正。 功能简述1、桌面是二维光滑平面，带有边缘（墙壁），没有阻力。2、球与球之间能实现完全弹性斜碰，即实现真正的物理上桌球的击球效果。 软">
+<meta name="twitter:image" content="https://www.leechain.top/uploads/0-common-images/4.svg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.leechain.top/2017/12/18-java-ball-collision/">
+
+
+
+
+
+  <title>Java实现模拟小球二维完全弹性斜碰 | 天印湖畔映白鹭</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天印湖畔映白鹭</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">LEECHAIN | 博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.leechain.top/2017/12/18-java-ball-collision/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chain Qian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天印湖畔映白鹭">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Java实现模拟小球二维完全弹性斜碰</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-18T00:00:00+08:00">
+                2017-12-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/游戏/" itemprop="url" rel="index">
+                    <span itemprop="name">游戏</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/12/18-java-ball-collision/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/12/18-java-ball-collision/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </span></div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Java实现模拟小球二维完全弹性斜碰"><a href="#Java实现模拟小球二维完全弹性斜碰" class="headerlink" title="Java实现模拟小球二维完全弹性斜碰"></a>Java实现模拟小球二维完全弹性斜碰</h1><p>QQ的桌球游戏初中那会很流行，当时就想着是怎么做到的呢？游戏开发其中也有很多门道，很多方面。这里我也不懂，只是做了一个桌球游戏的简单实现，实现的过程可能并不完美，不过还是尽量图文并茂、易于理解的写出来。如果有不正确的地方欢迎指正。</p>
+<h2 id="功能简述"><a href="#功能简述" class="headerlink" title="功能简述"></a>功能简述</h2><p>1、桌面是二维光滑平面，带有边缘（墙壁），没有阻力。<br>2、球与球之间能实现完全弹性斜碰，即实现真正的物理上桌球的击球效果。</p>
+<h2 id="软件架构"><a href="#软件架构" class="headerlink" title="软件架构"></a>软件架构</h2><p>绘图使用JFrame嵌套JPanel，JPanel自带双缓冲，能够做到绘图减少闪烁。JPanel内使用Canvas、Graphics、Image绘图，Image也自带双缓冲。<br>绘图功能由CanvasThread实现，球的运动和计算由CircleThread实现，球的数量控制由ServeThread实现。</p>
+<p><a href="/uploads/0-common-images/3.png">png</a><br><img src="/uploads/0-common-images/4.svg" alt="软件架构"></p>
+<h2 id="原理详解"><a href="#原理详解" class="headerlink" title="原理详解"></a>原理详解</h2><blockquote>
+<p>注意：在这里的实现中，球和圆是同一个意思，即球可以等价看出圆。</p>
+</blockquote>
+<p>这里的球碰撞主要是要解决两个问题：<strong>碰墙、碰球</strong>。</p>
+<p>球的运动比较简单，球的运动速度矢量V可以分解在xy轴上，即向量Vx和Vy（有方向和大小），单位时间可以通过加上Vx和Vy的改变球的位置坐标Lx、Ly，从而实现球的运动。不过这里有一个小细节需要注意一下，不然会出现<strong>球有速度却静止不动</strong>的情况。</p>
+<p>碰墙比较好解决，只要球超出边界就让它对应的Vx或Vy取反就行，不过这里还有几个小细节需要注意一下，不然会出现<strong>球嵌在墙里出不来</strong>的情况。</p>
+<p>碰球的问题就比较复杂了，高中物理学过一维上两个小球的正面弹性碰撞公式，这里是小球<strong>在二维平面上的弹性斜碰</strong>情况。（均是光滑、无阻力的平面）</p>
+<p>不过弹性斜碰仍然是可以分解<strong>转换</strong>成正面弹性碰撞的，下面进行分步骤详细解说一下吧。</p>
+<p><strong>数据准备：</strong></p>
+<p>球内存储的数据为：<br><img src="/uploads/0-common-images/5.jpg" alt="img"></p>
+<p>这些数据共同参与运算构成了整个运行流程。</p>
+<p><strong>第零步：先判断两个圆的位置</strong></p>
+<p>只有满足两个圆心距离dn小于或等于两个圆的半径和dc的情况才叫碰撞，即两圆相切或相交时，需要做进一步处理。否则两圆相离无需做处理。</p>
+<p>相切时的示意图：<br><img src="/uploads/0-common-images/6.jpg" alt="img"></p>
+<p><strong>第一步：计算合速度的大小和方向</strong></p>
+<p>球内存储的数据只有Vx和Vy这两个矢量，没有球运动的合速度矢量。不过解决球的斜碰还是需要合速度矢量的，需要计算出来。</p>
+<p>分解速度矢量和合速度矢量：<br><img src="/uploads/0-common-images/7.jpg" alt="img"></p>
+<p><strong>第二步：计算共同（相对）坐标系s，解决粘连问题，计算ab在s中的速度的大小和方向</strong></p>
+<p>这个步骤比较复杂，需要分成三步来解决。</p>
+<p>1）计算共同（相对）坐标系s。</p>
+<p>为了将斜碰转化为正碰，需要将球的运动坐标系进行转化，共同坐标系s的x轴是以两个圆心所在直线为基础，因为是球b相对于球a的坐标系，所以坐标系的原点即球a的圆心。</p>
+<p>共同（相对）坐标系s：<br><img src="/uploads/0-common-images/8.jpg" alt="img"></p>
+<p>2）解决粘连问题，或者碰撞时已经相交的情况，让两个圆后退到相切状态。</p>
+<p>让两个圆由相交状态回退到相切状态，需要将两个圆沿着运动方向的反方向移动，移动到相切（或略微有相离）为止。移动的距离就是中间的重叠部分，更详细点就是分别修改圆的x轴和y轴数值，数值大小就是重叠部分的数值，因为是重叠所以要除以2，即 (dn-dc)/2。</p>
+<p>移动的加减运算的公式是一致的，这是可以推导的。</p>
+<p>解决粘连问题：<br><img src="/uploads/0-common-images/9.jpg" alt="img"></p>
+<p>3）将ab的速度大小和方向由原坐标系转化为在共同坐标系s中的速度大小和方向。</p>
+<p>将ab的合速度投影到共同坐标系s中，便于接下来计算正碰。</p>
+<p>坐标转化：<br><img src="/uploads/0-common-images/10.jpg" alt="img"></p>
+<p><strong>第三步：计算完全弹性斜碰</strong></p>
+<p>ab球的速度映射到s坐标系后，处在y轴的分速度发生弹性正碰时不受影响。处在x轴的分速度就等价于弹性正碰。</p>
+<p>两个小球弹性正碰的公式推导（百度百科）：<br><img src="/uploads/0-common-images/15.jpg" alt="img"></p>
+<p>发生弹性正碰之后，原来的y轴的分速度没有变化，x轴的分速度按公式进行“变换”。</p>
+<p><strong>第四步：计算两球发生碰撞后在s中的各自新合速度大小和运动方向</strong></p>
+<p>新的合速度和运动方向很容易就可以得出。</p>
+<p>发生弹性正碰之后的两个小球的分速度变化和新合速度：<br><img src="/uploads/0-common-images/11.jpg" alt="img"></p>
+<p><strong>第五步：将两球速度转化为原坐标系中的速度</strong></p>
+<p>只需要将合速度进行三角运算即可得到映射的分速度。</p>
+<p>两球新的合速度矢量转化为原坐标系中的分速度：<br><img src="/uploads/0-common-images/12.jpg" alt="img"></p>
+<p><img src="/uploads/0-common-images/13.jpg" alt="img"></p>
+<p><strong>第六步：更新</strong></p>
+<p>将碰撞后的新数据更新到圆的存储中即可。</p>
+<p>碰撞后的新方向：<br><img src="/uploads/0-common-images/14.jpg" alt="img"></p>
+<p>补充：整个过程中因为桌面光滑，完全无损失碰撞，所以所有的球的动能和应该是恒定不变的。</p>
+<h2 id="关键代码"><a href="#关键代码" class="headerlink" title="关键代码"></a>关键代码</h2><p>球的<strong>运动</strong>和<strong>碰墙</strong>检测代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 小球沿着vx和vy移动，并对此时移动过程中撞击到墙做判断和处理（先解决球碰墙，再解决球碰球）</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * 每次移动一个单位的vx和vy</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * 需要打磨算法才能准确</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">move</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 当X轴上碰到墙时,X轴行进方向改变</span></span><br><span class="line">    <span class="keyword">if</span> (lx + vx + radius &gt;= width) &#123;</span><br><span class="line">        <span class="comment">// 只有确实是在向右墙运动时才掉头，防止和collide中的调整出现冲突，以下类似</span></span><br><span class="line">        <span class="keyword">if</span> (vx &gt; <span class="number">0</span>)</span><br><span class="line">            vx *= -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="comment">// 如果不加这个方法，则球可能会一直嵌在墙里</span></span><br><span class="line">            moveX();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (lx + vx - radius &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (vx &lt; <span class="number">0</span>)</span><br><span class="line">            vx *= -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            moveX();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 没碰壁时继续前进</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        moveX();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 当在Y轴上碰到墙时,Y轴行进方向改变</span></span><br><span class="line">    <span class="keyword">if</span> (ly + vy + radius &gt;= height) &#123;</span><br><span class="line">        <span class="keyword">if</span> (vy &gt; <span class="number">0</span>)</span><br><span class="line">            vy *= -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            moveY();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (ly + vy - radius &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (vy &lt; <span class="number">0</span>)</span><br><span class="line">            vy *= -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            moveY();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 没碰壁时继续前进</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        moveY();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">moveX</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (abs(vx) &lt; <span class="number">1</span>) &#123;</span><br><span class="line">        px += vx;</span><br><span class="line">        <span class="keyword">if</span> (abs(px) &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">            lx += round(px);</span><br><span class="line">            px = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        lx += vx;</span><br><span class="line">        px = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">moveY</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (abs(vy) &lt; <span class="number">1</span>) &#123;</span><br><span class="line">        py += vy;</span><br><span class="line">        <span class="keyword">if</span> (abs(py) &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">            ly += round(py);</span><br><span class="line">            py = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ly += vy;</span><br><span class="line">        py = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>球的<strong>斜碰</strong>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 解决小球之间的斜碰（二维平面，球==圆）</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * 坐标系x轴向右为正，y轴向下为正</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * 需要打磨算法才能准确</span></span><br><span class="line"><span class="comment">    * </span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> circle</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">collide</span><span class="params">(Circle b)</span> </span>&#123;</span><br><span class="line">    Circle a = <span class="keyword">this</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> alx = a.lx, aly = a.ly, blx = b.lx, bly = b.ly;</span><br><span class="line">    <span class="keyword">double</span> avx = a.vx, avy = a.vy, bvx = b.vx, bvy = b.vy;</span><br><span class="line">    <span class="keyword">int</span> ar = a.radius, br = b.radius;</span><br><span class="line">    <span class="keyword">int</span> am = a.weight, bm = b.weight;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ----- 第零步：先判断两个圆的位置 -----</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">double</span> dn = sqrt(pow(alx - blx, <span class="number">2</span>) + pow(aly - bly, <span class="number">2</span>));</span><br><span class="line">    <span class="keyword">double</span> dc = ar + br;</span><br><span class="line">    <span class="comment">// 两圆重合</span></span><br><span class="line">    <span class="keyword">if</span> (dn == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// 两圆相离则返回</span></span><br><span class="line">    <span class="keyword">if</span> (dn &gt; dc + Main.ERROR_APART)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ----- 第一步：计算合速度的大小和方向 -----</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算a的合速度的值（不包含方向）</span></span><br><span class="line">    <span class="keyword">double</span> av = sqrt(pow(avx, <span class="number">2</span>) + pow(avy, <span class="number">2</span>));</span><br><span class="line">    <span class="comment">// 计算a的运行角度（运行方向，[-π ~ π)）</span></span><br><span class="line">    <span class="keyword">double</span> a0 = acos(avx / av);</span><br><span class="line">    <span class="keyword">if</span> (avy != <span class="number">0</span>)</span><br><span class="line">        a0 *= avy / abs(avy);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算b的合速度的值</span></span><br><span class="line">    <span class="keyword">double</span> bv = sqrt(pow(bvx, <span class="number">2</span>) + pow(bvy, <span class="number">2</span>));</span><br><span class="line">    <span class="comment">// 计算b的运行角度</span></span><br><span class="line">    <span class="keyword">double</span> b0 = acos(bvx / bv);</span><br><span class="line">    <span class="keyword">if</span> (bvy != <span class="number">0</span>)</span><br><span class="line">        b0 *= bvy / abs(bvy);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// System.out.println(av + " " + (a0 * 180 / PI));</span></span><br><span class="line">    <span class="comment">// System.out.println(bv + " " + (b0 * 180 / PI));</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// ----- 第二步：计算共同（相对）坐标系s，以及ab在s中的速度的大小和方向 -----</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// ----- 第二步：第一部分：计算共同（相对）坐标系s的参数 -----</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算圆b圆心相对于圆a圆心的坐标（注意y轴为数学上的y轴，与计算机中的y轴相反）</span></span><br><span class="line">    <span class="keyword">int</span> sx = blx - alx;</span><br><span class="line">    <span class="keyword">int</span> sy = bly - aly;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算b相对于a的速度方向和大小</span></span><br><span class="line">    <span class="keyword">double</span> sz = sqrt(pow(sx, <span class="number">2</span>) + pow(sy, <span class="number">2</span>));</span><br><span class="line">    <span class="keyword">double</span> s0 = acos(sx / sz);</span><br><span class="line">    <span class="keyword">if</span> (sy != <span class="number">0</span>)</span><br><span class="line">        s0 *= sy / abs(sy);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// System.out.println(sz + " " + (s0 * 180 / PI));</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// ----- 第二步：第二部分：解决粘连问题，或者检测到碰撞时已经相交，让两个圆分离 -----</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 在这里 dc-ERROR_CROSS &lt;= dn &lt;= dc+ERROR_APART 算相切</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 两圆相交（或两圆粘连）</span></span><br><span class="line">    <span class="keyword">if</span> (dn &lt; dc - Main.ERROR_CROSS) &#123;</span><br><span class="line">        <span class="keyword">double</span> de = (dc - dn) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">double</span> dx = de * cos(s0);</span><br><span class="line">        <span class="keyword">double</span> dy = de * sin(s0);</span><br><span class="line">        alx -= dx * <span class="number">2</span>;</span><br><span class="line">        aly -= dy * <span class="number">2</span>;</span><br><span class="line">        blx += dx * <span class="number">2</span>;</span><br><span class="line">        bly += dy * <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ----- 第二步：第三部分：将ab的速度大小和方向由原坐标系转化为在共同坐标系s中的速度大小和方向 -----</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 在s坐标系中a的新运动方向</span></span><br><span class="line">    <span class="keyword">double</span> sa0 = a0 - s0;</span><br><span class="line">    <span class="comment">// 在s坐标系中a的新速度大小</span></span><br><span class="line">    <span class="keyword">double</span> sav = av;</span><br><span class="line">    <span class="comment">// 在s坐标系中a的新速度在s的x轴上的投影</span></span><br><span class="line">    <span class="keyword">double</span> savx = sav * cos(sa0);</span><br><span class="line">    <span class="comment">// 在s坐标系中a的新速度在s的y轴上的投影</span></span><br><span class="line">    <span class="keyword">double</span> savy = sav * sin(sa0);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 在s坐标系中b的新运动方向</span></span><br><span class="line">    <span class="keyword">double</span> sb0 = b0 - s0;</span><br><span class="line">    <span class="comment">// 在s坐标系中b的新速度大小</span></span><br><span class="line">    <span class="keyword">double</span> sbv = bv;</span><br><span class="line">    <span class="comment">// 在s坐标系中b的新速度在s的x轴上的投影</span></span><br><span class="line">    <span class="keyword">double</span> sbvx = sbv * cos(sb0);</span><br><span class="line">    <span class="comment">// 在s坐标系中b的新速度在s的y轴上的投影</span></span><br><span class="line">    <span class="keyword">double</span> sbvy = sbv * sin(sb0);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ----- 第三步：发生完全弹性斜碰时，在s坐标系中，两球y轴速度不变，x轴速度满足完全弹性正碰（由动能定理和动量守恒推导） -----</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 碰撞后a球s坐标系x轴的分速度</span></span><br><span class="line">    <span class="keyword">double</span> savxp = ((am - bm) * savx + <span class="number">2</span> * bm * sbvx) / (am + bm);</span><br><span class="line">    <span class="comment">// 碰撞后a球s坐标系y轴的分速度</span></span><br><span class="line">    <span class="keyword">double</span> savyp = savy;</span><br><span class="line">    <span class="comment">// 碰撞后b球s坐标系x轴的分速度</span></span><br><span class="line">    <span class="keyword">double</span> sbvxp = ((bm - am) * sbvx + <span class="number">2</span> * am * savx) / (am + bm);</span><br><span class="line">    <span class="comment">// 碰撞后b球s坐标系y轴的分速度</span></span><br><span class="line">    <span class="keyword">double</span> sbvyp = sbvy;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ----- 第四步：计算两球发生碰撞后在s中的各自合速度大小和运动方向-----</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 碰撞后a球在s坐标系的合速度大小</span></span><br><span class="line">    <span class="keyword">double</span> savp = sqrt(pow(savxp, <span class="number">2</span>) + pow(savyp, <span class="number">2</span>));</span><br><span class="line">    <span class="comment">// 碰撞后a球在s坐标系的运动方向</span></span><br><span class="line">    <span class="keyword">double</span> sa0p = acos(savxp / savp);</span><br><span class="line">    <span class="keyword">if</span> (savxp == <span class="number">0</span> &amp;&amp; savyp == <span class="number">0</span>)</span><br><span class="line">        sa0p = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (savyp != <span class="number">0</span>)</span><br><span class="line">        sa0p *= savyp / abs(savyp);</span><br><span class="line">    <span class="comment">// 碰撞后b球在s坐标系的合速度大小</span></span><br><span class="line">    <span class="keyword">double</span> sbvp = sqrt(pow(sbvxp, <span class="number">2</span>) + pow(sbvyp, <span class="number">2</span>));</span><br><span class="line">    <span class="comment">// 碰撞后b球在s坐标系的运动方向</span></span><br><span class="line">    <span class="keyword">double</span> sb0p = acos(sbvxp / sbvp);</span><br><span class="line">    <span class="keyword">if</span> (sbvxp == <span class="number">0</span> &amp;&amp; sbvyp == <span class="number">0</span>)</span><br><span class="line">        sb0p = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (sbvyp != <span class="number">0</span>)</span><br><span class="line">        sb0p *= sbvyp / abs(sbvyp);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ----- 第五步：将两球速度转化为原坐标系中的速度 -----</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 碰撞后a球在原坐标系的合速度大小</span></span><br><span class="line">    <span class="keyword">double</span> fva = savp;</span><br><span class="line">    <span class="comment">// 碰撞后a球在原坐标系的运动方向</span></span><br><span class="line">    <span class="keyword">double</span> fa0 = sa0p + s0;</span><br><span class="line">    <span class="keyword">if</span> (fa0 &gt; PI)</span><br><span class="line">        fa0 -= <span class="number">2</span> * PI;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (fa0 &lt;= -PI)</span><br><span class="line">        fa0 += <span class="number">2</span> * PI;</span><br><span class="line">    <span class="comment">// 碰撞后a球在原坐标系的合速度大小在x轴上的分量</span></span><br><span class="line">    <span class="keyword">double</span> fvax = fva * cos(fa0);</span><br><span class="line">    <span class="comment">// 碰撞后a球在原坐标系的合速度大小在y轴上的分量</span></span><br><span class="line">    <span class="keyword">double</span> fvay = fva * sin(fa0) * -<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 碰撞后b球在原坐标系的合速度大小</span></span><br><span class="line">    <span class="keyword">double</span> fvb = sbvp;</span><br><span class="line">    <span class="comment">// 碰撞后b球在原坐标系的运动方向</span></span><br><span class="line">    <span class="keyword">double</span> fb0 = sb0p + s0;</span><br><span class="line">    <span class="keyword">if</span> (fb0 &gt; PI)</span><br><span class="line">        fb0 -= <span class="number">2</span> * PI;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (fb0 &lt;= -PI)</span><br><span class="line">        fb0 += <span class="number">2</span> * PI;</span><br><span class="line">    <span class="comment">// 碰撞后b球在原坐标系的合速度大小在x轴上的分量</span></span><br><span class="line">    <span class="keyword">double</span> fvbx = fvb * cos(fb0);</span><br><span class="line">    <span class="comment">// 碰撞后b球在原坐标系的合速度大小在y轴上的分量</span></span><br><span class="line">    <span class="keyword">double</span> fvby = fvb * sin(fb0) * -<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ----- 第六步：更新 -----</span></span><br><span class="line"></span><br><span class="line">    a.lx = alx;</span><br><span class="line">    a.ly = aly;</span><br><span class="line"></span><br><span class="line">    b.lx = blx;</span><br><span class="line">    b.ly = bly;</span><br><span class="line"></span><br><span class="line">    a.vx = fvax;</span><br><span class="line">    a.vy = fvay;</span><br><span class="line"></span><br><span class="line">    b.vx = fvbx;</span><br><span class="line">    b.vy = fvby;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h2><p>运行过程中某一个时间段的动图（动图帧率比较低，会显示的有些卡顿）：<br><img src="/uploads/0-common-images/2.gif" alt="img"></p>
+<p>运行过程中某一刻的球运动数据输出：<br><img src="/uploads/0-common-images/1.jpg" alt="img"></p>
+<p>从结果可以看出系统总能是<strong>守恒</strong>的。</p>
+<h2 id="总结思考"><a href="#总结思考" class="headerlink" title="总结思考"></a>总结思考</h2><p>游戏编程主要是将数学和物理（也有其他学科）的知识结合图像显示出来，编写一些小游戏代码，能够锻炼代码的逻辑能力，也能遇到到一些编程中的细节问题，同时也是将数学转为代码，锻炼思维能力。游戏编写过程中，也能体会到代码加数学的魔性，增强编程的兴趣。</p>
+<p><a href="https://github.com/ChainGit/funny-games/tree/master/game06-ball-collision" target="_blank" rel="noopener">源码</a></p>
+<h2 id="参考博客"><a href="#参考博客" class="headerlink" title="参考博客"></a>参考博客</h2><p><a href="http://blog.csdn.net/wxy2039/article/details/4900470" target="_blank" rel="noopener">csdn</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Chain Qian
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.leechain.top/2017/12/18-java-ball-collision/" title="Java实现模拟小球二维完全弹性斜碰">https://www.leechain.top/2017/12/18-java-ball-collision/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/游戏/" rel="tag"># 游戏</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/14-large-file-hash-search/" rel="next" title="利用Hash进行大文本文件的行搜索">
+                <i class="fa fa-chevron-left"></i> 利用Hash进行大文本文件的行搜索
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/10-mysql-review-note-1/" rel="prev" title="MySQL复习笔记-I">
+                MySQL复习笔记-I <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Chain Qian">
+            
+              <p class="site-author-name" itemprop="name">Chain Qian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ChainGit" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:chainz@foxmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java实现模拟小球二维完全弹性斜碰"><span class="nav-number">1.</span> <span class="nav-text">Java实现模拟小球二维完全弹性斜碰</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#功能简述"><span class="nav-number">1.1.</span> <span class="nav-text">功能简述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软件架构"><span class="nav-number">1.2.</span> <span class="nav-text">软件架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原理详解"><span class="nav-number">1.3.</span> <span class="nav-text">原理详解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关键代码"><span class="nav-number">1.4.</span> <span class="nav-text">关键代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试结果"><span class="nav-number">1.5.</span> <span class="nav-text">测试结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结思考"><span class="nav-number">1.6.</span> <span class="nav-text">总结思考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考博客"><span class="nav-number">1.7.</span> <span class="nav-text">参考博客</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chain Qian</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">苏ICP备16052713号-1</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt7Bknuv';
+      var conf = 'prod_ef64fab63ed9004614a7a77b40203358';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

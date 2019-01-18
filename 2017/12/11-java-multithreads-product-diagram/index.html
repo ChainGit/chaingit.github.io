@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,学习,数据结构,多线程,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Java多线程之工作流网图工作流网图基于前驱图实现。较之前几个问题，这个问题也是生产中的常见的模型，有人把这个模型称为AOE和AOV。 操作系统原理之进程和线程管理Java的多线程和并发知识纲要Java多线程之生产者和消费者模式Java多线程之哲学家就餐问题Java多线程之读者写者问题Java多线程之吸烟者问题Java多线程之熟睡的理发师问题 AOV和AOEAOV网与工作流网（AOE）在模型结构上">
+<meta name="keywords" content="Java,学习,数据结构,多线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java多线程之工作流网图">
+<meta property="og:url" content="https://www.leechain.top/2017/12/11-java-multithreads-product-diagram/index.html">
+<meta property="og:site_name" content="天印湖畔映白鹭">
+<meta property="og:description" content="Java多线程之工作流网图工作流网图基于前驱图实现。较之前几个问题，这个问题也是生产中的常见的模型，有人把这个模型称为AOE和AOV。 操作系统原理之进程和线程管理Java的多线程和并发知识纲要Java多线程之生产者和消费者模式Java多线程之哲学家就餐问题Java多线程之读者写者问题Java多线程之吸烟者问题Java多线程之熟睡的理发师问题 AOV和AOEAOV网与工作流网（AOE）在模型结构上">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/40.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/41.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/42.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/43.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/44.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/45.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/46.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/49.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/47.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/48.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/50.png">
+<meta property="og:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/51.png">
+<meta property="og:updated_time" content="2018-11-12T10:04:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java多线程之工作流网图">
+<meta name="twitter:description" content="Java多线程之工作流网图工作流网图基于前驱图实现。较之前几个问题，这个问题也是生产中的常见的模型，有人把这个模型称为AOE和AOV。 操作系统原理之进程和线程管理Java的多线程和并发知识纲要Java多线程之生产者和消费者模式Java多线程之哲学家就餐问题Java多线程之读者写者问题Java多线程之吸烟者问题Java多线程之熟睡的理发师问题 AOV和AOEAOV网与工作流网（AOE）在模型结构上">
+<meta name="twitter:image" content="https://www.leechain.top/uploads/multithreads-basic-knowledge/40.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.leechain.top/2017/12/11-java-multithreads-product-diagram/">
+
+
+
+
+
+  <title>Java多线程之工作流网图 | 天印湖畔映白鹭</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天印湖畔映白鹭</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">LEECHAIN | 博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.leechain.top/2017/12/11-java-multithreads-product-diagram/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chain Qian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天印湖畔映白鹭">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Java多线程之工作流网图</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-11T00:00:00+08:00">
+                2017-12-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/12/11-java-multithreads-product-diagram/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/12/11-java-multithreads-product-diagram/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </span></div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Java多线程之工作流网图"><a href="#Java多线程之工作流网图" class="headerlink" title="Java多线程之工作流网图"></a>Java多线程之工作流网图</h1><p>工作流网图基于前驱图实现。较之前几个问题，这个问题也是生产中的常见的模型，有人把这个模型称为AOE和AOV。</p>
+<p><a href="https://www.leechain.top/blog/2017/08/25-operation-system-multithreads.html">操作系统原理之进程和线程管理</a><br><a href="https://www.leechain.top/blog/2017/08/21-java-concurrency-brief.html">Java的多线程和并发知识纲要</a><br><a href="https://www.leechain.top/blog/2017/08/27-java-multithreads-producer-and-consumer-learn.html">Java多线程之生产者和消费者模式</a><br><a href="https://www.leechain.top/blog/2017/11/20-java-multithreads-philosopher-dinner-learn.html">Java多线程之哲学家就餐问题</a><br><a href="https://www.leechain.top/blog/2017/11/25-java-multithreads-read-write-learn.html">Java多线程之读者写者问题</a><br><a href="https://www.leechain.top/blog/2017/12/08-java-multithreads-smokers-learn.html">Java多线程之吸烟者问题</a><br><a href="https://www.leechain.top/blog/2017/12/10-java-multithreads-sleep-barber-learn.html">Java多线程之熟睡的理发师问题</a></p>
+<h2 id="AOV和AOE"><a href="#AOV和AOE" class="headerlink" title="AOV和AOE"></a>AOV和AOE</h2><p>AOV网与工作流网（AOE）在模型结构上是相似的，它们都是基于图的结构，以节点表示活动，有向边表示流程的流向。</p>
+<p>AOV网的有向边仅仅只表示活动的前后次序，也可以说是流程中的流程流向。工作流网中的有向边却不仅如此，它可以在每条边上设置不同的条件来决定活动的下一环节是什么，它的出度就不一定是所有有向边了。</p>
+<p>因此，AOV网其实是工作流网（AOE）的一种特例，是一种全入全出的有向无环工作流网。</p>
+<p>AOE网的定义是在带权有向图中若以顶点表示事件，有向边表示活动，边上的权值表示该活动持续的时间。<br>从定义上来看，很容易看出两种网的不同，<strong>AOV网的活动以顶点表示，而AOE网的活动以有向边表示</strong>。</p>
+<p>纵观这两种网图，其实它们总体网络结构是一样的，仅仅是活动所表示的方式不同，因此从AOV网转换成AOE网应该是可行的。</p>
+<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>在生产中，比如玩具组装车间情景里，有这样的流水线（可能不准确，只是为了说明工作流网）：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/40.png" alt="工作流网图"></p>
+<p>某一个节点，比如P3，它需要等待P0和P2的工作完成后才能进行工作。</p>
+<h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h2><p>AOE是边上有权值，节点值为“0”（只是为了理解，更准确的是“没有”）。<br>AOV可以转换成AOE，只要将路径上的权值设置为“0”，节点值设置为非“0”。</p>
+<p>在这个问题下，工作流图的图存储：<br>1、如果使用邻接矩阵的话，存储边上的权值比较方便，但是去寻找节点的出度需要遍历操作。<br>2、如果使用邻接表的话，存储边上的权值比较麻烦，但是去寻找节点的出度比较方便。</p>
+<p>进程之间的工作完成的通知可以使用信号量。</p>
+<h2 id="我的解决"><a href="#我的解决" class="headerlink" title="我的解决"></a>我的解决</h2><p>我采用的工作流图的图存储方式是邻接矩阵，矩阵内的元素包含<strong>权值和信号量</strong>，这样既能方便找到某节点的出度和入度到某节点的源节点，也能迅速定位到这条边所使用的信号量。使用邻接表的话则不大容易实现。</p>
+<p>将上图的工作流网图加上具体的边上权值，节点值为“0”，如下图：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/41.png" alt="工作流网图"></p>
+<h3 id="源码实现"><a href="#源码实现" class="headerlink" title="源码实现"></a>源码实现</h3><p>具体的详细源码可以参看文末的链接。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">NodeThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 该节点生产时间</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> time;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 生产的次数</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> amount;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> status;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">NodeThread</span><span class="params">(<span class="keyword">int</span> id, <span class="keyword">int</span> time)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.id = id;</span><br><span class="line">		<span class="keyword">this</span>.name = <span class="string">"node-"</span> + id;</span><br><span class="line">		<span class="keyword">this</span>.time = time;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			status = <span class="keyword">true</span>;</span><br><span class="line">			barrier.await();</span><br><span class="line">			System.out.println(name + <span class="string">" is ready"</span>);</span><br><span class="line">			<span class="keyword">long</span> begin = System.currentTimeMillis();</span><br><span class="line">			<span class="keyword">while</span> (status) &#123;</span><br><span class="line">				System.out.println(name + <span class="string">" wait for semaphores"</span>);</span><br><span class="line">				<span class="keyword">long</span> start = System.currentTimeMillis();</span><br><span class="line">				recv();</span><br><span class="line">				System.out.println(name + <span class="string">" is working"</span>);</span><br><span class="line">				process();</span><br><span class="line">				<span class="keyword">long</span> end = System.currentTimeMillis();</span><br><span class="line">				System.out.println(name + <span class="string">" finish work, cost "</span> + (end - start) + <span class="string">", amount "</span> + amount);</span><br><span class="line">				send();</span><br><span class="line">				System.out.println(name + <span class="string">" has sent semaphores"</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">long</span> finish = System.currentTimeMillis();</span><br><span class="line">			System.out.println(name + <span class="string">" IS DONE, TOTAL COST "</span> + (finish - begin) + <span class="string">", FINAL AMOUNT "</span> + amount);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 等待所有入该节点的信号量</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">recv</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums; i++) &#123;</span><br><span class="line">			Edge e = diagram[i][id];</span><br><span class="line">			<span class="keyword">if</span> (e == <span class="keyword">null</span>)</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			e.semaphore.P();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 通知所有出该节点的信号量</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">send</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums; i++) &#123;</span><br><span class="line">			Edge e = diagram[id][i];</span><br><span class="line">			<span class="keyword">if</span> (e == <span class="keyword">null</span>)</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			executor.schedule(<span class="keyword">new</span> Msg(e.semaphore), e.value, TimeUnit.SECONDS);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 生产该节点负责的部分</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">		Thread.sleep(time * <span class="number">1000</span>);</span><br><span class="line">		<span class="keyword">if</span> (++amount == goods)</span><br><span class="line">			status = <span class="keyword">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="结果分析"><a href="#结果分析" class="headerlink" title="结果分析"></a>结果分析</h3><h4 id="P7和P0不相连，AOE"><a href="#P7和P0不相连，AOE" class="headerlink" title="P7和P0不相连，AOE"></a>P7和P0不相连，AOE</h4><p>P7和P0不相连，AOE，运行过程中某一个片段情况如下图：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/42.png" alt="P7和P0不相连，AOE，运行过程中某一个片段情况"></p>
+<p>从运行片段情况可以看出，整个网图第一次生产的过程耗时是最长的，花费了14012毫秒，同时也就是关键路径P0-&gt;P2-&gt;P3-&gt;P5-&gt;P7所耗费的时间。<br>由于整个网络的生产是并行进行的，所以之后的生产速度就快了很多，这也是流水线生产模式的优势。</p>
+<p>如果生产的产品数量是固定的，比如10件，即每个节点生产10次。<br>此时观察运行结果，可以看到各个节点结束运行的先后顺序是：P0-&gt;P2-&gt;P1-&gt;P4-&gt;P3-&gt;P6-&gt;P5-&gt;P7。这个结束的顺序，对照上面的流图分析也是吻合的。</p>
+<p>生产10件产品的总时间是14018毫秒（稍大于14秒）。</p>
+<h4 id="P7和P0相连，AOE"><a href="#P7和P0相连，AOE" class="headerlink" title="P7和P0相连，AOE"></a>P7和P0相连，AOE</h4><p>如果将P7和P0相连，即增加一条图的有向边P7-&gt;P0。<br>也就意味着P0必须等待P7生产完才能生产，那么整个流水线就变成同时只能生产一个完整产品。</p>
+<p>假设第一次执行时P0无需等待P7的信号。</p>
+<p>此时的运行过程中某一个片段情况如下图：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/43.png" alt="P7和P0相连，AOE，运行过程中某一个片段情况"></p>
+<p>第一次循环时各个节点的执行时间与流图吻合，但是之后的循环却显示出每个节点等待的时间等于关键路径所需要的时间，如下图所示：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/44.png" alt="P7和P0相连，AOE，等于关键路径所需要的时间"></p>
+<p>P7和P0相连，AOE，生产10件产品的总时间：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/45.png" alt="P7和P0相连，AOE，生产10件产品的总时间"></p>
+<p>此时观察运行结果，每次循环的执行顺序是固定的：P0-&gt;P2-&gt;P1-&gt;P4-&gt;P3-&gt;P6-&gt;P5-&gt;P7，与流图吻合。</p>
+<p>生产10件产品的总时间是140081毫秒（约14*10秒，远大于14秒）。</p>
+<h4 id="P7和P0不相连，AOV"><a href="#P7和P0不相连，AOV" class="headerlink" title="P7和P0不相连，AOV"></a>P7和P0不相连，AOV</h4><p>如果更改每个edge的权值为“0”，节点值为非“0”，那么AOE就转变成AOV，如下图：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/46.png" alt="转换成AOV的工作流网图"></p>
+<p>此时的运行过程中某一个片段情况（也是第一次循环时各个节点的执行时间，耗时15秒）如下图：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/49.png" alt="P7和P0不相连，转换成AOV，运行过程中某一个片段情况"></p>
+<p>P7和P0不相连，AOV，生产10件产品的总时间：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/47.png" alt="P7和P0不相连，转换成AOV，生产10件产品的总时间"></p>
+<p>此时观察运行结果，可以看到各个节点结束运行的先后顺序是：P0-&gt;P2-&gt;P1-&gt;P4-&gt;P3-&gt;P5-&gt;P6-&gt;P7，与流图吻合。</p>
+<p>生产10件产品的总时间是60023毫秒（约60秒，15+(2+3)*9）。</p>
+<h4 id="P7和P0相连，AOV"><a href="#P7和P0相连，AOV" class="headerlink" title="P7和P0相连，AOV"></a>P7和P0相连，AOV</h4><p>在AOV的情况下，如果P7和P0相连的话，工作情况和AOE下P7和P0相连的情况是类似的。</p>
+<p>P7和P0相连，AOV，生产10件产品的总时间：</p>
+<p><img src="/uploads/multithreads-basic-knowledge/48.png" alt="P7和P0相连，转换成AOV，生产10件产品的总时间"></p>
+<p>此时观察运行结果，每次循环的执行顺序是固定的：P0-&gt;P2-&gt;P1-&gt;P4-&gt;P3-&gt;P5-&gt;P6-&gt;P7，与流图吻合。</p>
+<p>生产10件产品的总时间是150044毫秒（约15*10秒）。</p>
+<h2 id="总结思考"><a href="#总结思考" class="headerlink" title="总结思考"></a>总结思考</h2><p>AOE示意图：<br><img src="/uploads/multithreads-basic-knowledge/50.png" alt="AOE示意图"></p>
+<p>AOV示意图：<br><img src="/uploads/multithreads-basic-knowledge/51.png" alt="AOV示意图"></p>
+<p>具体AOE和AOV的知识还是等自己深入学习到数据结构–图再说吧，水平还不足请谅解。</p>
+<p>多线程实现工作流图，也是线程之间的同步和协作的例子，还是比较有意思的哈。同时自己的数据结构知识还有待加强，学的越多圆圈越大，不知道的也越多。</p>
+<p><a href="https://github.com/ChainGit/some-tests/tree/master/test10" target="_blank" rel="noopener">源码</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Chain Qian
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.leechain.top/2017/12/11-java-multithreads-product-diagram/" title="Java多线程之工作流网图">https://www.leechain.top/2017/12/11-java-multithreads-product-diagram/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/学习/" rel="tag"># 学习</a>
+          
+            <a href="/tags/数据结构/" rel="tag"># 数据结构</a>
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/10-java-multithreads-sleep-barber-learn/" rel="next" title="Java多线程之熟睡的理发师问题">
+                <i class="fa fa-chevron-left"></i> Java多线程之熟睡的理发师问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/14-large-file-hash-search/" rel="prev" title="利用Hash进行大文本文件的行搜索">
+                利用Hash进行大文本文件的行搜索 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Chain Qian">
+            
+              <p class="site-author-name" itemprop="name">Chain Qian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ChainGit" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:chainz@foxmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java多线程之工作流网图"><span class="nav-number">1.</span> <span class="nav-text">Java多线程之工作流网图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AOV和AOE"><span class="nav-number">1.1.</span> <span class="nav-text">AOV和AOE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述"><span class="nav-number">1.2.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题分析"><span class="nav-number">1.3.</span> <span class="nav-text">问题分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我的解决"><span class="nav-number">1.4.</span> <span class="nav-text">我的解决</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#源码实现"><span class="nav-number">1.4.1.</span> <span class="nav-text">源码实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结果分析"><span class="nav-number">1.4.2.</span> <span class="nav-text">结果分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#P7和P0不相连，AOE"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">P7和P0不相连，AOE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#P7和P0相连，AOE"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">P7和P0相连，AOE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#P7和P0不相连，AOV"><span class="nav-number">1.4.2.3.</span> <span class="nav-text">P7和P0不相连，AOV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#P7和P0相连，AOV"><span class="nav-number">1.4.2.4.</span> <span class="nav-text">P7和P0相连，AOV</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结思考"><span class="nav-number">1.5.</span> <span class="nav-text">总结思考</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chain Qian</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">苏ICP备16052713号-1</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt7Bknuv';
+      var conf = 'prod_ef64fab63ed9004614a7a77b40203358';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>
