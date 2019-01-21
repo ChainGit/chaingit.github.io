@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="学习,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="建立稳定、安全的通信连接连接阿里云、腾讯云服务器时，有时网络不稳定，经常出现断网情况。有很多能增强连接稳定性与安全性的方式。比如PPTP、L2TP、IPSec、IKEv2等，这里介绍使用PPTP、IKEv2方式来有效解决这类问题。 环境准备1、新装 Ubuntu 16.04.5 (其余操作系统类似，除了安装软件方式有区别外) ubuntu16开始使用apt代替apt-get，在使用上没有什么差别。">
+<meta name="keywords" content="学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="建立稳定、安全的通信连接">
+<meta property="og:url" content="https://www.leechain.top/2019/01/21-stable-security-connect-way/index.html">
+<meta property="og:site_name" content="天印湖畔映白鹭">
+<meta property="og:description" content="建立稳定、安全的通信连接连接阿里云、腾讯云服务器时，有时网络不稳定，经常出现断网情况。有很多能增强连接稳定性与安全性的方式。比如PPTP、L2TP、IPSec、IKEv2等，这里介绍使用PPTP、IKEv2方式来有效解决这类问题。 环境准备1、新装 Ubuntu 16.04.5 (其余操作系统类似，除了安装软件方式有区别外) ubuntu16开始使用apt代替apt-get，在使用上没有什么差别。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-01-21T05:27:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="建立稳定、安全的通信连接">
+<meta name="twitter:description" content="建立稳定、安全的通信连接连接阿里云、腾讯云服务器时，有时网络不稳定，经常出现断网情况。有很多能增强连接稳定性与安全性的方式。比如PPTP、L2TP、IPSec、IKEv2等，这里介绍使用PPTP、IKEv2方式来有效解决这类问题。 环境准备1、新装 Ubuntu 16.04.5 (其余操作系统类似，除了安装软件方式有区别外) ubuntu16开始使用apt代替apt-get，在使用上没有什么差别。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.leechain.top/2019/01/21-stable-security-connect-way/">
+
+
+
+
+
+  <title>建立稳定、安全的通信连接 | 天印湖畔映白鹭</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天印湖畔映白鹭</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">LEECHAIN | 博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.leechain.top/2019/01/21-stable-security-connect-way/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chain Qian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天印湖畔映白鹭">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">建立稳定、安全的通信连接</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-21T00:00:00+08:00">
+                2019-01-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2019/01/21-stable-security-connect-way/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2019/01/21-stable-security-connect-way/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </span></div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="建立稳定、安全的通信连接"><a href="#建立稳定、安全的通信连接" class="headerlink" title="建立稳定、安全的通信连接"></a>建立稳定、安全的通信连接</h1><p>连接阿里云、腾讯云服务器时，有时网络不稳定，经常出现断网情况。有很多能增强连接稳定性与安全性的方式。<br>比如PPTP、L2TP、IPSec、IKEv2等，这里介绍使用PPTP、IKEv2方式来有效解决这类问题。</p>
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><p>1、新装 Ubuntu 16.04.5 (其余操作系统类似，除了安装软件方式有区别外)</p>
+<p>ubuntu16开始使用apt代替apt-get，在使用上没有什么差别。</p>
+<h2 id="安装准备"><a href="#安装准备" class="headerlink" title="安装准备"></a>安装准备</h2><p>执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt update</span><br><span class="line">apt -f install tree lrzsz git-core</span><br></pre></td></tr></table></figure>
+<p>可以安装上nginx，也可以不装。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt -f install nginx</span><br></pre></td></tr></table></figure>
+<h2 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h2><h3 id="前提准备"><a href="#前提准备" class="headerlink" title="前提准备"></a>前提准备</h3><p>1、防火墙、IP转发等</p>
+<p>ubuntu默认使用ufw。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">1、切换到root账户</span><br><span class="line">sudo su</span><br><span class="line"></span><br><span class="line">2、切换到/dev</span><br><span class="line">cd /etc</span><br><span class="line"></span><br><span class="line">3、修改ufw默认配置</span><br><span class="line">vim /etc/default/ufw</span><br><span class="line">修改</span><br><span class="line">DEFAULT_FORWARD_POLICY=&quot;DROP&quot;</span><br><span class="line">为</span><br><span class="line">DEFAULT_FORWARD_POLICY=&quot;ACCEPT&quot;</span><br><span class="line"></span><br><span class="line">4、修改sysctl.conf</span><br><span class="line">vim /etc/ufw/sysctl.conf</span><br><span class="line">反注释为：</span><br><span class="line"># Uncomment this to allow this host to route packets between interfaces</span><br><span class="line">net/ipv4/ip_forward=1</span><br><span class="line">net/ipv6/conf/default/forwarding=1</span><br><span class="line">net/ipv6/conf/all/forwarding=1</span><br><span class="line"></span><br><span class="line">5、修改ufw防火墙配置</span><br><span class="line">vim /etc/ufw/before.rules</span><br><span class="line">在指定位置插入：</span><br><span class="line">#</span><br><span class="line"># rules.before</span><br><span class="line">#</span><br><span class="line"># Rules that should be run before the ufw command line added rules. Custom</span><br><span class="line"># rules should be added to one of these chains:</span><br><span class="line">#   ufw-before-input</span><br><span class="line">#   ufw-before-output</span><br><span class="line">#   ufw-before-forward</span><br><span class="line">#</span><br><span class="line"></span><br><span class="line">##############################################################################</span><br><span class="line"># 指定位置加入nat配置</span><br><span class="line">*nat</span><br><span class="line">:PREROUTING ACCEPT [0:0]</span><br><span class="line"># 在有的服务提供商是这两条生效，注意eth0不同机器可能不一样，使用ifconfig可以判断实际是哪一个</span><br><span class="line"># -A PREROUTING -i eth0 -p tcp --dport 1723 -j DNAT --to xx.xx.xx.xx</span><br><span class="line"># -A POSTROUTING -s 192.168.0.0/24 -o eth0 -j SNAT --to xx.xx.xx.xx</span><br><span class="line"># PPTP使用</span><br><span class="line">-A POSTROUTING -s 192.168.0.0/24 -o eth0 -j MASQUERADE</span><br><span class="line"># IKEv2使用</span><br><span class="line">-A POSTROUTING -s 10.31.2.0/24 -o eth0 -j MASQUERADE</span><br><span class="line">COMMIT</span><br><span class="line">##############################################################################</span><br><span class="line"></span><br><span class="line"># Don&apos;t delete these required lines, otherwise there will be errors</span><br><span class="line">*filter</span><br><span class="line">:ufw-before-input - [0:0]</span><br><span class="line">:ufw-before-output - [0:0]</span><br><span class="line">:ufw-before-forward - [0:0]</span><br><span class="line">:ufw-not-local - [0:0]</span><br><span class="line"># End required lines</span><br><span class="line"></span><br><span class="line">6、打开ufw的特定入端口</span><br><span class="line"># IKEv2基于UDP，使用500、4500</span><br><span class="line">ufw allow 500</span><br><span class="line">ufw allow 4500</span><br><span class="line"># PPTP基于TCP，使用1723</span><br><span class="line">ufw allow 1723</span><br><span class="line"># 申请证书使用</span><br><span class="line">ufw allow 80</span><br><span class="line"></span><br><span class="line">其余端口比如SSH视自身情况而定。</span><br><span class="line"></span><br><span class="line">7、重启服务器</span><br></pre></td></tr></table></figure>
+<h3 id="配置PPTP"><a href="#配置PPTP" class="headerlink" title="配置PPTP"></a>配置PPTP</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">1、安装pptpd</span><br><span class="line">apt -f install pptpd</span><br><span class="line"></span><br><span class="line">2、配置pptpd.conf</span><br><span class="line">反注释：</span><br><span class="line">#          be set to the given one. You MUST still give at least one remote</span><br><span class="line">#          IP for each simultaneous client.</span><br><span class="line">#</span><br><span class="line"># (Recommended)</span><br><span class="line">##############################################################################</span><br><span class="line">localip 192.168.0.1</span><br><span class="line">remoteip 192.168.0.234-238,192.168.0.245</span><br><span class="line">##############################################################################</span><br><span class="line"># or</span><br><span class="line">#localip 192.168.0.234-238,192.168.0.245</span><br><span class="line">#remoteip 192.168.1.234-238,192.168.1.245</span><br><span class="line"></span><br><span class="line">3、配置ppp</span><br><span class="line">vim /etc/ppp/pptpd-options </span><br><span class="line">修改为：</span><br><span class="line"># If pppd is acting as a server for Microsoft Windows clients, this</span><br><span class="line"># option allows pppd to supply one or two DNS (Domain Name Server)</span><br><span class="line"># addresses to the clients.  The first instance of this option</span><br><span class="line"># specifies the primary DNS address; the second instance (if given)</span><br><span class="line"># specifies the secondary DNS address.</span><br><span class="line"># Attention! This information may not be taken into account by a Windows</span><br><span class="line"># client. See KB311218 in Microsoft&apos;s knowledge base for more information.</span><br><span class="line">##############################################################################</span><br><span class="line">#ms-dns 8.8.8.8</span><br><span class="line">#ms-dns 8.8.4.4</span><br><span class="line">ms-dns 223.5.5.5</span><br><span class="line">ms-dns 223.6.6.6</span><br><span class="line">##############################################################################</span><br><span class="line"></span><br><span class="line"># If pppd is acting as a server for Microsoft Windows or &quot;Samba&quot;</span><br><span class="line"># clients, this option allows pppd to supply one or two WINS (Windows</span><br><span class="line"># Internet Name Services) server addresses to the clients.  The first</span><br><span class="line"># instance of this option specifies the primary WINS address; the</span><br><span class="line"># second instance (if given) specifies the secondary WINS address.</span><br><span class="line">##############################################################################</span><br><span class="line">#ms-wins 8.8.8.8</span><br><span class="line">#ms-wins 8.8.4.4</span><br><span class="line">ms-wins 223.5.5.5</span><br><span class="line">ms-wins 223.6.6.6</span><br><span class="line">##############################################################################</span><br><span class="line"></span><br><span class="line">4、修改chap验证</span><br><span class="line">vim /etc/ppp/chap-secrets</span><br><span class="line">增加pptp服务使用的chap账号</span><br><span class="line"># Secrets for authentication using CHAP</span><br><span class="line"># client        server  secret                  IP addresses</span><br><span class="line"></span><br><span class="line">##############################################################################</span><br><span class="line">user pptpd pass *</span><br><span class="line">##############################################################################</span><br><span class="line"></span><br><span class="line">5、启用pptpd服务开启自启动</span><br><span class="line">systemctl enable pptpd</span><br><span class="line"></span><br><span class="line">6、重启服务器，配置完毕</span><br><span class="line">netstat -ant</span><br><span class="line">可以看到1723端口已经监听</span><br></pre></td></tr></table></figure>
+<p>PPTP协议简单，配置方便，无需证书，兼容性好。但是连接有时也会受到干扰，建议使用IKEv2方式。</p>
+<h3 id="配置IKEv2"><a href="#配置IKEv2" class="headerlink" title="配置IKEv2"></a>配置IKEv2</h3><h4 id="签发自有证书"><a href="#签发自有证书" class="headerlink" title="签发自有证书"></a>签发自有证书</h4><p>IKEv2建议配置证书方式+账号密码验证，这样安全性很高。</p>
+<p>证书可以选择rsa方式自己生成一个，但是缺点是客户端需要安装证书并信任，比较麻烦，这里不推荐。</p>
+<p>使用letsencrypt，结合自己的域名，签署一个自然信任的证书，这样客户端不用安装额外自定义证书，很方便。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line">1、下载letsencrypt</span><br><span class="line">切换到自己的home目录下，下载letsencrypt</span><br><span class="line">git clone https://github.com/letsencrypt/letsencrypt</span><br><span class="line">然后</span><br><span class="line">cd letsencrypt</span><br><span class="line">执行</span><br><span class="line">./letsencrypt-auto --help</span><br><span class="line">会安装一些必须环境，比如python环境。</span><br><span class="line">在配置过程中，可能会遇到如下提示：</span><br><span class="line">Creating virtual environment...</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File &quot;/usr/lib/python3/dist-packages/virtualenv.py&quot;, line 2363, in &lt;module&gt;</span><br><span class="line">    main()</span><br><span class="line">  File &quot;/usr/lib/python3/dist-packages/virtualenv.py&quot;, line 719, in main</span><br><span class="line">    symlink=options.symlink)</span><br><span class="line">  File &quot;/usr/lib/python3/dist-packages/virtualenv.py&quot;, line 988, in create_environment</span><br><span class="line">    download=download,</span><br><span class="line">  File &quot;/usr/lib/python3/dist-packages/virtualenv.py&quot;, line 918, in install_wheel</span><br><span class="line">    call_subprocess(cmd, show_stdout=False, extra_env=env, stdin=SCRIPT)</span><br><span class="line">  File &quot;/usr/lib/python3/dist-packages/virtualenv.py&quot;, line 812, in call_subprocess</span><br><span class="line">    % (cmd_desc, proc.returncode))</span><br><span class="line">OSError: Command /opt/eff.org/certbot/venv/bin/python2.7 - setuptools pkg_resources pip wheel failed with error code 2</span><br><span class="line"></span><br><span class="line">执行可以解决：</span><br><span class="line">pip install setuptools</span><br><span class="line">pip install --upgrade setuptools</span><br><span class="line">pip install virtualenv</span><br><span class="line">pip install --upgrade virtualenv</span><br><span class="line">如果还是不行，强制重装pip，比如重新安装成最新版pip，再执行以上步骤。</span><br><span class="line"></span><br><span class="line">执行成功后会提示如下：</span><br><span class="line">Creating virtual environment...</span><br><span class="line">Installing Python packages...</span><br><span class="line">Installation succeeded.</span><br><span class="line"></span><br><span class="line">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span><br><span class="line"></span><br><span class="line">  letsencrypt-auto [SUBCOMMAND] [options] [-d DOMAIN] [-d DOMAIN] ...</span><br><span class="line"></span><br><span class="line">Certbot can obtain and install HTTPS/TLS/SSL certificates.  By default,</span><br><span class="line">it will attempt to use a webserver both for obtaining and installing the</span><br><span class="line">certificate. The most common SUBCOMMANDS and flags are:</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">2、签发证书</span><br><span class="line">./letsencrypt-auto certonly --server https://acme-v01.api.letsencrypt.org/directory --agree-dev-preview</span><br><span class="line"></span><br><span class="line">会有以下选择：</span><br><span class="line">How would you like to authenticate with the ACME CA?</span><br><span class="line">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span><br><span class="line">1: Nginx Web Server plugin (nginx)</span><br><span class="line">2: Spin up a temporary webserver (standalone)</span><br><span class="line">3: Place files in webroot directory (webroot)</span><br><span class="line">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span><br><span class="line"></span><br><span class="line">因为已经安装了nginx，最简单的就是选择3。</span><br><span class="line"></span><br><span class="line">Enter email address (used for urgent renewal and security notices) (Enter &apos;c&apos; to</span><br><span class="line">cancel): aaa@bbb.com</span><br><span class="line"></span><br><span class="line">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span><br><span class="line">Please read the Terms of Service at</span><br><span class="line">https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf. You must</span><br><span class="line">agree in order to register with the ACME server at</span><br><span class="line">https://acme-v01.api.letsencrypt.org/directory</span><br><span class="line">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span><br><span class="line">(A)gree/(C)ancel: a</span><br><span class="line"></span><br><span class="line">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span><br><span class="line">Would you be willing to share your email address with the Electronic Frontier</span><br><span class="line">Foundation, a founding partner of the Let&apos;s Encrypt project and the non-profit</span><br><span class="line">organization that develops Certbot? We&apos;d like to send you email about our work</span><br><span class="line">encrypting the web, EFF news, campaigns, and ways to support digital freedom.</span><br><span class="line">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span><br><span class="line">(Y)es/(N)o: y</span><br><span class="line">Please enter in your domain name(s) (comma and/or space separated)  (Enter &apos;c&apos;</span><br><span class="line">to cancel): xxx.yyy.zzz</span><br><span class="line">Obtaining a new certificate</span><br><span class="line">Performing the following challenges:</span><br><span class="line">http-01 challenge for xxx.yyy.zzz</span><br><span class="line">Input the webroot for xxx.yyy.zzz: (Enter &apos;c&apos; to cancel): /var/www/html</span><br><span class="line">Waiting for verification...</span><br><span class="line">Cleaning up challenges</span><br><span class="line">Use of --agree-dev-preview is deprecated.</span><br><span class="line"></span><br><span class="line">IMPORTANT NOTES:</span><br><span class="line"> - Congratulations! Your certificate and chain have been saved at:</span><br><span class="line">   /etc/letsencrypt/live/xxx.yyy.zzz/fullchain.pem</span><br><span class="line">   Your key file has been saved at:</span><br><span class="line">   /etc/letsencrypt/live/xxx.yyy.zzz/privkey.pem</span><br><span class="line">   Your cert will expire on 2019-04-21. To obtain a new or tweaked</span><br><span class="line">   version of this certificate in the future, simply run</span><br><span class="line">   letsencrypt-auto again. To non-interactively renew *all* of your</span><br><span class="line">   certificates, run &quot;letsencrypt-auto renew&quot;</span><br><span class="line"> - If you like Certbot, please consider supporting our work by:</span><br><span class="line"></span><br><span class="line">   Donating to ISRG / Let&apos;s Encrypt:   https://letsencrypt.org/donate</span><br><span class="line">   Donating to EFF:                    https://eff.org/donate-le</span><br><span class="line"></span><br><span class="line">至此，就成功生成了证书。</span><br><span class="line"></span><br><span class="line">注意：证书三个月后会过期，可以使用定时任务脚本去定期更新</span><br></pre></td></tr></table></figure>
+<h4 id="配置strongswan"><a href="#配置strongswan" class="headerlink" title="配置strongswan"></a>配置strongswan</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line">1、安装strongswan</span><br><span class="line">apt -f install strongswan*</span><br><span class="line">安装所有的stringswan插件，避免缺失插件造成功能不全。</span><br><span class="line"></span><br><span class="line">2、复制letsencrypt生成的证书</span><br><span class="line">cp /etc/letsencrypt/live/xxx.yyy.zzz/chain.pem /etc/ipsec.d/cacerts/ca.cert.pem    </span><br><span class="line">cp /etc/letsencrypt/live/xxx.yyy.zzz/cert.pem /etc/ipsec.d/certs/server.cert.pem  </span><br><span class="line">cp /etc/letsencrypt/live/xxx.yyy.zzz/privkey.pem /etc/ipsec.d/private/server.pem   </span><br><span class="line"></span><br><span class="line">结构如下：</span><br><span class="line">.</span><br><span class="line">├── aacerts</span><br><span class="line">├── acerts</span><br><span class="line">├── cacerts</span><br><span class="line">│   └── ca.cert.pem</span><br><span class="line">├── certs</span><br><span class="line">│   └── server.cert.pem</span><br><span class="line">├── crls</span><br><span class="line">├── ocspcerts</span><br><span class="line">├── policies</span><br><span class="line">├── private</span><br><span class="line">│   └── server.pem</span><br><span class="line">└── reqs</span><br><span class="line"></span><br><span class="line">注意pem文件权限。</span><br><span class="line"></span><br><span class="line">3、编辑strongswan.conf</span><br><span class="line">vim /etc/strongswan.conf</span><br><span class="line"></span><br><span class="line"># strongswan.conf - strongSwan configuration file</span><br><span class="line">#</span><br><span class="line"># Refer to the strongswan.conf(5) manpage for details</span><br><span class="line">#</span><br><span class="line"># Configuration changes should be made in the included files</span><br><span class="line"></span><br><span class="line">charon &#123;</span><br><span class="line">        load_modular = yes</span><br><span class="line">        duplicheck.enable = no</span><br><span class="line">        compress = yes</span><br><span class="line">        plugins &#123;</span><br><span class="line">                include strongswan.d/charon/*.conf</span><br><span class="line">        &#125;</span><br><span class="line">		#dns1 = 8.8.8.8</span><br><span class="line">        #dns2 = 8.8.4.4</span><br><span class="line">        #nbns1 = 8.8.8.8</span><br><span class="line">        #nbns2 = 8.8.4.4</span><br><span class="line">        dns1 = 223.5.5.5</span><br><span class="line">        dns2 = 223.6.6.6</span><br><span class="line">        nbns1 = 223.5.5.5</span><br><span class="line">        nbns2 = 223.6.6.6</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">include strongswan.d/*.conf</span><br><span class="line"></span><br><span class="line">4、编辑ipsec.secrets</span><br><span class="line"> vim /etc/ipsec.secrets </span><br><span class="line"></span><br><span class="line"># This file holds shared secrets or RSA private keys for authentication.</span><br><span class="line"></span><br><span class="line"># RSA private key for this host, authenticating it to any other host</span><br><span class="line"># which knows the public part.</span><br><span class="line"></span><br><span class="line">: RSA server.pem</span><br><span class="line">#: PSK &quot;myPSKkey&quot;</span><br><span class="line">#: XAUTH &quot;myXAUTHPass&quot;</span><br><span class="line">user %any : EAP &quot;pass&quot;</span><br><span class="line"></span><br><span class="line">5、编辑ipsec.conf</span><br><span class="line">vim /etc/ipsec.conf</span><br><span class="line"></span><br><span class="line">config setup</span><br><span class="line">    uniqueids=never </span><br><span class="line"></span><br><span class="line">conn ikev2</span><br><span class="line">    keyexchange=ikev2</span><br><span class="line">    ike=aes256-sha256-modp2048,3des-sha1-modp2048,aes256-sha1-modp2048!</span><br><span class="line">    esp=aes256-sha256,3des-sha1,aes256-sha1!</span><br><span class="line">    rekey=no</span><br><span class="line">    left=%defaultroute</span><br><span class="line">    leftid=@xxx.yyy.zzz</span><br><span class="line">    leftsendcert=always</span><br><span class="line">    leftsubnet=0.0.0.0/0</span><br><span class="line">    leftcert=server.cert.pem</span><br><span class="line">    right=%any</span><br><span class="line">    rightauth=eap-mschapv2</span><br><span class="line">    rightsourceip=10.31.2.0/24</span><br><span class="line">    rightsendcert=never</span><br><span class="line">    eap_identity=%any</span><br><span class="line">    dpdaction=clear</span><br><span class="line">    fragmentation=yes</span><br><span class="line">    auto=add</span><br><span class="line"></span><br><span class="line">6、重启服务器</span><br><span class="line"></span><br><span class="line">7、查看ipsec</span><br><span class="line">ipsec statusall</span><br><span class="line"></span><br><span class="line">Status of IKE charon daemon (strongSwan 5.3.5, Linux 4.4.0-141-generic, x86_64):</span><br><span class="line">  uptime: 4 seconds, since Jan 21 13:07:17 2019</span><br><span class="line">  malloc: sbrk 1765376, mmap 532480, used 1025520, free 739856</span><br><span class="line">  worker threads: 11 of 16 idle, 5/0/0/0 working, job queue: 0/0/0/0, scheduled: 0</span><br><span class="line">  loaded plugins: charon test-vectors unbound ldap pkcs11 aes rc2 sha1 sha2 md4 md5 rdrand random nonce x509 revocation constraints acert pubkey pkcs1 pkcs7 pkcs8 pkcs12 pgp dnskey sshkey dnscert ipseckey pem openssl gcrypt af-alg fips-prf gmp agent chapoly xcbc cmac hmac ctr ccm gcm ntru bliss curl soup mysql sqlite attr kernel-netlink resolve socket-default connmark farp stroke updown eap-identity eap-sim eap-sim-pcsc eap-aka eap-aka-3gpp2 eap-simaka-pseudonym eap-simaka-reauth eap-md5 eap-gtc eap-mschapv2 eap-dynamic eap-radius eap-tls eap-ttls eap-peap eap-tnc xauth-generic xauth-eap xauth-pam xauth-noauth tnc-imc tnc-imv tnc-tnccs tnccs-20 tnccs-11 tnccs-dynamic dhcp whitelist lookip error-notify certexpire led radattr addrblock unity</span><br><span class="line">Virtual IP pools (size/online/offline):</span><br><span class="line">  10.31.2.0/24: 254/0/0</span><br><span class="line">Listening IP addresses:</span><br><span class="line">  172.xx.xx.xx</span><br><span class="line">Connections:</span><br><span class="line">       ikev2:  %any...%any  IKEv2, dpddelay=30s</span><br><span class="line">       ikev2:   local:  [xxx.yyy.zzz] uses public key authentication</span><br><span class="line">       ikev2:    cert:  &quot;CN=xxx.yyy.zzz&quot;</span><br><span class="line">       ikev2:   remote: uses EAP_MSCHAPV2 authentication with EAP identity &apos;%any&apos;</span><br><span class="line">       ikev2:   child:  0.0.0.0/0 === dynamic TUNNEL, dpdaction=clear</span><br><span class="line">Security Associations (0 up, 0 connecting):</span><br><span class="line">  none</span><br></pre></td></tr></table></figure>
+<h2 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h2><p>1、安卓手机</p>
+<p>直接在系统设置里，新建VPN连接，选择PPTP协议或IKEv2，输入服务器域名、账号、密码即可。</p>
+<p>2、苹果手机</p>
+<p>在系统设计里，新建VPN，IOS最近版本只能选择IKEv2，远程ID输入上述的xxx.yyy.zzz，再输入服务器域名、账号、密码即可。</p>
+<p>3、Windows系统</p>
+<p>系统设置里，新建VPN连接，选择PPTP协议或IKEv2，输入服务器域名、账号、密码即可。<br>另外，在控制面板，找到”你的VPN连接名”，右键属性，选择网络，打开”Internet协议”属性，在高级设置里，勾选”在远程网络上使用默认网关”。</p>
+<p>4、Mac系统</p>
+<p>系统设置里，新建IKEv2连接，远程ID输入上述的xxx.yyy.zzz，再输入服务器域名、账号、密码即可。</p>
+<h2 id="经验技巧"><a href="#经验技巧" class="headerlink" title="经验技巧"></a>经验技巧</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tail -200f /var/log/syslog</span><br></pre></td></tr></table></figure>
+<p>查看连接日志，能有效排除一些配置中遇到的问题。</p>
+<p>如果发现连接成功没有成功上网：<br>1、检查DNS是否可用（可以本地客户端设置自己的DNS服务器地址）<br>2、检查服务器防火墙配置</p>
+<p>如果发现突然连接不上：<br>1、更换服务器IP</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Chain Qian
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.leechain.top/2019/01/21-stable-security-connect-way/" title="建立稳定、安全的通信连接">https://www.leechain.top/2019/01/21-stable-security-connect-way/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/学习/" rel="tag"># 学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/23-java-singleton/" rel="next" title="Java单例设计模式">
+                <i class="fa fa-chevron-left"></i> Java单例设计模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Chain Qian">
+            
+              <p class="site-author-name" itemprop="name">Chain Qian</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">75</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ChainGit" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:chainz@foxmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#建立稳定、安全的通信连接"><span class="nav-number">1.</span> <span class="nav-text">建立稳定、安全的通信连接</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境准备"><span class="nav-number">1.1.</span> <span class="nav-text">环境准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装准备"><span class="nav-number">1.2.</span> <span class="nav-text">安装准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装步骤"><span class="nav-number">1.3.</span> <span class="nav-text">安装步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前提准备"><span class="nav-number">1.3.1.</span> <span class="nav-text">前提准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置PPTP"><span class="nav-number">1.3.2.</span> <span class="nav-text">配置PPTP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置IKEv2"><span class="nav-number">1.3.3.</span> <span class="nav-text">配置IKEv2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#签发自有证书"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">签发自有证书</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置strongswan"><span class="nav-number">1.3.3.2.</span> <span class="nav-text">配置strongswan</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建立连接"><span class="nav-number">1.4.</span> <span class="nav-text">建立连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#经验技巧"><span class="nav-number">1.5.</span> <span class="nav-text">经验技巧</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chain Qian</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">苏ICP备16052713号-1</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cyt7Bknuv';
+      var conf = 'prod_ef64fab63ed9004614a7a77b40203358';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>
